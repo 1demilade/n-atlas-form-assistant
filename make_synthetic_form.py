@@ -70,6 +70,7 @@ def make_form(width=1400, height=1000, seed=1, count=8):
         ax = label_box[2] + text_size
         right = x + column_width - text_size
         bottom = label_box[3] + text_size // 3
+        option_truth = []
         if style == 'line':
             draw.line((ax, bottom, right, bottom), fill='black', width=2)
             answer = [ax, label_box[1] - text_size // 3, right, bottom]
@@ -85,10 +86,14 @@ def make_form(width=1400, height=1000, seed=1, count=8):
                 box = [cx, label_box[1], cx + text_size, label_box[1] + text_size]
                 draw.rectangle(box, outline='black', width=2)
                 boxes.append(box)
-                draw.text((cx + int(text_size * 1.4), label_box[1]), option, fill='black', font=font)
+                position = (cx + int(text_size * 1.4), label_box[1])
+                draw.text(position, option, fill='black', font=font)
+                option_truth.append({'text': option, 'box': [int(v) for v in draw.textbbox(
+                    position, option, font=font)]})
                 cx += int(text_size * 1.4) + int(draw.textlength(option, font=font)) + text_size * 2
             answer = [boxes[0][0], min(b[1] for b in boxes), boxes[-1][2], max(b[3] for b in boxes)]
-        truth.append({'label': label, 'type': kind, 'style': style,
+        truth.append({'label': label, 'text': text, 'type': kind, 'style': style,
+                      'options': option_truth,
                       'label_box': [int(v) for v in label_box], 'answer_box': [int(v) for v in answer]})
     return image, {'width': width, 'height': height, 'seed': seed, 'title': title, 'fields': truth}
 

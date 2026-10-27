@@ -26,8 +26,19 @@ def _contains_text(box, items, ignore=(), min_share=0.3):
     return False
 
 
-def detect_regions(image, text_height):
-    """Detect horizontal lines, table cells and checkboxes on one page image."""
+def _inside_letters(box, items):
+    """True if box sits inside an OCR text box and is much shorter than that text (a letter part)."""
+    height = box[3] - box[1]
+    for item in items:
+        x1, y1, x2, y2 = item['box']
+        if x1 <= box[0] and box[2] <= x2 and y1 <= box[1] and box[3] <= y2 and height < 0.8 * (y2 - y1):
+            return True
+    return False
+
+
+def detect_regions(image, text_height, items=()):
+    """Detect horizontal lines, table cells, write-in boxes and checkboxes on one page image.
+    items = OCR items on this page (used to reject parts of letters that look like boxes)."""
     gray = image if image.ndim == 2 else cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV,
                                    max(15, int(text_height) | 1), 15)
@@ -73,20 +84,19 @@ def detect_regions(image, text_height):
             if inner.size and inner.mean() / 255 < 0.05:
                 boxes.append([x, y, x + w, y + h])
             continue
-        if not (0.5 * text_height <= w <= 2.0 * text_height and 0.8 <= w / max(1, h) <= 1.25):
+        if not (0.6 * text_height <= w <= 2.0 * text_height and 0.8 <= w / max(1, h) <= 1.25):
             continue
         approx = cv2.approxPolyDP(contour, 0.08 * cv2.arcLength(contour, True), True)
         if len(approx) != 4 or not cv2.isContourConvex(approx):
             continue
         inside = binary[y + h // 4: y + 3 * h // 4, x + w // 4: x + 3 * w // 4]
-        # A box has ink in all four corners; letters like O, D, 0 do not.
-        corner = max(2, min(w, h) // 6)
-        corners = [binary[y:y + corner, x:x + corner], binary[y:y + corner, x + w - corner:x + w],
-                   binary[y + h - corner:y + h, x:x + corner],
-                   binary[y + h - corner:y + h, x + w - corner:x + w]]
-        if not all(patch.size and patch.max() > 0 for patch in corners):
+        # A box has four straight inked sides; letters like o, e, B, D, P do not.
+        band = max(2, min(w, h) // 8)
+        sides = [binary[y:y + band, x:x + w].max(axis=0), binary[y + h - band:y + h, x:x + w].max(axis=0),
+                 binary[y:y + h, x:x + band].max(axis=1), binary[y:y + h, x + w - band:x + w].max(axis=1)]
+        if not all(side.size and (side > 0).mean() >= 0.85 for side in sides):
             continue
-        if inside.size and inside.mean() / 255 < 0.25:  # mostly empty inside
+        if inside.size and inside.mean() / 255 < 0.25 and not _inside_letters([x, y, x + w, y + h], items):
             checkboxes.append([x, y, x + w, y + h])
     return {'lines': lines, 'cells': cells, 'checkboxes': _dedupe(checkboxes),
             'boxes': _dedupe(boxes)}

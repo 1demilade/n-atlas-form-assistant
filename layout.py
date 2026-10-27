@@ -88,7 +88,7 @@ def _finish(candidates, items, pages, answers):
     for page in {c['page'] for c in candidates}:
         page_items = [item for item in items if item['page'] == page]
         heights[page] = median_text_height(page_items)
-        regions[page] = detect_regions(pages[page - 1], heights[page])
+        regions[page] = detect_regions(pages[page - 1], heights[page], page_items)
     # Text at or just right of a checkbox is an option of another field, not a label.
     candidates = [c for c in candidates
                   if not next_to_checkbox(c['label_box'], regions[c['page']]['checkboxes'],
