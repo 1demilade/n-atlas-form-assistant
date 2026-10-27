@@ -30,12 +30,18 @@ def clean_items(raw):
             ys = [point[1] for point in box]
             box = [min(xs), min(ys), max(xs), max(ys)]
 
-        items.append({
+        cleaned = {
             'text': str(text).strip(),
             'box': [int(value) for value in box],
             'score': float(score),
             'page': int(page),
-        })
+        }
+        # Keep where the text came from and exact word boxes (PDF text layer), if present.
+        if isinstance(item, dict):
+            for key in ('source', 'words'):
+                if key in item:
+                    cleaned[key] = item[key]
+        items.append(cleaned)
     return items
 
 

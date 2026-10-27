@@ -164,33 +164,46 @@ def prepare_pages(input_path, clean=True):
     return list(_prepare_pages_cached(str(path.resolve()), path.stat().st_mtime, clean))
 
 
-def read_form(image_path, clean=True):
-    """Run OCR on an image or PDF; return [{'text', 'box', 'score', 'page'}] (page is 1-based).
-
-    Boxes are [left, top, right, bottom] in pixels of the page image from prepare_pages().
-    """
-    ocr = get_ocr()
+def ocr_image(image, page_number):
+    """PaddleOCR on one BGR image -> Shape 1 items with source 'ocr' (boxes in image pixels)."""
     items = []
-    for page_number, page in enumerate(prepare_pages(image_path, clean), start=1):
-        for result in ocr.predict(page):
-            texts = result.get('rec_texts', [])
-            scores = result.get('rec_scores', [])
-            boxes = result.get('rec_boxes', [])
-            if not (len(texts) == len(scores) == len(boxes)):
-                raise ValueError(
-                    f'OCR returned mismatched text, score, and box data on page {page_number}.')
-            for text, score, box in zip(texts, scores, boxes):
-                if not str(text).strip():
-                    continue
-                items.append({
-                    'text': str(text).strip(),
-                    'box': [int(value) for value in box],
-                    'score': float(score),
-                    'page': page_number,
-                })
+    for result in get_ocr().predict(image):
+        texts = result.get('rec_texts', [])
+        scores = result.get('rec_scores', [])
+        boxes = result.get('rec_boxes', [])
+        if not (len(texts) == len(scores) == len(boxes)):
+            raise ValueError(
+                f'OCR returned mismatched text, score, and box data on page {page_number}.')
+        for text, score, box in zip(texts, scores, boxes):
+            if not str(text).strip():
+                continue
+            items.append({
+                'text': str(text).strip(),
+                'box': [int(value) for value in box],
+                'score': float(score),
+                'page': page_number,
+                'source': 'ocr',
+            })
+    return items
+
+
+def read_form(image_path, clean=True):
+    """Words with boxes for an image or PDF: [{'text', 'box', 'score', 'page', 'source'}].
+
+    Boxes are [left, top, right, bottom] in pixels of the page image from prepare_pages()
+    (for PDFs: the PDF_DPI render). PDFs use the text layer where a page has real text
+    (source 'pdf_text', see pdf_input.py) and OCR otherwise; images always use OCR.
+    """
+    if Path(image_path).suffix.lower() in PDF_SUFFIXES:
+        from pdf_input import read_pdf_words
+        items = read_pdf_words(image_path)
+    else:
+        items = []
+        for page_number, page in enumerate(prepare_pages(image_path, clean), start=1):
+            items.extend(ocr_image(page, page_number))
 
     if not items:
-        raise ValueError(f'OCR did not recognize any text in {image_path}.')
+        raise ValueError(f'No text was found in {image_path} (text layer or OCR).')
     return items
 
 

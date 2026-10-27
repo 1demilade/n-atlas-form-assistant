@@ -64,9 +64,15 @@ def reading_order(items):
 
 
 def split_into_words(ocr_items):
-    """Split each OCR line into words; give each word its share of the line box by characters."""
+    """Split each OCR line into words; give each word its share of the line box by characters.
+    Items that already carry exact word boxes ('words', from a PDF text layer) use those."""
     words = []
     for line_index, item in enumerate(ocr_items):
+        if item.get('words'):
+            for word in item['words']:
+                words.append({'text': word['text'], 'box': list(word['box']), 'line': line_index,
+                              'score': item.get('score', 1.0)})
+            continue
         text = item['text']
         x1, y1, x2, y2 = item['box']
         width = max(1, x2 - x1)

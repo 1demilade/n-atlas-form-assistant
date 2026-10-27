@@ -128,7 +128,8 @@ class FullPipelineSlow(unittest.TestCase):
             page = prepare_pages(str(path))[0]
             height, width = page.shape[:2]
             for item in items:
-                self.assertEqual(set(item), {'text', 'box', 'score', 'page'})
+                self.assertEqual(set(item), {'text', 'box', 'score', 'page', 'source'})
+                self.assertEqual(item['source'], 'ocr')
                 self.assertTrue(item['box'][2] <= width and item['box'][3] <= height)
             fields = find_fields(items, str(path), method='layoutlm')
             check_shape2(self, fields, width, height)

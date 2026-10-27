@@ -15,7 +15,9 @@ def test_read_form_returns_list(path):
     assert isinstance(items, list)
     assert items
     for item in items:
-        assert set(item) == {'text', 'box', 'score', 'page'}, item
+        # 'words' (exact word boxes) is only present on PDF text-layer items.
+        assert set(item) - {'words'} == {'text', 'box', 'score', 'page', 'source'}, item
+        assert item['source'] in ('pdf_text', 'ocr'), item
         assert isinstance(item['box'], list) and len(item['box']) == 4
         height, width = pages[item['page'] - 1].shape[:2]
         x1, y1, x2, y2 = item['box']
