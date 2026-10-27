@@ -1,0 +1,178 @@
+{
+  "width": 1400,
+  "height": 1000,
+  "seed": 3,
+  "title": "ENROLMENT FORM",
+  "fields": [
+    {
+      "label": "Home address",
+      "type": "text",
+      "style": "line",
+      "label_box": [
+        100,
+        164,
+        247,
+        180
+      ],
+      "answer_box": [
+        269,
+        157,
+        678,
+        187
+      ]
+    },
+    {
+      "label": "Blood group",
+      "type": "unknown",
+      "style": "box",
+      "label_box": [
+        700,
+        164,
+        823,
+        184
+      ],
+      "answer_box": [
+        845,
+        153,
+        1109,
+        195
+      ]
+    },
+    {
+      "label": "Employer",
+      "type": "unknown",
+      "style": "line",
+      "label_box": [
+        100,
+        234,
+        198,
+        254
+      ],
+      "answer_box": [
+        220,
+        227,
+        678,
+        261
+      ]
+    },
+    {
+      "label": "Date of visit",
+      "type": "date",
+      "style": "box",
+      "label_box": [
+        700,
+        234,
+        820,
+        250
+      ],
+      "answer_box": [
+        842,
+        223,
+        1106,
+        261
+      ]
+    },
+    {
+      "label": "Do you smoke?",
+      "type": "yes_no",
+      "style": "yesno",
+      "label_box": [
+        100,
+        304,
+        251,
+        324
+      ],
+      "answer_box": [
+        273,
+        304,
+        406,
+        326
+      ]
+    },
+    {
+      "label": "Telephone",
+      "type": "phone",
+      "style": "line",
+      "label_box": [
+        700,
+        304,
+        808,
+        324
+      ],
+      "answer_box": [
+        830,
+        297,
+        1278,
+        331
+      ]
+    },
+    {
+      "label": "Town",
+      "type": "text",
+      "style": "line",
+      "label_box": [
+        100,
+        374,
+        159,
+        390
+      ],
+      "answer_box": [
+        181,
+        367,
+        678,
+        397
+      ]
+    },
+    {
+      "label": "Email address",
+      "type": "email",
+      "style": "line",
+      "label_box": [
+        700,
+        374,
+        844,
+        390
+      ],
+      "answer_box": [
+        866,
+        367,
+        1278,
+        397
+      ]
+    },
+    {
+      "label": "Patient name",
+      "type": "text",
+      "style": "line",
+      "label_box": [
+        100,
+        444,
+        234,
+        460
+      ],
+      "answer_box": [
+        256,
+        437,
+        678,
+        467
+      ]
+    },
+    {
+      "label": "Preferred contact",
+      "type": "choice",
+      "style": "choice:Email|SMS|Call",
+      "label_box": [
+        700,
+        444,
+        872,
+        460
+      ],
+      "answer_box": [
+        894,
+        444,
+        1167,
+        466
+      ]
+    }
+  ]
+}

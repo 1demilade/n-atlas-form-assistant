@@ -32,9 +32,9 @@ def get_ocr():
 
 def render_pdf(path, dpi=PDF_DPI):
     """Render every PDF page to a BGR image with PyMuPDF."""
-    import fitz
+    import pymupdf
     pages = []
-    with fitz.open(str(path)) as document:
+    with pymupdf.open(str(path)) as document:
         for page in document:
             pixmap = page.get_pixmap(dpi=dpi, alpha=False)
             image = np.frombuffer(pixmap.samples, dtype=np.uint8)
