@@ -1,4 +1,5 @@
 """LayoutLM (FUNSD) token classification over OCR words -> question/answer/header entities."""
+import os
 import re
 
 import numpy as np
@@ -21,6 +22,11 @@ def load_model():
     """Load model and tokenizer once; use GPU only if torch can see one."""
     global _MODEL, _TOKENIZER, _DEVICE
     if _MODEL is None:
+        if LOCAL_FILES_ONLY:
+            # local_files_only alone still lets transformers query huggingface.co/api/models/...
+            # (seen with transformers 5.21); offline mode blocks every Hub request.
+            os.environ['HF_HUB_OFFLINE'] = '1'
+            os.environ['TRANSFORMERS_OFFLINE'] = '1'
         import torch
         from transformers import AutoTokenizer, LayoutLMForTokenClassification
         _DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
