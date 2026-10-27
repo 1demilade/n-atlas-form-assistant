@@ -1,0 +1,739 @@
+[
+  {
+    "text": "APPLICATION TO REGISTER BUSINESS NAME",
+    "score": 0.9974612593650818,
+    "box": [
+      250,
+      191,
+      959,
+      218
+    ],
+    "page": 1
+  },
+  {
+    "text": "CAC",
+    "score": 0.9999973177909851,
+    "box": [
+      587,
+      299,
+      646,
+      324
+    ],
+    "page": 1
+  },
+  {
+    "text": "Proposed Business Name Please type your proposed name as provided in option 1 to 3 below.",
+    "score": 0.9933011531829834,
+    "box": [
+      93,
+      389,
+      1043,
+      425
+    ],
+    "page": 1
+  },
+  {
+    "text": "Option 1",
+    "score": 0.9593536853790283,
+    "box": [
+      94,
+      434,
+      199,
+      469
+    ],
+    "page": 1
+  },
+  {
+    "text": "Option 2",
+    "score": 0.9998921155929565,
+    "box": [
+      95,
+      474,
+      199,
+      506
+    ],
+    "page": 1
+  },
+  {
+    "text": "Option 3",
+    "score": 0.9996545314788818,
+    "box": [
+      93,
+      508,
+      200,
+      547
+    ],
+    "page": 1
+  },
+  {
+    "text": "Date of commencement of",
+    "score": 0.9884764552116394,
+    "box": [
+      96,
+      552,
+      398,
+      576
+    ],
+    "page": 1
+  },
+  {
+    "text": "business",
+    "score": 0.9999973773956299,
+    "box": [
+      92,
+      579,
+      196,
+      613
+    ],
+    "page": 1
+  },
+  {
+    "text": "General Nature of business",
+    "score": 0.9999409914016724,
+    "box": [
+      97,
+      617,
+      404,
+      644
+    ],
+    "page": 1
+  },
+  {
+    "text": "Please give a brief description of the business activities",
+    "score": 0.989505410194397,
+    "box": [
+      476,
+      656,
+      1093,
+      683
+    ],
+    "page": 1
+  },
+  {
+    "text": "below:",
+    "score": 0.9999787211418152,
+    "box": [
+      473,
+      685,
+      557,
+      716
+    ],
+    "page": 1
+  },
+  {
+    "text": "General Nature of Business",
+    "score": 0.9999209046363831,
+    "box": [
+      97,
+      721,
+      404,
+      747
+    ],
+    "page": 1
+  },
+  {
+    "text": "Address of Principal Place of Business",
+    "score": 0.999718427658081,
+    "box": [
+      96,
+      876,
+      533,
+      903
+    ],
+    "page": 1
+  },
+  {
+    "text": "Please give the address of principal place of business",
+    "score": 0.9999694228172302,
+    "box": [
+      477,
+      915,
+      1068,
+      942
+    ],
+    "page": 1
+  },
+  {
+    "text": "Address",
+    "score": 0.9999892115592957,
+    "box": [
+      96,
+      952,
+      191,
+      981
+    ],
+    "page": 1
+  },
+  {
+    "text": "You must ensure",
+    "score": 0.9999886751174927,
+    "box": [
+      909,
+      952,
+      1097,
+      981
+    ],
+    "page": 1
+  },
+  {
+    "text": "that the address",
+    "score": 0.9999952912330627,
+    "box": [
+      907,
+      982,
+      1086,
+      1012
+    ],
+    "page": 1
+  },
+  {
+    "text": "City/Town/Village",
+    "score": 0.9999903440475464,
+    "box": [
+      96,
+      1003,
+      308,
+      1036
+    ],
+    "page": 1
+  },
+  {
+    "text": "shown in this",
+    "score": 0.9999969005584717,
+    "box": [
+      908,
+      1016,
+      1061,
+      1044
+    ],
+    "page": 1
+  },
+  {
+    "text": "section is easily",
+    "score": 0.979210376739502,
+    "box": [
+      906,
+      1046,
+      1088,
+      1079
+    ],
+    "page": 1
+  },
+  {
+    "text": "traceable.",
+    "score": 0.9999971389770508,
+    "box": [
+      907,
+      1081,
+      1018,
+      1109
+    ],
+    "page": 1
+  },
+  {
+    "text": "Local Government",
+    "score": 0.9996809959411621,
+    "box": [
+      96,
+      1116,
+      307,
+      1140
+    ],
+    "page": 1
+  },
+  {
+    "text": "State",
+    "score": 0.9999879002571106,
+    "box": [
+      93,
+      1164,
+      158,
+      1197
+    ],
+    "page": 1
+  },
+  {
+    "text": "Address of Branch (if any)",
+    "score": 0.9998400211334229,
+    "box": [
+      94,
+      1216,
+      404,
+      1250
+    ],
+    "page": 1
+  },
+  {
+    "text": "Address",
+    "score": 0.9999892115592957,
+    "box": [
+      96,
+      1272,
+      191,
+      1301
+    ],
+    "page": 1
+  },
+  {
+    "text": "City/Town/Village",
+    "score": 0.9999903440475464,
+    "box": [
+      96,
+      1323,
+      307,
+      1356
+    ],
+    "page": 1
+  },
+  {
+    "text": "Local Government",
+    "score": 0.9953891038894653,
+    "box": [
+      94,
+      1376,
+      309,
+      1405
+    ],
+    "page": 1
+  },
+  {
+    "text": "State",
+    "score": 0.9999810457229614,
+    "box": [
+      91,
+      1426,
+      157,
+      1463
+    ],
+    "page": 1
+  },
+  {
+    "text": "Proprietor's details",
+    "score": 0.9999359250068665,
+    "box": [
+      95,
+      1482,
+      330,
+      1512
+    ],
+    "page": 1
+  },
+  {
+    "text": "Surname",
+    "score": 0.9999929070472717,
+    "box": [
+      93,
+      141,
+      198,
+      171
+    ],
+    "page": 2
+  },
+  {
+    "text": "First name",
+    "score": 0.9999961853027344,
+    "box": [
+      92,
+      195,
+      217,
+      225
+    ],
+    "page": 2
+  },
+  {
+    "text": "Other name(s)",
+    "score": 0.999989926815033,
+    "box": [
+      93,
+      246,
+      258,
+      279
+    ],
+    "page": 2
+  },
+  {
+    "text": "Former name(s)",
+    "score": 0.9999937415122986,
+    "box": [
+      95,
+      302,
+      276,
+      330
+    ],
+    "page": 2
+  },
+  {
+    "text": "Nationality",
+    "score": 0.9999977350234985,
+    "box": [
+      93,
+      353,
+      222,
+      384
+    ],
+    "page": 2
+  },
+  {
+    "text": "Former nationality",
+    "score": 0.9999960660934448,
+    "box": [
+      95,
+      407,
+      303,
+      434
+    ],
+    "page": 2
+  },
+  {
+    "text": "Gender",
+    "score": 0.9999913573265076,
+    "box": [
+      95,
+      459,
+      182,
+      488
+    ],
+    "page": 2
+  },
+  {
+    "text": "Date of birth",
+    "score": 0.9998880624771118,
+    "box": [
+      96,
+      513,
+      240,
+      536
+    ],
+    "page": 2
+  },
+  {
+    "text": "Phone number",
+    "score": 0.9999969005584717,
+    "box": [
+      95,
+      564,
+      261,
+      591
+    ],
+    "page": 2
+  },
+  {
+    "text": "Recent Passport Photograph",
+    "score": 0.9999620914459229,
+    "box": [
+      763,
+      565,
+      1105,
+      593
+    ],
+    "page": 2
+  },
+  {
+    "text": "Email",
+    "score": 0.9999502301216125,
+    "box": [
+      92,
+      614,
+      168,
+      647
+    ],
+    "page": 2
+  },
+  {
+    "text": "Identity Number",
+    "score": 0.9999138116836548,
+    "box": [
+      95,
+      669,
+      282,
+      696
+    ],
+    "page": 2
+  },
+  {
+    "text": "NIN",
+    "score": 0.9991890788078308,
+    "box": [
+      92,
+      720,
+      151,
+      751
+    ],
+    "page": 2
+  },
+  {
+    "text": "Identity Type",
+    "score": 0.9997663497924805,
+    "box": [
+      92,
+      773,
+      249,
+      806
+    ],
+    "page": 2
+  },
+  {
+    "text": "Occupation",
+    "score": 0.9999933242797852,
+    "box": [
+      93,
+      824,
+      227,
+      859
+    ],
+    "page": 2
+  },
+  {
+    "text": "Proprietor's Address",
+    "score": 0.9998976588249207,
+    "box": [
+      96,
+      881,
+      353,
+      908
+    ],
+    "page": 2
+  },
+  {
+    "text": "Address",
+    "score": 0.9999828934669495,
+    "box": [
+      95,
+      932,
+      190,
+      961
+    ],
+    "page": 2
+  },
+  {
+    "text": "City/Town/Village",
+    "score": 0.9999909996986389,
+    "box": [
+      97,
+      987,
+      306,
+      1014
+    ],
+    "page": 2
+  },
+  {
+    "text": "Local Government",
+    "score": 0.9997156858444214,
+    "box": [
+      94,
+      1036,
+      307,
+      1063
+    ],
+    "page": 2
+  },
+  {
+    "text": "State",
+    "score": 0.9999856948852539,
+    "box": [
+      92,
+      1088,
+      157,
+      1121
+    ],
+    "page": 2
+  },
+  {
+    "text": "Signature",
+    "score": 0.9999972581863403,
+    "box": [
+      95,
+      1143,
+      218,
+      1173
+    ],
+    "page": 2
+  },
+  {
+    "text": "Attestation :",
+    "score": 0.9935155510902405,
+    "box": [
+      625,
+      1144,
+      718,
+      1160
+    ],
+    "page": 2
+  },
+  {
+    "text": "I/We, the undersigned, being proprietor(s) of the above named",
+    "score": 0.9959062337875366,
+    "box": [
+      625,
+      1161,
+      1084,
+      1178
+    ],
+    "page": 2
+  },
+  {
+    "text": "business name hereby certify that the foregoing particulars",
+    "score": 0.9999076724052429,
+    "box": [
+      624,
+      1178,
+      1064,
+      1195
+    ],
+    "page": 2
+  },
+  {
+    "text": "are, to the best of my/our knowledge and belief, correct and I/we",
+    "score": 0.9911744594573975,
+    "box": [
+      624,
+      1193,
+      1103,
+      1210
+    ],
+    "page": 2
+  },
+  {
+    "text": "undertake to notify the Registrar of Business Names",
+    "score": 0.9998448491096497,
+    "box": [
+      625,
+      1210,
+      1013,
+      1224
+    ],
+    "page": 2
+  },
+  {
+    "text": "whenever any change is made or occurs in any of them other than",
+    "score": 0.9989951848983765,
+    "box": [
+      623,
+      1224,
+      1111,
+      1245
+    ],
+    "page": 2
+  },
+  {
+    "text": "the age of any of the proprietors.",
+    "score": 0.990837574005127,
+    "box": [
+      625,
+      1245,
+      866,
+      1265
+    ],
+    "page": 2
+  },
+  {
+    "text": "Date",
+    "score": 0.9999956488609314,
+    "box": [
+      92,
+      1276,
+      152,
+      1306
+    ],
+    "page": 2
+  },
+  {
+    "text": "Note:",
+    "score": 0.999987006187439,
+    "box": [
+      93,
+      1355,
+      150,
+      1380
+    ],
+    "page": 2
+  },
+  {
+    "text": "1.",
+    "score": 0.9999335408210754,
+    "box": [
+      93,
+      1383,
+      114,
+      1408
+    ],
+    "page": 2
+  },
+  {
+    "text": "Fill and sign this application form.",
+    "score": 0.9999898076057434,
+    "box": [
+      167,
+      1384,
+      476,
+      1407
+    ],
+    "page": 2
+  },
+  {
+    "text": "2.",
+    "score": 0.9999889135360718,
+    "box": [
+      93,
+      1409,
+      116,
+      1435
+    ],
+    "page": 2
+  },
+  {
+    "text": "Upload recent passport photograph and Signature",
+    "score": 0.9999774098396301,
+    "box": [
+      167,
+      1412,
+      628,
+      1435
+    ],
+    "page": 2
+  },
+  {
+    "text": "3.",
+    "score": 0.9999955296516418,
+    "box": [
+      94,
+      1435,
+      116,
+      1460
+    ],
+    "page": 2
+  },
+  {
+    "text": "Scan the completed form in PDF format together with a scanned copy of a recognized means of",
+    "score": 0.9988978505134583,
+    "box": [
+      167,
+      1437,
+      1041,
+      1459
+    ],
+    "page": 2
+  },
+  {
+    "text": "identification (either Data Page of International Passport, Driver's license, National Identity Card or",
+    "score": 0.9968500733375549,
+    "box": [
+      165,
+      1460,
+      1067,
+      1484
+    ],
+    "page": 2
+  },
+  {
+    "text": "Voter's Card) and send via email to quickservice@cac.gov.ng",
+    "score": 0.9999556541442871,
+    "box": [
+      165,
+      1486,
+      718,
+      1512
+    ],
+    "page": 2
+  }
+]

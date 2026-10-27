@@ -1,0 +1,758 @@
+{
+  "fields": [
+    {
+      "id": "option_1",
+      "label": "Proposed business name (option 1)",
+      "source_label": "Option 1",
+      "type": "text",
+      "expected_input": "Enter your first-choice business name.",
+      "section": "business_names",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        94,
+        434,
+        199,
+        469
+      ],
+      "answer_box": [
+        209,
+        434,
+        1107,
+        469
+      ]
+    },
+    {
+      "id": "option_2",
+      "label": "Proposed business name (option 2)",
+      "source_label": "Option 2",
+      "type": "text",
+      "expected_input": "Enter your second-choice business name.",
+      "section": "business_names",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        95,
+        474,
+        199,
+        506
+      ],
+      "answer_box": [
+        209,
+        474,
+        1107,
+        506
+      ]
+    },
+    {
+      "id": "option_3",
+      "label": "Proposed business name (option 3)",
+      "source_label": "Option 3",
+      "type": "text",
+      "expected_input": "Enter your third-choice business name.",
+      "section": "business_names",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        93,
+        508,
+        200,
+        547
+      ],
+      "answer_box": [
+        210,
+        508,
+        1107,
+        547
+      ]
+    },
+    {
+      "id": "commencement_date",
+      "label": "Date of commencement of business",
+      "source_label": "Date of commencement of business",
+      "type": "date",
+      "expected_input": "Enter the date the business commenced.",
+      "section": "business",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        92,
+        552,
+        398,
+        613
+      ],
+      "answer_box": [
+        408,
+        552,
+        1107,
+        613
+      ]
+    },
+    {
+      "id": "business_nature",
+      "label": "General nature of business",
+      "source_label": "General Nature of Business",
+      "type": "multiline_text",
+      "expected_input": "Briefly describe the business activities.",
+      "section": "business",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        97,
+        721,
+        404,
+        747
+      ],
+      "answer_box": [
+        414,
+        721,
+        1107,
+        747
+      ]
+    },
+    {
+      "id": "principal_address",
+      "label": "Principal place of business - address",
+      "source_label": "Address You must ensure",
+      "type": "text",
+      "expected_input": "Enter the street/building address.",
+      "section": "principal_address",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        96,
+        952,
+        191,
+        981
+      ],
+      "answer_box": [
+        201,
+        952,
+        1107,
+        981
+      ]
+    },
+    {
+      "id": "principal_city",
+      "label": "Principal place of business - city/town/village",
+      "source_label": "City/Town/Village shown in this",
+      "type": "text",
+      "expected_input": "Enter the city, town, or village.",
+      "section": "principal_address",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        96,
+        1003,
+        308,
+        1036
+      ],
+      "answer_box": [
+        318,
+        1003,
+        1107,
+        1036
+      ]
+    },
+    {
+      "id": "principal_lga",
+      "label": "Principal place of business - local government",
+      "source_label": "Local Government",
+      "type": "text",
+      "expected_input": "Enter the local government area.",
+      "section": "principal_address",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        96,
+        1116,
+        307,
+        1140
+      ],
+      "answer_box": [
+        317,
+        1116,
+        1107,
+        1140
+      ]
+    },
+    {
+      "id": "principal_state",
+      "label": "Principal place of business - state",
+      "source_label": "State",
+      "type": "text",
+      "expected_input": "Enter the state.",
+      "section": "principal_address",
+      "required": null,
+      "page": 1,
+      "label_box": [
+        93,
+        1164,
+        158,
+        1197
+      ],
+      "answer_box": [
+        168,
+        1164,
+        1107,
+        1197
+      ]
+    },
+    {
+      "id": "branch_address",
+      "label": "Branch address",
+      "source_label": "Address",
+      "type": "text",
+      "expected_input": "Enter the branch street/building address, if applicable.",
+      "section": "branch_address",
+      "required": false,
+      "page": 1,
+      "label_box": [
+        96,
+        1272,
+        191,
+        1301
+      ],
+      "answer_box": [
+        201,
+        1272,
+        1107,
+        1301
+      ]
+    },
+    {
+      "id": "branch_city",
+      "label": "Branch city/town/village",
+      "source_label": "City/Town/Village",
+      "type": "text",
+      "expected_input": "Enter the branch city, town, or village, if applicable.",
+      "section": "branch_address",
+      "required": false,
+      "page": 1,
+      "label_box": [
+        96,
+        1323,
+        307,
+        1356
+      ],
+      "answer_box": [
+        317,
+        1323,
+        1107,
+        1356
+      ]
+    },
+    {
+      "id": "branch_lga",
+      "label": "Branch local government",
+      "source_label": "Local Government",
+      "type": "text",
+      "expected_input": "Enter the branch local government area, if applicable.",
+      "section": "branch_address",
+      "required": false,
+      "page": 1,
+      "label_box": [
+        94,
+        1376,
+        309,
+        1405
+      ],
+      "answer_box": [
+        319,
+        1376,
+        1107,
+        1405
+      ]
+    },
+    {
+      "id": "branch_state",
+      "label": "Branch state",
+      "source_label": "State",
+      "type": "text",
+      "expected_input": "Enter the branch state, if applicable.",
+      "section": "branch_address",
+      "required": false,
+      "page": 1,
+      "label_box": [
+        91,
+        1426,
+        157,
+        1463
+      ],
+      "answer_box": [
+        167,
+        1426,
+        1107,
+        1463
+      ]
+    },
+    {
+      "id": "surname",
+      "label": "Surname",
+      "source_label": "Surname",
+      "type": "text",
+      "expected_input": "Enter the proprietor surname.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        93,
+        141,
+        198,
+        171
+      ],
+      "answer_box": [
+        208,
+        141,
+        1121,
+        171
+      ]
+    },
+    {
+      "id": "first_name",
+      "label": "First name",
+      "source_label": "First name",
+      "type": "text",
+      "expected_input": "Enter the proprietor first name.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        92,
+        195,
+        217,
+        225
+      ],
+      "answer_box": [
+        227,
+        195,
+        1121,
+        225
+      ]
+    },
+    {
+      "id": "other_names",
+      "label": "Other name(s)",
+      "source_label": "Other name(s)",
+      "type": "text",
+      "expected_input": "Enter other names, if any.",
+      "section": "proprietor",
+      "required": false,
+      "page": 2,
+      "label_box": [
+        93,
+        246,
+        258,
+        279
+      ],
+      "answer_box": [
+        268,
+        246,
+        1121,
+        279
+      ]
+    },
+    {
+      "id": "former_names",
+      "label": "Former name(s)",
+      "source_label": "Former name(s)",
+      "type": "text",
+      "expected_input": "Enter former names, if any.",
+      "section": "proprietor",
+      "required": false,
+      "page": 2,
+      "label_box": [
+        95,
+        302,
+        276,
+        330
+      ],
+      "answer_box": [
+        286,
+        302,
+        1121,
+        330
+      ]
+    },
+    {
+      "id": "nationality",
+      "label": "Nationality",
+      "source_label": "Nationality",
+      "type": "text",
+      "expected_input": "Enter the proprietor nationality.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        93,
+        353,
+        222,
+        384
+      ],
+      "answer_box": [
+        232,
+        353,
+        1121,
+        384
+      ]
+    },
+    {
+      "id": "former_nationality",
+      "label": "Former nationality",
+      "source_label": "Former nationality",
+      "type": "text",
+      "expected_input": "Enter former nationality, if applicable.",
+      "section": "proprietor",
+      "required": false,
+      "page": 2,
+      "label_box": [
+        95,
+        407,
+        303,
+        434
+      ],
+      "answer_box": [
+        313,
+        407,
+        1121,
+        434
+      ]
+    },
+    {
+      "id": "gender",
+      "label": "Gender",
+      "source_label": "Gender",
+      "type": "text",
+      "expected_input": "Enter the proprietor gender as requested by the form.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        95,
+        459,
+        182,
+        488
+      ],
+      "answer_box": [
+        192,
+        459,
+        1121,
+        488
+      ]
+    },
+    {
+      "id": "date_of_birth",
+      "label": "Date of birth",
+      "source_label": "Date of birth",
+      "type": "date",
+      "expected_input": "Enter the date of birth.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        96,
+        513,
+        240,
+        536
+      ],
+      "answer_box": [
+        250,
+        513,
+        1121,
+        536
+      ]
+    },
+    {
+      "id": "phone_number",
+      "label": "Phone number",
+      "source_label": "Phone number Recent Passport Photograph",
+      "type": "phone",
+      "expected_input": "Enter a contact telephone number, including country code if needed.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        95,
+        564,
+        261,
+        591
+      ],
+      "answer_box": [
+        271,
+        564,
+        1121,
+        591
+      ]
+    },
+    {
+      "id": "passport_photo",
+      "label": "Recent passport photograph",
+      "source_label": "Phone number Recent Passport Photograph",
+      "type": "file",
+      "expected_input": "Upload a recent passport photograph (image file).",
+      "section": "proprietor",
+      "required": true,
+      "page": 2,
+      "label_box": [
+        763,
+        565,
+        1105,
+        593
+      ],
+      "answer_box": [
+        1115,
+        565,
+        1121,
+        593
+      ]
+    },
+    {
+      "id": "email",
+      "label": "Email",
+      "source_label": "Email",
+      "type": "email",
+      "expected_input": "Enter a valid email address.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        92,
+        614,
+        168,
+        647
+      ],
+      "answer_box": [
+        178,
+        614,
+        1121,
+        647
+      ]
+    },
+    {
+      "id": "identity_number",
+      "label": "Identity number",
+      "source_label": "Identity Number",
+      "type": "text",
+      "expected_input": "Enter the number shown on the selected identity document.",
+      "section": "identity",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        95,
+        669,
+        282,
+        696
+      ],
+      "answer_box": [
+        292,
+        669,
+        1121,
+        696
+      ]
+    },
+    {
+      "id": "nin",
+      "label": "NIN",
+      "source_label": "NIN",
+      "type": "text",
+      "expected_input": "Enter the 11-digit National Identification Number.",
+      "section": "identity",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        92,
+        720,
+        151,
+        751
+      ],
+      "answer_box": [
+        161,
+        720,
+        1121,
+        751
+      ]
+    },
+    {
+      "id": "identity_type",
+      "label": "Identity type",
+      "source_label": "Identity Type",
+      "type": "choice",
+      "expected_input": "Choose one: International Passport, Driver's License, National Identity Card, or Voter's Card.",
+      "section": "identity",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        92,
+        773,
+        249,
+        806
+      ],
+      "answer_box": [
+        259,
+        773,
+        1121,
+        806
+      ]
+    },
+    {
+      "id": "occupation",
+      "label": "Occupation",
+      "source_label": "Occupation",
+      "type": "text",
+      "expected_input": "Enter the proprietor occupation.",
+      "section": "proprietor",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        93,
+        824,
+        227,
+        859
+      ],
+      "answer_box": [
+        237,
+        824,
+        1121,
+        859
+      ]
+    },
+    {
+      "id": "proprietor_address",
+      "label": "Proprietor address - address",
+      "source_label": "Address",
+      "type": "text",
+      "expected_input": "Enter the proprietor residential street/building address.",
+      "section": "proprietor_address",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        95,
+        932,
+        190,
+        961
+      ],
+      "answer_box": [
+        200,
+        932,
+        1121,
+        961
+      ]
+    },
+    {
+      "id": "proprietor_city",
+      "label": "Proprietor address - city/town/village",
+      "source_label": "City/Town/Village",
+      "type": "text",
+      "expected_input": "Enter the proprietor city, town, or village.",
+      "section": "proprietor_address",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        97,
+        987,
+        306,
+        1014
+      ],
+      "answer_box": [
+        316,
+        987,
+        1121,
+        1014
+      ]
+    },
+    {
+      "id": "proprietor_lga",
+      "label": "Proprietor address - local government",
+      "source_label": "Local Government",
+      "type": "text",
+      "expected_input": "Enter the proprietor local government area.",
+      "section": "proprietor_address",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        94,
+        1036,
+        307,
+        1063
+      ],
+      "answer_box": [
+        317,
+        1036,
+        1121,
+        1063
+      ]
+    },
+    {
+      "id": "proprietor_state",
+      "label": "Proprietor address - state",
+      "source_label": "State",
+      "type": "text",
+      "expected_input": "Enter the proprietor state.",
+      "section": "proprietor_address",
+      "required": null,
+      "page": 2,
+      "label_box": [
+        92,
+        1088,
+        157,
+        1121
+      ],
+      "answer_box": [
+        167,
+        1088,
+        1121,
+        1121
+      ]
+    },
+    {
+      "id": "signature",
+      "label": "Signature",
+      "source_label": "Signature Attestation :",
+      "type": "signature",
+      "expected_input": "Sign the completed application.",
+      "section": "attestation",
+      "required": true,
+      "page": 2,
+      "label_box": [
+        95,
+        1143,
+        218,
+        1173
+      ],
+      "answer_box": [
+        228,
+        1143,
+        1121,
+        1173
+      ]
+    },
+    {
+      "id": "attestation_date",
+      "label": "Date",
+      "source_label": "Date",
+      "type": "date",
+      "expected_input": "Enter the date the application is signed.",
+      "section": "attestation",
+      "required": true,
+      "page": 2,
+      "label_box": [
+        92,
+        1276,
+        152,
+        1306
+      ],
+      "answer_box": [
+        162,
+        1276,
+        1121,
+        1306
+      ]
+    }
+  ],
+  "notes": [
+    "Fill and sign the application form.",
+    "Upload a recent passport photograph and signature.",
+    "Ensure the principal business address is easily traceable.",
+    "Submit the completed form as a PDF with a scanned recognized identity document: International Passport data page, Driver's License, National Identity Card, or Voter's Card. Send it by email to quickservice@cac.gov.ng."
+  ]
+}
