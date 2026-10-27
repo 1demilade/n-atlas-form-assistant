@@ -1,0 +1,366 @@
+"""Fillable PDFs: read every AcroForm field with pypdf and link it to its printed label.
+
+Boxes are converted to pixels of the PDF_DPI render of the page (same space as pdf_input words).
+Label linking uses LayoutLM question entities first; tooltip, nearby text, and the field name are
+fallbacks (flagged needs_review). Nothing here knows any particular form.
+"""
+import re
+
+from field_types import guess_type
+from ocr import prepare_pages
+
+# ---- Config (all distances relative to the page's median text height) ----
+LEFT_MAX = 15        # a label left of a widget may be at most this many text heights away
+ABOVE_MAX = 2.5      # ...or this far above it
+RIGHT_MAX = 3        # checkbox/radio labels and option texts sit right of the box, this close
+ROW_SHARE = 0.3      # vertical overlap (share of the smaller height) to count as the same row
+INSIDE_SHARE = 0.5   # text covered this much by a widget is the widget's value, not a label
+REVIEW_BELOW_CONFIDENCE = 0.6
+FALLBACK_CONFIDENCE = {'tooltip': 0.5, 'nearby_text': 0.4, 'field_name': 0.2}
+
+# Field flags (PDF 32000-1, tables 221, 226, 228, 230); bit n -> 1 << (n - 1).
+FLAG_BITS = {
+    'read_only': 1, 'required': 2, 'no_export': 3,
+    'multiline': 13, 'password': 14, 'no_toggle_to_off': 15, 'radio': 16, 'pushbutton': 17,
+    'combo': 18, 'edit': 19, 'multi_select': 22, 'do_not_spell_check': 23, 'comb': 25,
+}
+ANNOT_HIDDEN = 1 << 1  # annotation flag: widget is not shown
+
+# Format actions written by Acrobat-style forms (AFNumber_Format, AFDate_FormatEx, ...).
+FORMAT_HINTS = [
+    ('date', r'AFDate_|AFTime_'),
+    ('phone', r'AFSpecial_(Format|Keystroke)\(\s*2\s*\)'),
+    ('number', r'AFNumber_|AFPercent_|AFSpecial_(Format|Keystroke)\(\s*[013]\s*\)'),
+]
+TEXT_TYPES_FROM_WORDS = {'number', 'date', 'email', 'phone'}
+
+
+# ---------- reading fields ----------
+
+def _get(node, key):
+    """Field attribute, inherited from parent fields if the widget does not have it."""
+    while node is not None:
+        if key in node:
+            return node[key]
+        parent = node.get('/Parent')
+        node = parent.get_object() if parent is not None else None
+    return None
+
+
+def _full_name(widget):
+    names, node = [], widget
+    while node is not None:
+        if '/T' in node:
+            names.append(str(node['/T']))
+        parent = node.get('/Parent')
+        node = parent.get_object() if parent is not None else None
+    return '.'.join(reversed(names))
+
+
+def _text(value):
+    if value is None:
+        return None
+    if hasattr(value, 'get_object'):
+        value = value.get_object()
+    if hasattr(value, 'get_data'):
+        return value.get_data().decode('latin-1', 'replace')
+    return str(value)
+
+
+def _format_script(widget):
+    actions = _get(widget, '/AA')
+    if actions is None:
+        return ''
+    actions = actions.get_object()
+    scripts = []
+    for key in ('/F', '/K'):  # format and keystroke actions
+        if key in actions:
+            scripts.append(_text(actions[key].get_object().get('/JS')) or '')
+    return ' '.join(scripts)
+
+
+def _options(widget):
+    """(display texts, export values) of a choice field's /Opt."""
+    raw = _get(widget, '/Opt')
+    if raw is None:
+        return [], []
+    displays, exports = [], []
+    for entry in raw.get_object():
+        entry = entry.get_object()
+        if isinstance(entry, list) and len(entry) == 2:
+            exports.append(_text(entry[0]))
+            displays.append(_text(entry[1]))
+        else:
+            exports.append(_text(entry))
+            displays.append(_text(entry))
+    return displays, exports
+
+
+def _export_value(widget):
+    """On-state name of a checkbox/radio widget (the /AP /N key that is not /Off)."""
+    appearance = widget.get('/AP')
+    if appearance is None:
+        return None
+    normal = appearance.get_object().get('/N')
+    if normal is None or not hasattr(normal.get_object(), 'keys'):
+        return None
+    states = [str(k).lstrip('/') for k in normal.get_object().keys() if str(k) != '/Off']
+    return states[0] if states else None
+
+
+def _to_pixels(rect, page, size_px):
+    """PDF rect (points, bottom-left origin, unrotated) -> render pixels (top-left, rotated)."""
+    crop = page.cropbox
+    left, bottom, right, top = float(crop.left), float(crop.bottom), float(crop.right), float(crop.top)
+    width_pt, height_pt = right - left, top - bottom
+    rotation = (page.rotation or 0) % 360
+    points = []
+    for x, y in ((rect[0], rect[1]), (rect[2], rect[3])):
+        u, v = x - left, top - y  # unrotated, top-left origin
+        if rotation == 90:
+            u, v = height_pt - v, u
+        elif rotation == 180:
+            u, v = width_pt - u, height_pt - v
+        elif rotation == 270:
+            u, v = v, width_pt - u
+        points.append((u, v))
+    shown_w, shown_h = (height_pt, width_pt) if rotation in (90, 270) else (width_pt, height_pt)
+    sx, sy = size_px[0] / shown_w, size_px[1] / shown_h
+    xs = [p[0] * sx for p in points]
+    ys = [p[1] * sy for p in points]
+    return [int(round(max(0, min(size_px[0], min(xs))))), int(round(max(0, min(size_px[1], min(ys))))),
+            int(round(max(0, min(size_px[0], max(xs))))), int(round(max(0, min(size_px[1], max(ys)))))]
+
+
+def read_acroform(path):
+    """Every AcroForm field with its widgets. Returns a list of raw field dicts (pixel boxes)."""
+    from pypdf import PdfReader
+    reader = PdfReader(str(path))
+    renders = prepare_pages(path, clean=False)
+    fields = {}
+    for page_number, (page, render) in enumerate(zip(reader.pages, renders), start=1):
+        size_px = (render.shape[1], render.shape[0])
+        for ref in page.get('/Annots') or []:
+            widget = ref.get_object()
+            if widget.get('/Subtype') != '/Widget':
+                continue
+            name = _full_name(widget)
+            if not name:
+                continue
+            flags_value = int(_get(widget, '/Ff') or 0)
+            field = fields.get(name)
+            if field is None:
+                displays, exports = _options(widget)
+                max_length = _get(widget, '/MaxLen')
+                field = fields[name] = {
+                    'name': name,
+                    'pdf_type': str(_get(widget, '/FT') or '').lstrip('/'),
+                    'flags': {flag: bool(flags_value & (1 << (bit - 1))) for flag, bit in FLAG_BITS.items()},
+                    'flags_value': flags_value,
+                    'tooltip': _text(_get(widget, '/TU')),
+                    'max_length': int(max_length) if max_length is not None else None,
+                    'default_value': _text(_get(widget, '/DV')),
+                    'value': _text(_get(widget, '/V')),
+                    'option_texts': displays,
+                    'option_values': exports,
+                    'format_script': _format_script(widget),
+                    'widgets': [],
+                }
+            rect = [float(v) for v in widget['/Rect']]
+            rect = [min(rect[0], rect[2]), min(rect[1], rect[3]), max(rect[0], rect[2]), max(rect[1], rect[3])]
+            field['widgets'].append({
+                'page': page_number,
+                'box': _to_pixels(rect, page, size_px),
+                'rect_pt': [round(v, 2) for v in rect],
+                'export_value': _export_value(widget),
+                'hidden': bool(int(widget.get('/F', 0)) & ANNOT_HIDDEN),
+            })
+    return list(fields.values())
+
+
+# ---------- linking labels ----------
+
+def _overlap(a1, a2, b1, b2):
+    return max(0, min(a2, b2) - max(a1, b1))
+
+
+def _same_row(a, b):
+    return _overlap(a[1], a[3], b[1], b[3]) >= ROW_SHARE * max(1, min(a[3] - a[1], b[3] - b[1]))
+
+
+def _covered(box, other):
+    area = max(1, (box[2] - box[0]) * (box[3] - box[1]))
+    return _overlap(box[0], box[2], other[0], other[2]) * _overlap(box[1], box[3], other[1], other[3]) / area
+
+
+def _union(boxes):
+    return [min(b[0] for b in boxes), min(b[1] for b in boxes),
+            max(b[2] for b in boxes), max(b[3] for b in boxes)]
+
+
+def _nearest(target, candidates, text_height, sides, exclude=()):
+    """Closest candidate (dict with 'box') on the allowed sides of target, or (None, None)."""
+    best, best_distance, best_side = None, None, None
+    for candidate in candidates:
+        box = candidate['box']
+        if any(box == other for other in exclude):
+            continue
+        distance, side = None, None
+        if 'left' in sides and _same_row(box, target) and box[2] <= target[0] + text_height * 0.5:
+            gap = target[0] - box[2]
+            if gap <= LEFT_MAX * text_height:
+                distance, side = max(0, gap), 'left'
+        if distance is None and 'above' in sides and box[3] <= target[1] + text_height * 0.3:
+            gap = target[1] - box[3]
+            horizontal = (_overlap(box[0], box[2], target[0], target[2]) > 0
+                          or abs(box[0] - target[0]) <= 2 * text_height)
+            if gap <= ABOVE_MAX * text_height and horizontal:
+                distance, side = max(0, gap) * 1.5, 'above'  # prefer a label on the same row
+        if distance is None and 'right' in sides and _same_row(box, target) and box[0] >= target[2] - text_height * 0.5:
+            gap = box[0] - target[2]
+            if gap <= RIGHT_MAX * text_height:
+                distance, side = max(0, gap), 'right'
+        if distance is not None and (best_distance is None or distance < best_distance):
+            best, best_distance, best_side = candidate, distance, side
+    return best, best_side
+
+
+def _field_type(raw, label, options):
+    flags, kind = raw['flags'], raw['pdf_type']
+    if kind == 'Tx':
+        for field_type, pattern in FORMAT_HINTS:
+            if re.search(pattern, raw['format_script']):
+                return field_type, 'format_action'
+        words = ' '.join(t for t in (label, raw['tooltip']) if t)
+        guessed = guess_type(words)
+        if guessed in TEXT_TYPES_FROM_WORDS:
+            return guessed, 'label_words'
+        return 'text', 'pdf_field'
+    if kind == 'Btn':
+        if len(options) >= 2:
+            return guess_type('', options, 0) if options else 'choice', 'pdf_field'
+        return 'yes_no', 'pdf_field'
+    if kind == 'Ch':
+        return 'choice', 'pdf_field'
+    return 'unknown', 'pdf_field'  # signature fields and anything else
+
+
+def _humanize(name):
+    last = name.split('.')[-1]
+    last = re.sub(r'\[\d+\]$', '', last)
+    last = re.sub(r'([a-z])([A-Z])', r'\1 \2', last)
+    return re.sub(r'[_\-]+', ' ', last).strip() or name
+
+
+def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
+    """Raw AcroForm fields + words on the pages -> (Shape 2 fields (source 'acroform'), error).
+    entities: reuse an earlier layout_lm.extract_entities() result."""
+    from answer_areas import median_text_height
+    from layout_rules import clean_items
+
+    items = clean_items(items)
+    widget_boxes = {}
+    for raw in raw_fields:
+        for widget in raw['widgets']:
+            widget_boxes.setdefault(widget['page'], []).append(widget['box'])
+
+    def free(entries, page):
+        """Text on page that is not the content of a widget."""
+        return [e for e in entries if e['page'] == page
+                and not any(_covered(e['box'], w) > INSIDE_SHARE for w in widget_boxes.get(page, []))]
+
+    questions, layoutlm_error = [], None
+    if use_layoutlm and items:
+        try:
+            from layout import _layoutlm_candidates
+            candidates, _ = _layoutlm_candidates(items, pages, entities)
+            questions = [{'text': c['label'], 'box': c['label_box'], 'page': c['page'],
+                          'confidence': c['confidence']} for c in candidates]
+        except Exception as error:  # LayoutLM missing or failed: nearby text is still used
+            layoutlm_error = repr(error)
+
+    fields = []
+    for raw in raw_fields:
+        if raw['pdf_type'] == 'Btn' and raw['flags']['pushbutton']:
+            continue  # buttons do not hold answers
+        shown = [w for w in raw['widgets'] if not w['hidden']] or raw['widgets']
+        page = shown[0]['page']
+        on_page = [w for w in shown if w['page'] == page]
+        page_items = free(items, page)
+        text_height = median_text_height([i for i in items if i['page'] == page])
+        group_box = _union([w['box'] for w in on_page])
+        is_box = raw['pdf_type'] == 'Btn'
+
+        # Options: choice-list entries, or one per checkbox/radio widget (text right of it).
+        option_texts, option_values, option_boxes = list(raw['option_texts']), list(raw['option_values']), []
+        if is_box and len(on_page) >= 2:
+            option_texts, option_values = [], []
+            for widget in on_page:
+                text, _ = _nearest(widget['box'], page_items, text_height, ('right',))
+                option_values.append(widget['export_value'])
+                option_texts.append(text['text'] if text else widget['export_value'])
+                if text:
+                    option_boxes.append(text['box'])
+
+        # Label: LayoutLM question, then tooltip, then nearby text, then the field name.
+        sides = ('left', 'above', 'right') if is_box and len(on_page) == 1 else ('left', 'above')
+        label, label_box, label_source, confidence = None, None, None, None
+        hit, side = _nearest(group_box, free(questions, page), text_height, sides, option_boxes)
+        if hit:
+            label, label_box, confidence = hit['text'], hit['box'], hit['confidence']
+            label_source = f'layoutlm_{side}'
+        elif raw['tooltip']:
+            label, label_source = raw['tooltip'].strip(), 'tooltip'
+        else:
+            hit, side = _nearest(group_box, page_items, text_height, sides, option_boxes)
+            if hit:
+                label, label_box, label_source = hit['text'], hit['box'], f'nearby_text_{side}'
+            else:
+                label, label_source = _humanize(raw['name']), 'field_name'
+        if confidence is None:
+            confidence = FALLBACK_CONFIDENCE[label_source.rsplit('_', 1)[0]
+                                             if label_source.startswith('nearby_text') else label_source]
+
+        from layout_rules import clean_label
+        label = clean_label(label) or _humanize(raw['name'])
+        field_type, type_source = _field_type(raw, label, option_texts)
+        flags = raw['flags']
+        fields.append({
+            'id': raw['name'],
+            'label': label,
+            'label_box': [int(v) for v in label_box] if label_box else None,
+            'answer_box': [int(v) for v in group_box],
+            'type': field_type,
+            'source': 'acroform',
+            'confidence': round(float(confidence), 3),
+            'needs_review': (confidence < REVIEW_BELOW_CONFIDENCE
+                             or not label_source.startswith('layoutlm')),
+            'page': page,
+            'answer_method': 'acroform_widget',
+            'options': option_texts,
+            'label_source': label_source,
+            'type_source': type_source,
+            'pdf': {
+                'name': raw['name'],
+                'field_type': raw['pdf_type'],
+                'flags': {k: v for k, v in flags.items() if v},
+                'required': flags['required'],
+                'read_only': flags['read_only'],
+                'tooltip': raw['tooltip'],
+                'max_length': raw['max_length'],
+                'default_value': raw['default_value'],
+                'value': raw['value'],
+                'option_values': option_values,
+                'format_script': raw['format_script'] or None,
+                'widgets': raw['widgets'],
+            },
+        })
+    fields.sort(key=lambda f: (f['page'], f['answer_box'][1], f['answer_box'][0]))
+    return fields, layoutlm_error
+
+
+def find_fillable_fields(path, items, use_layoutlm=True, entities=None):
+    """All fillable fields of a PDF, linked to labels. items = words from pdf_input.read_pdf_words.
+    Returns (fields, LayoutLM error message or None)."""
+    pages = prepare_pages(path, clean=False)
+    return link_fields(read_acroform(path), items, pages, use_layoutlm, entities)
