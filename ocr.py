@@ -34,19 +34,20 @@ def get_ocr():
 
 
 def render_pdf(path, dpi=PDF_DPI):
-    """Render every PDF page to a BGR image with PyMuPDF."""
-    import pymupdf
+    """Render every PDF page to a colour BGR image with pypdfium2 (page rotation applied).
+    Form field widgets are drawn too, so filled values show up in the render."""
+    import pypdfium2 as pdfium
     pages = []
-    with pymupdf.open(str(path)) as document:
+    document = pdfium.PdfDocument(str(path))
+    try:
+        document.init_forms()
         for page in document:
-            pixmap = page.get_pixmap(dpi=dpi, alpha=False)
-            image = np.frombuffer(pixmap.samples, dtype=np.uint8)
-            image = image.reshape(pixmap.height, pixmap.width, pixmap.n)
-            if pixmap.n == 1:
-                image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-            else:
-                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            pages.append(image)
+            bitmap = page.render(scale=dpi / 72, may_draw_forms=True)
+            image = np.array(bitmap.to_pil().convert('RGB'))
+            pages.append(cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+            page.close()
+    finally:
+        document.close()
     return pages
 
 
