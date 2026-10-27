@@ -143,6 +143,12 @@ def find_answer_box(label_box, page_items, regions, page_size, text_height,
     text_right = max((item['box'][2] for item in page_items), default=width)
     right_edge = min(width - 1, right_limit if right_limit is not None else text_right)
 
+    # 0. A group of checkboxes on the label's row is the answer (LayoutLM tends to mark one option).
+    boxes = nearby_checkboxes(label_box, regions, page_items, text_height, right_edge + text_height)
+    if len(boxes) >= 2:
+        return [min(b[0] for b in boxes), min(b[1] for b in boxes),
+                max(b[2] for b in boxes), max(b[3] for b in boxes)], 'checkboxes'
+
     # 1. LayoutLM answer on the same row to the right, or right below the label.
     for answer in answer_entities:
         box = answer['box']

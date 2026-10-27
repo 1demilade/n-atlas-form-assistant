@@ -1,0 +1,9 @@
+test_keywords (test_pipeline.FieldTypeTests.test_keywords) ... ok
+test_options_beat_keywords (test_pipeline.FieldTypeTests.test_options_beat_keywords) ... ok
+ok
+test_label_names_are_parsed_not_assumed (test_pipeline.LayoutLMInputTests.test_label_names_are_parsed_not_assumed) ... ok
+test_normalize_uses_real_size (test_pipeline.LayoutLMInputTests.test_normalize_uses_real_size) ... ok
+test_words_get_own_boxes_inside_line (test_pipeline.LayoutLMInputTests.test_words_get_own_boxes_inside_line) ... ok
+test_generated_forms (test_pipeline.RulesOnSyntheticForms.test_generated_forms) ... ok
+Ran 7 tests in 49.253s
+OK

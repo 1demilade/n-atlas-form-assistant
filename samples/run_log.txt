@@ -1,0 +1,76 @@
+$ .venv\Scripts\python.exe layout.py form.png
+p1 'Proposed Business Name'                      text     layoutlm/none (review)
+p1 'Option 1'                                    unknown  layoutlm/table_cell
+p1 'Option 2'                                    unknown  layoutlm/table_cell
+p1 'Option 3'                                    unknown  layoutlm/table_cell
+p1 'Date of commencement of business'            date     layoutlm/table_cell
+p1 'General Nature of business'                  text     layoutlm/own_cell (review)
+p1 'General Nature of Business'                  text     layoutlm/underline
+p1 'Address of Principal Place of Business'      text     layoutlm/own_cell (review)
+p1 'Address'                                     text     layoutlm/empty_right (review)
+9 fields found. Saved form_fields.json and form_boxes.png (red = label, blue = answer area).
+$ .venv\Scripts\python.exe layout.py Business-Name-Form.pdf --ocr-out samples/pdf_ocr.json --fields samples/pdf_fields.json --boxes samples/pdf_boxes.png
+p1 'Proposed Business Name'                      text     layoutlm/none (review)
+p1 'Option 1'                                    unknown  layoutlm/table_cell
+p1 'Option 2'                                    unknown  layoutlm/table_cell
+p1 'Option 3'                                    unknown  layoutlm/table_cell
+p1 'Date of commencement of business'            date     layoutlm/table_cell
+p1 'General Nature of business'                  text     layoutlm/own_cell (review)
+p1 'General Nature of Business'                  text     layoutlm/box
+p1 'Address of Principal Place of Business'      text     layoutlm/own_cell (review)
+p1 'Address'                                     text     layoutlm/table_cell
+p1 'City/Town/Village'                           text     layoutlm/table_cell
+p1 'Local Government'                            unknown  layoutlm/table_cell
+p1 'State'                                       text     layoutlm/table_cell
+p1 'Address of Branch (if any)'                  text     layoutlm/own_cell (review)
+p1 'Address'                                     text     layoutlm/table_cell
+p1 'City/Town/Village'                           text     layoutlm/table_cell
+p1 'Local Government'                            unknown  layoutlm/table_cell
+p1 'State'                                       text     layoutlm/table_cell
+p1 "Proprietor's details"                        unknown  layoutlm/own_cell (review)
+p2 'Surname'                                     text     layoutlm/table_cell
+p2 'First name'                                  text     layoutlm/table_cell
+p2 'Other name(s)'                               text     layoutlm/table_cell
+p2 'Former name(s)'                              text     layoutlm/table_cell
+p2 'Nationality'                                 text     layoutlm/table_cell
+p2 'Former nationality'                          text     layoutlm/table_cell
+p2 'Gender'                                      unknown  layoutlm/table_cell
+p2 'Date of birth'                               date     layoutlm/table_cell
+p2 'Recent Passport Photograph'                  unknown  layoutlm/empty_below (review)
+p2 'Phone number'                                phone    layoutlm/table_cell
+p2 'Email'                                       email    layoutlm/table_cell
+p2 'Identity Number'                             number   layoutlm/table_cell
+p2 'NIN'                                         unknown  layoutlm/table_cell
+p2 'Identity Type'                               unknown  layoutlm/table_cell
+p2 'Occupation'                                  text     layoutlm/table_cell
+p2 "Proprietor's Address"                        text     layoutlm/own_cell (review)
+p2 'Address'                                     text     layoutlm/table_cell
+p2 'City/Town/Village'                           text     layoutlm/table_cell
+p2 'Local Government'                            unknown  layoutlm/table_cell
+p2 'State'                                       text     layoutlm/table_cell
+p2 'Signature'                                   unknown  layoutlm/own_cell (review)
+p2 'Attestation'                                 unknown  layoutlm/empty_right (review)
+40 fields found. Saved samples/pdf_fields.json and samples/pdf_boxes.png (red = label, blue = answer area).
+$ .venv\Scripts\python.exe layout.py samples/synthetic_form.png --ocr-json samples/synthetic_form_ocr.json --fields samples/synthetic_form_fields.json --boxes samples/synthetic_form_boxes.png
+p1 'Blood group'                                 unknown  layoutlm/box
+p1 'Home address'                                text     layoutlm/underline
+p1 'Employer'                                    unknown  layoutlm/underline
+p1 'Date of visit'                               date     layoutlm/box
+p1 'Do you smoke?'                               yes_no   layoutlm/checkboxes
+p1 'Telephone'                                   phone    layoutlm/underline
+p1 'Town'                                        text     layoutlm/underline
+p1 'Email address'                               email    layoutlm/underline
+p1 'Preferred contact'                           choice   layoutlm/checkboxes
+p1 'Patient name'                                text     layoutlm/underline
+10 fields found. Saved samples/synthetic_form_fields.json and samples/synthetic_form_boxes.png (red = label, blue = answer area).
+$ .venv\Scripts\python.exe layout.py samples/photo_sim.jpg --ocr-json samples/photo_sim_ocr.json --fields samples/photo_sim_fields.json --boxes samples/photo_sim_boxes.png
+p1 'Proposed Business Name'                      text     layoutlm/none (review)
+p1 'Option 1'                                    unknown  layoutlm/table_cell
+p1 'Option 2'                                    unknown  layoutlm/table_cell
+p1 'Option 3'                                    unknown  layoutlm/table_cell
+p1 'Date of commencement of business'            date     layoutlm/table_cell
+p1 'General Nature of business'                  text     layoutlm/own_cell (review)
+p1 'General Nature of Business'                  text     layoutlm/box
+p1 'Address of Principal Place of Business'      text     layoutlm/own_cell (review)
+p1 'Address'                                     text     layoutlm/empty_right (review)
+9 fields found. Saved samples/photo_sim_fields.json and samples/photo_sim_boxes.png (red = label, blue = answer area).

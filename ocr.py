@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -21,6 +22,8 @@ def get_ocr():
     """Load PaddleOCR once and reuse it (imported lazily because it is slow)."""
     global _OCR
     if _OCR is None:
+        # Run locally: do not contact model hosters at start-up (models are already downloaded).
+        os.environ.setdefault('PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK', 'True')
         from paddleocr import PaddleOCR
         _OCR = PaddleOCR(
             use_doc_orientation_classify=False,

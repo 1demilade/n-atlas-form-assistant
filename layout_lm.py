@@ -10,6 +10,7 @@ MAX_LENGTH = 512           # LayoutLM position limit
 STRIDE = 128               # tokens shared between overlapping windows on long pages
 ROW_TOLERANCE = 0.5        # boxes whose centres differ by < this * height are on one row
 UNSURE_WORD = 0.6          # words below this probability join the previous entity on their line
+LOCAL_FILES_ONLY = True    # never contact huggingface.co at run time; run download_models() once
 
 _MODEL = None
 _TOKENIZER = None
@@ -23,9 +24,21 @@ def load_model():
         import torch
         from transformers import AutoTokenizer, LayoutLMForTokenClassification
         _DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-        _TOKENIZER = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
-        _MODEL = LayoutLMForTokenClassification.from_pretrained(MODEL_NAME).to(_DEVICE).eval()
+        _TOKENIZER = AutoTokenizer.from_pretrained(TOKENIZER_NAME, local_files_only=LOCAL_FILES_ONLY)
+        _MODEL = LayoutLMForTokenClassification.from_pretrained(
+            MODEL_NAME, local_files_only=LOCAL_FILES_ONLY).to(_DEVICE).eval()
     return _MODEL, _TOKENIZER, _DEVICE
+
+
+def download_models():
+    """One-time download of the checkpoint and tokenizer into the Hugging Face cache."""
+    from huggingface_hub import hf_hub_download
+    for name in ('config.json', 'README.md', 'pytorch_model.bin'):
+        hf_hub_download(MODEL_NAME, name)
+    for name in ('config.json', 'tokenizer_config.json', 'tokenizer.json', 'vocab.txt',
+                 'special_tokens_map.json', 'README.md'):
+        hf_hub_download(TOKENIZER_NAME, name)
+    print('LayoutLM checkpoint and tokenizer are in the local cache.')
 
 
 def split_label(label):

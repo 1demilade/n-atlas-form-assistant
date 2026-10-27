@@ -136,13 +136,14 @@ def _merge_wrapped_labels(labels, items):
     used = set()
     for label in labels:
         height = label['label_box'][3] - label['label_box'][1]
+        left = min([label['label_box'][0]] + [i['box'][0] for i in label.get('label_items', [])])
         for index, item in enumerate(items):
             if index in used or item.get('page', 1) != label['page']:
                 continue
             box = item['box']
             words = item['text'].split()
             if (0 <= box[1] - label['label_box'][3] <= 0.6 * height
-                    and abs(box[0] - label['label_box'][0]) <= height
+                    and abs(box[0] - left) <= height
                     and 1 <= len(words) <= 3 and item['text'][:1].islower()
                     and not item['text'].rstrip().endswith('.')):
                 label['label'] = clean_label(f"{label['label']} {item['text']}")

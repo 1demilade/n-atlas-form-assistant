@@ -81,7 +81,9 @@ def _layoutlm_candidates(items, pages):
     # Instructions are dropped after merging, so their wrapped second lines go with them.
     kept = []
     for candidate in candidates:
-        if _is_instruction(candidate['label']):
+        # Check the whole OCR line too: the model may split 'Please' off its sentence.
+        if _is_instruction(candidate['label']) or any(
+                INSTRUCTION_START.match(item['text']) for item in candidate['label_items']):
             others.append({'kind': 'other', 'text': candidate['label'],
                            'box': candidate['label_box'], 'page': candidate['page']})
         else:
