@@ -1,0 +1,83 @@
+﻿> .venv\Scripts\python.exe layout.py samples/test_fillable.pdf --ocr-json samples/test_fillable_words.json --fields samples/test_fillable_fields.json --boxes samples/test_fillable_boxes.png
+kind=fillable method=acroform+layoutlm words: p1=pdf_text
+p1 SECTION 'CLINIC REGISTRATION' [layoutlm_header]
+p1 SECTION 'Personal details' [layoutlm_header]
+p1 SECTION 'Contact information' [layoutlm_header]
+p1 SECTION 'Other information' [layoutlm_header]
+p1 'Date of visit'                               date     acroform/layoutlm_left
+p1 'Number of children'                          number   acroform/layoutlm_left
+p1 'Email address'                               email    acroform/layoutlm_left
+p1 'Home address'                                text     acroform/layoutlm_above
+p1 'Marital status'                              choice   acroform/layoutlm_left
+p1 'Age'                                         number   acroform/layoutlm_left
+p1 'Preferred contact'                           choice   acroform/layoutlm_left
+p1 'Mobile phone'                                phone    acroform/layoutlm_left
+p1 'Next of kin'                                 text     acroform/layoutlm_left
+9 fields, 4 sections. Saved samples/test_fillable_fields.json and samples/test_fillable_boxes.png (red = label, blue = answer area, green = section).
+> .venv\Scripts\python.exe fill_form.py samples/test_fillable.pdf --form samples/test_fillable_fields.json --answers samples/test_fillable_answers.json --out samples/test_fillable_filled.pdf
+filled   'f1_fld47'                               14/03/2026
+filled   'f2_q22'                                 3
+filled   'f3_txt52'                               ada.obi@example.com
+filled   'f4_q64'                                 12 Marina Road, Lagos
+filled   'f5_txt48'                               /opt1
+filled   'f6_fld85'                               3
+filled   'f7_fld63'                               /SMS
+filled   'f8_q57'                                 08031234567
+filled   'f9_txt30'                               12 Marina Road, Lagos
+9 filled, 0 skipped. Saved samples/test_fillable_filled.pdf
+> .venv\Scripts\python.exe layout.py samples/test_flat.pdf --ocr-json samples/test_flat_words.json --fields samples/test_flat_fields.json --boxes samples/test_flat_boxes.png
+kind=flat method=layoutlm words: p1=pdf_text
+p1 SECTION 'CLINIC REGISTRATION' [layoutlm_header]
+p1 SECTION 'Personal details' [layoutlm_header]
+p1 SECTION 'Contact information' [layoutlm_header]
+p1 SECTION 'Other information' [layoutlm_header]
+p1 'Date of visit'                               date     layoutlm/box
+p1 'Number of children'                          number   layoutlm/box
+p1 'Email address'                               email    layoutlm/underline
+p1 'Home address'                                text     layoutlm/underline_below
+p1 'Marital status'                              choice   layoutlm/checkboxes
+p1 'Age'                                         number   layoutlm/box
+p1 'Preferred contact'                           choice   layoutlm/checkboxes
+p1 'Mobile phone'                                phone    layoutlm/underline
+p1 'Next of kin'                                 unknown  layoutlm/underline
+9 fields, 4 sections. Saved samples/test_flat_fields.json and samples/test_flat_boxes.png (red = label, blue = answer area, green = section).
+> .venv\Scripts\python.exe fill_form.py samples/test_flat.pdf --form samples/test_flat_fields.json --answers samples/test_flat_answers.json --out samples/test_flat_filled.pdf
+filled   'date_of_visit'                          14/03/2026
+filled   'number_of_children'                     3
+filled   'email_address'                          ada.obi@example.com
+filled   'home_address'                           12 Marina Road, Lagos
+filled   'marital_status'                         X in 'Married'
+filled   'age'                                    3
+filled   'preferred_contact'                      X in 'SMS'
+filled   'mobile_phone'                           08031234567
+filled   'next_of_kin'                            Example answer
+9 filled, 0 skipped. Saved samples/test_flat_filled.pdf
+> .venv\Scripts\python.exe layout.py samples/test_image.pdf --ocr-json samples/test_image_words.json --fields samples/test_image_fields.json --boxes samples/test_image_boxes.png
+kind=flat method=layoutlm words: p1=ocr
+p1 SECTION 'CLINIC REGISTRATION' [layoutlm_header]
+p1 SECTION 'Personal details' [layoutlm_header]
+p1 SECTION 'Contact information' [layoutlm_header]
+p1 SECTION 'Other information' [layoutlm_header]
+p1 'Date of visit'                               date     layoutlm/box
+p1 'Number of children'                          number   layoutlm/box
+p1 'Email address'                               email    layoutlm/underline
+p1 'Home address'                                text     layoutlm/underline_below
+p1 'Marital status'                              choice   layoutlm/checkboxes
+p1 'Age'                                         number   layoutlm/box
+p1 'Preferred contact'                           choice   layoutlm/checkboxes
+p1 'Mobile phone'                                phone    layoutlm/underline
+p1 'Next of kin'                                 unknown  layoutlm/underline
+9 fields, 4 sections. Saved samples/test_image_fields.json and samples/test_image_boxes.png (red = label, blue = answer area, green = section).
+> .venv\Scripts\python.exe fill_form.py samples/test_image.pdf --form samples/test_image_fields.json --answers samples/test_image_answers.json --out samples/test_image_filled.pdf
+filled   'date_of_visit'                          14/03/2026
+filled   'number_of_children'                     3
+filled   'email_address'                          ada.obi@example.com
+filled   'home_address'                           12 Marina Road, Lagos
+filled   'marital_status'                         X in 'Married'
+filled   'age'                                    3
+filled   'preferred_contact'                      X in 'SMS'
+filled   'mobile_phone'                           08031234567
+filled   'next_of_kin'                            Example answer
+9 filled, 0 skipped. Saved samples/test_image_filled.pdf
+> .venv\Scripts\python.exe fill_form.py Business-Name-Form.pdf --form samples/pdf_fields.json --answers samples/pdf_answers.json --out samples/pdf_filled.pdf
+34 filled, 0 skipped. Saved samples/pdf_filled.pdf

@@ -1,0 +1,574 @@
+[
+  {
+    "text": "CLINIC REGISTRATION",
+    "box": [
+      156,
+      181,
+      663,
+      227
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "CLINIC",
+        "box": [
+          156,
+          181,
+          307,
+          227
+        ]
+      },
+      {
+        "text": "REGISTRATION",
+        "box": [
+          319,
+          181,
+          663,
+          227
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Personal details",
+    "box": [
+      156,
+      284,
+      417,
+      321
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Personal",
+        "box": [
+          156,
+          284,
+          301,
+          321
+        ]
+      },
+      {
+        "text": "details",
+        "box": [
+          311,
+          284,
+          417,
+          321
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Date of visit",
+    "box": [
+      156,
+      385,
+      316,
+      416
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Date",
+        "box": [
+          156,
+          385,
+          221,
+          416
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          230,
+          385,
+          255,
+          416
+        ]
+      },
+      {
+        "text": "visit",
+        "box": [
+          264,
+          385,
+          316,
+          416
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Number of children:",
+    "box": [
+      156,
+      481,
+      423,
+      511
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Number",
+        "box": [
+          156,
+          481,
+          265,
+          511
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          274,
+          481,
+          299,
+          511
+        ]
+      },
+      {
+        "text": "children:",
+        "box": [
+          308,
+          481,
+          423,
+          511
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Email address:",
+    "box": [
+      156,
+      577,
+      359,
+      607
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Email",
+        "box": [
+          156,
+          577,
+          233,
+          607
+        ]
+      },
+      {
+        "text": "address:",
+        "box": [
+          241,
+          577,
+          359,
+          607
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Contact information",
+    "box": [
+      156,
+      668,
+      474,
+      704
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Contact",
+        "box": [
+          156,
+          668,
+          283,
+          704
+        ]
+      },
+      {
+        "text": "information",
+        "box": [
+          293,
+          668,
+          474,
+          704
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Home address",
+    "box": [
+      156,
+      768,
+      355,
+      799
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Home",
+        "box": [
+          156,
+          768,
+          238,
+          799
+        ]
+      },
+      {
+        "text": "address",
+        "box": [
+          246,
+          768,
+          355,
+          799
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Marital status:",
+    "box": [
+      156,
+      941,
+      347,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Marital",
+        "box": [
+          156,
+          941,
+          248,
+          971
+        ]
+      },
+      {
+        "text": "status:",
+        "box": [
+          257,
+          941,
+          347,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Single",
+    "box": [
+      468,
+      941,
+      553,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Single",
+        "box": [
+          468,
+          941,
+          553,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Married",
+    "box": [
+      667,
+      941,
+      771,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Married",
+        "box": [
+          667,
+          941,
+          771,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Other",
+    "box": [
+      882,
+      941,
+      959,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Other",
+        "box": [
+          882,
+          941,
+          959,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Age",
+    "box": [
+      156,
+      1037,
+      211,
+      1067
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Age",
+        "box": [
+          156,
+          1037,
+          211,
+          1067
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Other information",
+    "box": [
+      156,
+      1128,
+      440,
+      1164
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Other",
+        "box": [
+          156,
+          1128,
+          248,
+          1164
+        ]
+      },
+      {
+        "text": "information",
+        "box": [
+          258,
+          1128,
+          440,
+          1164
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Preferred contact:",
+    "box": [
+      156,
+      1228,
+      399,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Preferred",
+        "box": [
+          156,
+          1228,
+          284,
+          1259
+        ]
+      },
+      {
+        "text": "contact:",
+        "box": [
+          292,
+          1228,
+          399,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Email",
+    "box": [
+      516,
+      1228,
+      592,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Email",
+        "box": [
+          516,
+          1228,
+          592,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "SMS",
+    "box": [
+      699,
+      1228,
+      765,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "SMS",
+        "box": [
+          699,
+          1228,
+          765,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Call",
+    "box": [
+      851,
+      1228,
+      903,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Call",
+        "box": [
+          851,
+          1228,
+          903,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Mobile phone:",
+    "box": [
+      156,
+      1324,
+      348,
+      1355
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Mobile",
+        "box": [
+          156,
+          1324,
+          246,
+          1355
+        ]
+      },
+      {
+        "text": "phone:",
+        "box": [
+          255,
+          1324,
+          348,
+          1355
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Next of kin:",
+    "box": [
+      156,
+      1420,
+      309,
+      1450
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Next",
+        "box": [
+          156,
+          1420,
+          219,
+          1450
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          228,
+          1420,
+          253,
+          1450
+        ]
+      },
+      {
+        "text": "kin:",
+        "box": [
+          262,
+          1420,
+          309,
+          1450
+        ]
+      }
+    ]
+  }
+]

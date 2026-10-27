@@ -1,0 +1,230 @@
+[
+  {
+    "text": "CLINIC REGISTRATION",
+    "box": [
+      154,
+      178,
+      663,
+      219
+    ],
+    "score": 0.9998895525932312,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Personal details",
+    "box": [
+      152,
+      280,
+      419,
+      317
+    ],
+    "score": 0.9999825954437256,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Date of visit",
+    "box": [
+      153,
+      382,
+      319,
+      412
+    ],
+    "score": 0.9999697208404541,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Number of children:",
+    "box": [
+      153,
+      478,
+      423,
+      508
+    ],
+    "score": 0.9999840259552002,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Email address:",
+    "box": [
+      153,
+      575,
+      358,
+      603
+    ],
+    "score": 0.9993018507957458,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Contact information",
+    "box": [
+      154,
+      664,
+      474,
+      701
+    ],
+    "score": 0.9998393654823303,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Home address",
+    "box": [
+      154,
+      767,
+      355,
+      795
+    ],
+    "score": 0.9999935030937195,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Marital status:",
+    "box": [
+      153,
+      938,
+      348,
+      968
+    ],
+    "score": 0.9999745488166809,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Single",
+    "box": [
+      462,
+      934,
+      556,
+      973
+    ],
+    "score": 0.9999954104423523,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Married",
+    "box": [
+      663,
+      936,
+      775,
+      970
+    ],
+    "score": 0.9999952912330627,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Other",
+    "box": [
+      875,
+      935,
+      963,
+      971
+    ],
+    "score": 0.9999839067459106,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Age",
+    "box": [
+      149,
+      1030,
+      217,
+      1073
+    ],
+    "score": 0.9999858736991882,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Other information",
+    "box": [
+      154,
+      1125,
+      441,
+      1162
+    ],
+    "score": 0.999982476234436,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Preferred contact:",
+    "box": [
+      153,
+      1225,
+      400,
+      1255
+    ],
+    "score": 0.9999792575836182,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Email",
+    "box": [
+      510,
+      1224,
+      594,
+      1256
+    ],
+    "score": 0.9998918771743774,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "SMS",
+    "box": [
+      694,
+      1222,
+      768,
+      1255
+    ],
+    "score": 0.9999682307243347,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Call",
+    "box": [
+      841,
+      1221,
+      906,
+      1258
+    ],
+    "score": 0.9999958276748657,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Mobile phone:",
+    "box": [
+      152,
+      1320,
+      350,
+      1354
+    ],
+    "score": 0.9999141693115234,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Next of kin:",
+    "box": [
+      151,
+      1415,
+      312,
+      1449
+    ],
+    "score": 0.9999878406524658,
+    "page": 1,
+    "source": "ocr"
+  }
+]

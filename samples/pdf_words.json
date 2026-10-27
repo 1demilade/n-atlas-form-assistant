@@ -1,0 +1,2918 @@
+[
+  {
+    "text": "APPLICATION TO REGISTER BUSINESS NAME",
+    "box": [
+      346,
+      265,
+      1335,
+      310
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "APPLICATION",
+        "box": [
+          346,
+          265,
+          656,
+          310
+        ]
+      },
+      {
+        "text": "TO",
+        "box": [
+          666,
+          265,
+          730,
+          310
+        ]
+      },
+      {
+        "text": "REGISTER",
+        "box": [
+          738,
+          265,
+          968,
+          310
+        ]
+      },
+      {
+        "text": "BUSINESS",
+        "box": [
+          977,
+          265,
+          1192,
+          310
+        ]
+      },
+      {
+        "text": "NAME",
+        "box": [
+          1201,
+          265,
+          1335,
+          310
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Please type your proposed name as provided in option 1 to 3 below.",
+    "box": [
+      542,
+      550,
+      1448,
+      583
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Please",
+        "box": [
+          542,
+          550,
+          627,
+          583
+        ]
+      },
+      {
+        "text": "type",
+        "box": [
+          636,
+          550,
+          693,
+          583
+        ]
+      },
+      {
+        "text": "your",
+        "box": [
+          702,
+          550,
+          763,
+          583
+        ]
+      },
+      {
+        "text": "proposed",
+        "box": [
+          771,
+          550,
+          893,
+          583
+        ]
+      },
+      {
+        "text": "name",
+        "box": [
+          902,
+          550,
+          974,
+          583
+        ]
+      },
+      {
+        "text": "as",
+        "box": [
+          982,
+          550,
+          1010,
+          583
+        ]
+      },
+      {
+        "text": "provided",
+        "box": [
+          1018,
+          550,
+          1137,
+          583
+        ]
+      },
+      {
+        "text": "in",
+        "box": [
+          1145,
+          550,
+          1171,
+          583
+        ]
+      },
+      {
+        "text": "option",
+        "box": [
+          1179,
+          550,
+          1265,
+          583
+        ]
+      },
+      {
+        "text": "1",
+        "box": [
+          1274,
+          550,
+          1290,
+          583
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          1299,
+          550,
+          1324,
+          583
+        ]
+      },
+      {
+        "text": "3",
+        "box": [
+          1333,
+          550,
+          1349,
+          583
+        ]
+      },
+      {
+        "text": "below.",
+        "box": [
+          1358,
+          550,
+          1448,
+          583
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Option 1",
+    "box": [
+      137,
+      606,
+      273,
+      645
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Option",
+        "box": [
+          137,
+          606,
+          245,
+          645
+        ]
+      },
+      {
+        "text": "1",
+        "box": [
+          254,
+          606,
+          273,
+          645
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Option 2",
+    "box": [
+      137,
+      660,
+      273,
+      699
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Option",
+        "box": [
+          137,
+          660,
+          245,
+          699
+        ]
+      },
+      {
+        "text": "2",
+        "box": [
+          254,
+          660,
+          273,
+          699
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Option 3",
+    "box": [
+      137,
+      713,
+      273,
+      752
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Option",
+        "box": [
+          137,
+          713,
+          245,
+          752
+        ]
+      },
+      {
+        "text": "3",
+        "box": [
+          254,
+          713,
+          273,
+          752
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Date of commencement of",
+    "box": [
+      137,
+      767,
+      548,
+      806
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Date",
+        "box": [
+          137,
+          767,
+          210,
+          806
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          219,
+          767,
+          252,
+          806
+        ]
+      },
+      {
+        "text": "commencement",
+        "box": [
+          261,
+          767,
+          507,
+          806
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          516,
+          767,
+          548,
+          806
+        ]
+      }
+    ]
+  },
+  {
+    "text": "business",
+    "box": [
+      137,
+      810,
+      267,
+      849
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "business",
+        "box": [
+          137,
+          810,
+          267,
+          849
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Please give a brief description of the business activities",
+    "box": [
+      665,
+      911,
+      1518,
+      950
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Please",
+        "box": [
+          665,
+          911,
+          765,
+          950
+        ]
+      },
+      {
+        "text": "give",
+        "box": [
+          774,
+          911,
+          841,
+          950
+        ]
+      },
+      {
+        "text": "a",
+        "box": [
+          850,
+          911,
+          867,
+          950
+        ]
+      },
+      {
+        "text": "brief",
+        "box": [
+          876,
+          911,
+          950,
+          950
+        ]
+      },
+      {
+        "text": "description",
+        "box": [
+          959,
+          911,
+          1131,
+          950
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1141,
+          911,
+          1173,
+          950
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          1182,
+          911,
+          1230,
+          950
+        ]
+      },
+      {
+        "text": "business",
+        "box": [
+          1239,
+          911,
+          1371,
+          950
+        ]
+      },
+      {
+        "text": "activities",
+        "box": [
+          1380,
+          911,
+          1518,
+          950
+        ]
+      }
+    ]
+  },
+  {
+    "text": "below:",
+    "box": [
+      665,
+      955,
+      770,
+      994
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "below:",
+        "box": [
+          665,
+          955,
+          770,
+          994
+        ]
+      }
+    ]
+  },
+  {
+    "text": "General Nature of Business",
+    "box": [
+      136,
+      1002,
+      562,
+      1041
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "General",
+        "box": [
+          136,
+          1002,
+          259,
+          1041
+        ]
+      },
+      {
+        "text": "Nature",
+        "box": [
+          269,
+          1002,
+          375,
+          1041
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          384,
+          1002,
+          416,
+          1041
+        ]
+      },
+      {
+        "text": "Business",
+        "box": [
+          426,
+          1002,
+          562,
+          1041
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Please give the address of principal place of business",
+    "box": [
+      665,
+      1270,
+      1484,
+      1309
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Please",
+        "box": [
+          665,
+          1270,
+          765,
+          1309
+        ]
+      },
+      {
+        "text": "give",
+        "box": [
+          774,
+          1270,
+          841,
+          1309
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          850,
+          1270,
+          898,
+          1309
+        ]
+      },
+      {
+        "text": "address",
+        "box": [
+          907,
+          1270,
+          1023,
+          1309
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1032,
+          1270,
+          1065,
+          1309
+        ]
+      },
+      {
+        "text": "principal",
+        "box": [
+          1074,
+          1270,
+          1212,
+          1309
+        ]
+      },
+      {
+        "text": "place",
+        "box": [
+          1221,
+          1270,
+          1303,
+          1309
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1312,
+          1270,
+          1344,
+          1309
+        ]
+      },
+      {
+        "text": "business",
+        "box": [
+          1353,
+          1270,
+          1484,
+          1309
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Address",
+    "box": [
+      137,
+      1323,
+      263,
+      1362
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Address",
+        "box": [
+          137,
+          1323,
+          263,
+          1362
+        ]
+      }
+    ]
+  },
+  {
+    "text": "You must ensure",
+    "box": [
+      1265,
+      1324,
+      1524,
+      1363
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "You",
+        "box": [
+          1265,
+          1324,
+          1332,
+          1363
+        ]
+      },
+      {
+        "text": "must",
+        "box": [
+          1339,
+          1324,
+          1415,
+          1363
+        ]
+      },
+      {
+        "text": "ensure",
+        "box": [
+          1422,
+          1324,
+          1524,
+          1363
+        ]
+      }
+    ]
+  },
+  {
+    "text": "that the address",
+    "box": [
+      1265,
+      1368,
+      1507,
+      1407
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "that",
+        "box": [
+          1265,
+          1368,
+          1323,
+          1407
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          1333,
+          1368,
+          1381,
+          1407
+        ]
+      },
+      {
+        "text": "address",
+        "box": [
+          1390,
+          1368,
+          1507,
+          1407
+        ]
+      }
+    ]
+  },
+  {
+    "text": "City/Town/Village",
+    "box": [
+      137,
+      1396,
+      427,
+      1435
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "City/Town/Village",
+        "box": [
+          137,
+          1396,
+          427,
+          1435
+        ]
+      }
+    ]
+  },
+  {
+    "text": "shown in this",
+    "box": [
+      1265,
+      1413,
+      1472,
+      1452
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "shown",
+        "box": [
+          1265,
+          1413,
+          1367,
+          1452
+        ]
+      },
+      {
+        "text": "in",
+        "box": [
+          1376,
+          1413,
+          1406,
+          1452
+        ]
+      },
+      {
+        "text": "this",
+        "box": [
+          1416,
+          1413,
+          1472,
+          1452
+        ]
+      }
+    ]
+  },
+  {
+    "text": "section is easily",
+    "box": [
+      1265,
+      1458,
+      1511,
+      1497
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "section",
+        "box": [
+          1265,
+          1458,
+          1375,
+          1497
+        ]
+      },
+      {
+        "text": "is",
+        "box": [
+          1385,
+          1458,
+          1411,
+          1497
+        ]
+      },
+      {
+        "text": "easily",
+        "box": [
+          1420,
+          1458,
+          1511,
+          1497
+        ]
+      }
+    ]
+  },
+  {
+    "text": "traceable.",
+    "box": [
+      1265,
+      1502,
+      1413,
+      1541
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "traceable.",
+        "box": [
+          1265,
+          1502,
+          1413,
+          1541
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Local Government",
+    "box": [
+      137,
+      1548,
+      427,
+      1587
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Local",
+        "box": [
+          137,
+          1548,
+          226,
+          1587
+        ]
+      },
+      {
+        "text": "Government",
+        "box": [
+          235,
+          1548,
+          427,
+          1587
+        ]
+      }
+    ]
+  },
+  {
+    "text": "State",
+    "box": [
+      137,
+      1621,
+      214,
+      1660
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "State",
+        "box": [
+          137,
+          1621,
+          214,
+          1660
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Address",
+    "box": [
+      137,
+      1767,
+      263,
+      1806
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Address",
+        "box": [
+          137,
+          1767,
+          263,
+          1806
+        ]
+      }
+    ]
+  },
+  {
+    "text": "City/Town/Village",
+    "box": [
+      137,
+      1840,
+      427,
+      1879
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "City/Town/Village",
+        "box": [
+          137,
+          1840,
+          427,
+          1879
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Local Government",
+    "box": [
+      137,
+      1913,
+      427,
+      1952
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Local",
+        "box": [
+          137,
+          1913,
+          226,
+          1952
+        ]
+      },
+      {
+        "text": "Government",
+        "box": [
+          235,
+          1913,
+          427,
+          1952
+        ]
+      }
+    ]
+  },
+  {
+    "text": "State",
+    "box": [
+      137,
+      1986,
+      214,
+      2025
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "State",
+        "box": [
+          137,
+          1986,
+          214,
+          2025
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Address of Principal Place of Business",
+    "box": [
+      131,
+      1215,
+      738,
+      1253
+    ],
+    "score": 0.9955959320068359,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Address of Branch (if any)",
+    "box": [
+      131,
+      1689,
+      559,
+      1732
+    ],
+    "score": 0.9926036596298218,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "CAC",
+    "box": [
+      814,
+      413,
+      894,
+      449
+    ],
+    "score": 0.9999961853027344,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Proposed Business Name",
+    "box": [
+      136,
+      547,
+      532,
+      583
+    ],
+    "score": 0.9987204074859619,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "General Nature of business",
+    "box": [
+      137,
+      859,
+      557,
+      888
+    ],
+    "score": 0.9998864531517029,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Proprietor's details",
+    "box": [
+      137,
+      2063,
+      458,
+      2097
+    ],
+    "score": 0.999127209186554,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "Surname",
+    "box": [
+      136,
+      200,
+      273,
+      239
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Surname",
+        "box": [
+          136,
+          200,
+          273,
+          239
+        ]
+      }
+    ]
+  },
+  {
+    "text": "First name",
+    "box": [
+      136,
+      273,
+      299,
+      312
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "First",
+        "box": [
+          136,
+          273,
+          208,
+          312
+        ]
+      },
+      {
+        "text": "name",
+        "box": [
+          217,
+          273,
+          299,
+          312
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Other name(s)",
+    "box": [
+      136,
+      346,
+      358,
+      385
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Other",
+        "box": [
+          136,
+          346,
+          225,
+          385
+        ]
+      },
+      {
+        "text": "name(s)",
+        "box": [
+          234,
+          346,
+          358,
+          385
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Former name(s)",
+    "box": [
+      136,
+      419,
+      384,
+      458
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Former",
+        "box": [
+          136,
+          419,
+          251,
+          458
+        ]
+      },
+      {
+        "text": "name(s)",
+        "box": [
+          260,
+          419,
+          384,
+          458
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Nationality",
+    "box": [
+      136,
+      492,
+      309,
+      531
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Nationality",
+        "box": [
+          136,
+          492,
+          309,
+          531
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Former nationality",
+    "box": [
+      136,
+      565,
+      424,
+      604
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Former",
+        "box": [
+          136,
+          565,
+          251,
+          604
+        ]
+      },
+      {
+        "text": "nationality",
+        "box": [
+          260,
+          565,
+          424,
+          604
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Gender",
+    "box": [
+      136,
+      638,
+      250,
+      677
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Gender",
+        "box": [
+          136,
+          638,
+          250,
+          677
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Date of birth",
+    "box": [
+      136,
+      711,
+      334,
+      750
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Date",
+        "box": [
+          136,
+          711,
+          210,
+          750
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          219,
+          711,
+          252,
+          750
+        ]
+      },
+      {
+        "text": "birth",
+        "box": [
+          261,
+          711,
+          334,
+          750
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Phone number",
+    "box": [
+      136,
+      785,
+      360,
+      824
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Phone",
+        "box": [
+          136,
+          785,
+          234,
+          824
+        ]
+      },
+      {
+        "text": "number",
+        "box": [
+          243,
+          785,
+          360,
+          824
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Recent Passport Photograph",
+    "box": [
+      1064,
+      785,
+      1537,
+      824
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Recent",
+        "box": [
+          1064,
+          785,
+          1179,
+          824
+        ]
+      },
+      {
+        "text": "Passport",
+        "box": [
+          1188,
+          785,
+          1333,
+          824
+        ]
+      },
+      {
+        "text": "Photograph",
+        "box": [
+          1342,
+          785,
+          1537,
+          824
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Email",
+    "box": [
+      136,
+      858,
+      228,
+      897
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Email",
+        "box": [
+          136,
+          858,
+          228,
+          897
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Identity Number",
+    "box": [
+      136,
+      931,
+      392,
+      970
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Identity",
+        "box": [
+          136,
+          931,
+          258,
+          970
+        ]
+      },
+      {
+        "text": "Number",
+        "box": [
+          266,
+          931,
+          392,
+          970
+        ]
+      }
+    ]
+  },
+  {
+    "text": "NIN",
+    "box": [
+      136,
+      1004,
+      206,
+      1043
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "NIN",
+        "box": [
+          136,
+          1004,
+          206,
+          1043
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Identity Type",
+    "box": [
+      136,
+      1076,
+      344,
+      1115
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Identity",
+        "box": [
+          136,
+          1076,
+          258,
+          1115
+        ]
+      },
+      {
+        "text": "Type",
+        "box": [
+          266,
+          1076,
+          344,
+          1115
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Occupation",
+    "box": [
+      136,
+      1149,
+      313,
+      1188
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Occupation",
+        "box": [
+          136,
+          1149,
+          313,
+          1188
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Address",
+    "box": [
+      136,
+      1296,
+      263,
+      1335
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Address",
+        "box": [
+          136,
+          1296,
+          263,
+          1335
+        ]
+      }
+    ]
+  },
+  {
+    "text": "City/Town/Village",
+    "box": [
+      136,
+      1369,
+      426,
+      1408
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "City/Town/Village",
+        "box": [
+          136,
+          1369,
+          426,
+          1408
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Local Government",
+    "box": [
+      136,
+      1441,
+      426,
+      1480
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Local",
+        "box": [
+          136,
+          1441,
+          225,
+          1480
+        ]
+      },
+      {
+        "text": "Government",
+        "box": [
+          235,
+          1441,
+          426,
+          1480
+        ]
+      }
+    ]
+  },
+  {
+    "text": "State",
+    "box": [
+      136,
+      1514,
+      213,
+      1553
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "State",
+        "box": [
+          136,
+          1514,
+          213,
+          1553
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Attestation :",
+    "box": [
+      871,
+      1590,
+      995,
+      1613
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Attestation",
+        "box": [
+          871,
+          1590,
+          983,
+          1613
+        ]
+      },
+      {
+        "text": ":",
+        "box": [
+          989,
+          1590,
+          995,
+          1613
+        ]
+      }
+    ]
+  },
+  {
+    "text": "I/We, the undersigned, being proprietor(s) of the above named",
+    "box": [
+      871,
+      1614,
+      1506,
+      1636
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "I/We,",
+        "box": [
+          871,
+          1614,
+          927,
+          1636
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          933,
+          1614,
+          966,
+          1636
+        ]
+      },
+      {
+        "text": "undersigned,",
+        "box": [
+          972,
+          1614,
+          1104,
+          1636
+        ]
+      },
+      {
+        "text": "being",
+        "box": [
+          1109,
+          1614,
+          1166,
+          1636
+        ]
+      },
+      {
+        "text": "proprietor(s)",
+        "box": [
+          1171,
+          1614,
+          1300,
+          1636
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1306,
+          1614,
+          1326,
+          1636
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          1332,
+          1614,
+          1365,
+          1636
+        ]
+      },
+      {
+        "text": "above",
+        "box": [
+          1370,
+          1614,
+          1432,
+          1636
+        ]
+      },
+      {
+        "text": "named",
+        "box": [
+          1437,
+          1614,
+          1506,
+          1636
+        ]
+      }
+    ]
+  },
+  {
+    "text": "business name hereby certify that the foregoing particulars",
+    "box": [
+      871,
+      1636,
+      1475,
+      1658
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "business",
+        "box": [
+          871,
+          1636,
+          962,
+          1658
+        ]
+      },
+      {
+        "text": "name",
+        "box": [
+          968,
+          1636,
+          1025,
+          1658
+        ]
+      },
+      {
+        "text": "hereby",
+        "box": [
+          1031,
+          1636,
+          1100,
+          1658
+        ]
+      },
+      {
+        "text": "certify",
+        "box": [
+          1107,
+          1636,
+          1171,
+          1658
+        ]
+      },
+      {
+        "text": "that",
+        "box": [
+          1177,
+          1636,
+          1218,
+          1658
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          1224,
+          1636,
+          1258,
+          1658
+        ]
+      },
+      {
+        "text": "foregoing",
+        "box": [
+          1264,
+          1636,
+          1360,
+          1658
+        ]
+      },
+      {
+        "text": "particulars",
+        "box": [
+          1366,
+          1636,
+          1475,
+          1658
+        ]
+      }
+    ]
+  },
+  {
+    "text": "are, to the best of my/our knowledge and belief, correct and I/we",
+    "box": [
+      871,
+      1658,
+      1533,
+      1680
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "are,",
+        "box": [
+          871,
+          1658,
+          910,
+          1680
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          915,
+          1658,
+          936,
+          1680
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          941,
+          1658,
+          975,
+          1680
+        ]
+      },
+      {
+        "text": "best",
+        "box": [
+          980,
+          1658,
+          1024,
+          1680
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1030,
+          1658,
+          1050,
+          1680
+        ]
+      },
+      {
+        "text": "my/our",
+        "box": [
+          1056,
+          1658,
+          1130,
+          1680
+        ]
+      },
+      {
+        "text": "knowledge",
+        "box": [
+          1136,
+          1658,
+          1246,
+          1680
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          1252,
+          1658,
+          1290,
+          1680
+        ]
+      },
+      {
+        "text": "belief,",
+        "box": [
+          1295,
+          1658,
+          1359,
+          1680
+        ]
+      },
+      {
+        "text": "correct",
+        "box": [
+          1364,
+          1658,
+          1436,
+          1680
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          1442,
+          1658,
+          1480,
+          1680
+        ]
+      },
+      {
+        "text": "I/we",
+        "box": [
+          1486,
+          1658,
+          1533,
+          1680
+        ]
+      }
+    ]
+  },
+  {
+    "text": "undertake to notify the Registrar of Business Names",
+    "box": [
+      871,
+      1680,
+      1407,
+      1702
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "undertake",
+        "box": [
+          871,
+          1680,
+          975,
+          1702
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          980,
+          1680,
+          1001,
+          1702
+        ]
+      },
+      {
+        "text": "notify",
+        "box": [
+          1007,
+          1680,
+          1065,
+          1702
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          1071,
+          1680,
+          1104,
+          1702
+        ]
+      },
+      {
+        "text": "Registrar",
+        "box": [
+          1110,
+          1680,
+          1203,
+          1702
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1209,
+          1680,
+          1229,
+          1702
+        ]
+      },
+      {
+        "text": "Business",
+        "box": [
+          1236,
+          1680,
+          1329,
+          1702
+        ]
+      },
+      {
+        "text": "Names",
+        "box": [
+          1335,
+          1680,
+          1407,
+          1702
+        ]
+      }
+    ]
+  },
+  {
+    "text": "whenever any change is made or occurs in any of them other than",
+    "box": [
+      871,
+      1703,
+      1542,
+      1725
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "whenever",
+        "box": [
+          871,
+          1703,
+          970,
+          1725
+        ]
+      },
+      {
+        "text": "any",
+        "box": [
+          977,
+          1703,
+          1012,
+          1725
+        ]
+      },
+      {
+        "text": "change",
+        "box": [
+          1019,
+          1703,
+          1093,
+          1725
+        ]
+      },
+      {
+        "text": "is",
+        "box": [
+          1099,
+          1703,
+          1116,
+          1725
+        ]
+      },
+      {
+        "text": "made",
+        "box": [
+          1122,
+          1703,
+          1179,
+          1725
+        ]
+      },
+      {
+        "text": "or",
+        "box": [
+          1185,
+          1703,
+          1206,
+          1725
+        ]
+      },
+      {
+        "text": "occurs",
+        "box": [
+          1212,
+          1703,
+          1280,
+          1725
+        ]
+      },
+      {
+        "text": "in",
+        "box": [
+          1286,
+          1703,
+          1305,
+          1725
+        ]
+      },
+      {
+        "text": "any",
+        "box": [
+          1311,
+          1703,
+          1347,
+          1725
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1353,
+          1703,
+          1373,
+          1725
+        ]
+      },
+      {
+        "text": "them",
+        "box": [
+          1380,
+          1703,
+          1432,
+          1725
+        ]
+      },
+      {
+        "text": "other",
+        "box": [
+          1438,
+          1703,
+          1491,
+          1725
+        ]
+      },
+      {
+        "text": "than",
+        "box": [
+          1498,
+          1703,
+          1542,
+          1725
+        ]
+      }
+    ]
+  },
+  {
+    "text": "the age of any of the proprietors.",
+    "box": [
+      871,
+      1729,
+      1202,
+      1752
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "the",
+        "box": [
+          871,
+          1729,
+          904,
+          1752
+        ]
+      },
+      {
+        "text": "age",
+        "box": [
+          910,
+          1729,
+          947,
+          1752
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          953,
+          1729,
+          973,
+          1752
+        ]
+      },
+      {
+        "text": "any",
+        "box": [
+          980,
+          1729,
+          1015,
+          1752
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1022,
+          1729,
+          1042,
+          1752
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          1048,
+          1729,
+          1081,
+          1752
+        ]
+      },
+      {
+        "text": "proprietors.",
+        "box": [
+          1087,
+          1729,
+          1202,
+          1752
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Date",
+    "box": [
+      136,
+      1774,
+      208,
+      1813
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Date",
+        "box": [
+          136,
+          1774,
+          208,
+          1813
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Note:",
+    "box": [
+      135,
+      1887,
+      203,
+      1914
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Note:",
+        "box": [
+          135,
+          1887,
+          203,
+          1914
+        ]
+      }
+    ]
+  },
+  {
+    "text": "1.",
+    "box": [
+      135,
+      1925,
+      153,
+      1952
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "1.",
+        "box": [
+          135,
+          1925,
+          153,
+          1952
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Fill and sign this application form.",
+    "box": [
+      235,
+      1925,
+      661,
+      1952
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Fill",
+        "box": [
+          235,
+          1925,
+          271,
+          1952
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          279,
+          1925,
+          326,
+          1952
+        ]
+      },
+      {
+        "text": "sign",
+        "box": [
+          333,
+          1925,
+          385,
+          1952
+        ]
+      },
+      {
+        "text": "this",
+        "box": [
+          393,
+          1925,
+          438,
+          1952
+        ]
+      },
+      {
+        "text": "application",
+        "box": [
+          446,
+          1925,
+          585,
+          1952
+        ]
+      },
+      {
+        "text": "form.",
+        "box": [
+          593,
+          1925,
+          661,
+          1952
+        ]
+      }
+    ]
+  },
+  {
+    "text": "2.",
+    "box": [
+      135,
+      1962,
+      157,
+      1989
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "2.",
+        "box": [
+          135,
+          1962,
+          157,
+          1989
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Upload recent passport photograph and Signature",
+    "box": [
+      235,
+      1962,
+      871,
+      1989
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Upload",
+        "box": [
+          235,
+          1962,
+          326,
+          1989
+        ]
+      },
+      {
+        "text": "recent",
+        "box": [
+          334,
+          1962,
+          413,
+          1989
+        ]
+      },
+      {
+        "text": "passport",
+        "box": [
+          421,
+          1962,
+          529,
+          1989
+        ]
+      },
+      {
+        "text": "photograph",
+        "box": [
+          537,
+          1962,
+          688,
+          1989
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          695,
+          1962,
+          743,
+          1989
+        ]
+      },
+      {
+        "text": "Signature",
+        "box": [
+          750,
+          1962,
+          871,
+          1989
+        ]
+      }
+    ]
+  },
+  {
+    "text": "3.",
+    "box": [
+      135,
+      1998,
+      157,
+      2025
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "3.",
+        "box": [
+          135,
+          1998,
+          157,
+          2025
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Scan the completed form in PDF format together with a scanned copy of a recognized means of",
+    "box": [
+      235,
+      1998,
+      1443,
+      2025
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Scan",
+        "box": [
+          235,
+          1998,
+          294,
+          2025
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          302,
+          1998,
+          343,
+          2025
+        ]
+      },
+      {
+        "text": "completed",
+        "box": [
+          350,
+          1998,
+          485,
+          2025
+        ]
+      },
+      {
+        "text": "form",
+        "box": [
+          492,
+          1998,
+          554,
+          2025
+        ]
+      },
+      {
+        "text": "in",
+        "box": [
+          561,
+          1998,
+          585,
+          2025
+        ]
+      },
+      {
+        "text": "PDF",
+        "box": [
+          592,
+          1998,
+          642,
+          2025
+        ]
+      },
+      {
+        "text": "format",
+        "box": [
+          650,
+          1998,
+          736,
+          2025
+        ]
+      },
+      {
+        "text": "together",
+        "box": [
+          743,
+          1998,
+          852,
+          2025
+        ]
+      },
+      {
+        "text": "with",
+        "box": [
+          860,
+          1998,
+          915,
+          2025
+        ]
+      },
+      {
+        "text": "a",
+        "box": [
+          922,
+          1998,
+          937,
+          2025
+        ]
+      },
+      {
+        "text": "scanned",
+        "box": [
+          944,
+          1998,
+          1047,
+          2025
+        ]
+      },
+      {
+        "text": "copy",
+        "box": [
+          1055,
+          1998,
+          1116,
+          2025
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1123,
+          1998,
+          1150,
+          2025
+        ]
+      },
+      {
+        "text": "a",
+        "box": [
+          1157,
+          1998,
+          1172,
+          2025
+        ]
+      },
+      {
+        "text": "recognized",
+        "box": [
+          1179,
+          1998,
+          1318,
+          2025
+        ]
+      },
+      {
+        "text": "means",
+        "box": [
+          1327,
+          1998,
+          1409,
+          2025
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          1417,
+          1998,
+          1443,
+          2025
+        ]
+      }
+    ]
+  },
+  {
+    "text": "identification (either Data Page of International Passport, Driver’s license, National Identity Card or",
+    "box": [
+      234,
+      2033,
+      1481,
+      2061
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "identification",
+        "box": [
+          234,
+          2033,
+          401,
+          2061
+        ]
+      },
+      {
+        "text": "(either",
+        "box": [
+          408,
+          2033,
+          491,
+          2061
+        ]
+      },
+      {
+        "text": "Data",
+        "box": [
+          499,
+          2033,
+          557,
+          2061
+        ]
+      },
+      {
+        "text": "Page",
+        "box": [
+          565,
+          2033,
+          627,
+          2061
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          634,
+          2033,
+          660,
+          2061
+        ]
+      },
+      {
+        "text": "International",
+        "box": [
+          668,
+          2033,
+          829,
+          2061
+        ]
+      },
+      {
+        "text": "Passport,",
+        "box": [
+          837,
+          2033,
+          952,
+          2061
+        ]
+      },
+      {
+        "text": "Driver’s",
+        "box": [
+          960,
+          2033,
+          1055,
+          2061
+        ]
+      },
+      {
+        "text": "license,",
+        "box": [
+          1063,
+          2033,
+          1154,
+          2061
+        ]
+      },
+      {
+        "text": "National",
+        "box": [
+          1170,
+          2033,
+          1277,
+          2061
+        ]
+      },
+      {
+        "text": "Identity",
+        "box": [
+          1285,
+          2033,
+          1382,
+          2061
+        ]
+      },
+      {
+        "text": "Card",
+        "box": [
+          1389,
+          2033,
+          1448,
+          2061
+        ]
+      },
+      {
+        "text": "or",
+        "box": [
+          1455,
+          2033,
+          1481,
+          2061
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Voter’s Card) and send via email to quickservice@cac.gov.ng",
+    "box": [
+      234,
+      2068,
+      997,
+      2096
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Voter’s",
+        "box": [
+          234,
+          2068,
+          323,
+          2096
+        ]
+      },
+      {
+        "text": "Card)",
+        "box": [
+          330,
+          2068,
+          398,
+          2096
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          406,
+          2068,
+          453,
+          2096
+        ]
+      },
+      {
+        "text": "send",
+        "box": [
+          461,
+          2068,
+          520,
+          2096
+        ]
+      },
+      {
+        "text": "via",
+        "box": [
+          528,
+          2068,
+          564,
+          2096
+        ]
+      },
+      {
+        "text": "email",
+        "box": [
+          572,
+          2068,
+          640,
+          2096
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          648,
+          2068,
+          674,
+          2096
+        ]
+      },
+      {
+        "text": "quickservice@cac.gov.ng",
+        "box": [
+          682,
+          2068,
+          997,
+          2096
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Proprietor's Address",
+    "box": [
+      136,
+      1226,
+      489,
+      1260
+    ],
+    "score": 0.9998111724853516,
+    "page": 2,
+    "source": "ocr"
+  },
+  {
+    "text": "Signature",
+    "box": [
+      137,
+      1591,
+      299,
+      1628
+    ],
+    "score": 0.9999966025352478,
+    "page": 2,
+    "source": "ocr"
+  }
+]

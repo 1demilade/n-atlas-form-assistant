@@ -1,0 +1,184 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 3 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 4 0 R
+/FNat <<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 5 0 R
+/CropBox [ 0.0 0.0 612 792 ]
+>>
+endobj
+4 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+endobj
+5 0 obj
+[ 7 0 R 8 0 R ]
+endobj
+6 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+7 0 obj
+<<
+/Length 1454
+>>
+stream
+q
+BT /F1 16.5 Tf 56.34 713.66 Td (CLINIC REGISTRATION) Tj ET
+BT /F1 13.2 Tf 56.34 679.17 Td (Personal details) Tj ET
+BT /F1 11 Tf 56.34 644.67 Td (Date of visit) Tj ET
+0.8 w 141.70 640.82 264.34 17.60 re S
+BT /F1 11 Tf 56.34 610.17 Td (Number of children:) Tj ET
+0.8 w 176.02 606.32 189.95 17.60 re S
+BT /F1 11 Tf 56.34 575.68 Td (Email address:) Tj ET
+0.8 w 147.42 571.83 m 312.75 571.83 l S
+BT /F1 13.2 Tf 56.34 541.18 Td (Contact information) Tj ET
+BT /F1 11 Tf 56.34 506.69 Td (Home address) Tj ET
+0.8 w 56.34 480.81 m 210.16 480.81 l S
+BT /F1 11 Tf 56.34 444.59 Td (Marital status:) Tj ET
+0.8 w 153.14 442.94 11.00 11.00 re S
+BT /F1 11 Tf 168.54 444.59 Td (Single) Tj ET
+0.8 w 224.86 442.94 11.00 11.00 re S
+BT /F1 11 Tf 240.26 444.59 Td (Married) Tj ET
+0.8 w 302.30 442.94 11.00 11.00 re S
+BT /F1 11 Tf 317.70 444.59 Td (Other) Tj ET
+BT /F1 11 Tf 56.34 410.10 Td (Age) Tj ET
+0.8 w 84.50 406.25 295.36 17.60 re S
+BT /F1 13.2 Tf 56.34 375.60 Td (Other information) Tj ET
+BT /F1 11 Tf 56.34 341.11 Td (Preferred contact:) Tj ET
+0.8 w 170.30 339.46 11.00 11.00 re S
+BT /F1 11 Tf 185.70 341.11 Td (Email) Tj ET
+0.8 w 236.30 339.46 11.00 11.00 re S
+BT /F1 11 Tf 251.70 341.11 Td (SMS) Tj ET
+0.8 w 290.86 339.46 11.00 11.00 re S
+BT /F1 11 Tf 306.26 341.11 Td (Call) Tj ET
+BT /F1 11 Tf 56.34 306.61 Td (Mobile phone:) Tj ET
+0.8 w 141.70 302.76 m 432.57 302.76 l S
+BT /F1 11 Tf 56.34 272.11 Td (Next of kin:) Tj ET
+0.8 w 135.98 268.26 m 387.51 268.26 l S
+Q
+
+endstream
+endobj
+8 0 obj
+<<
+/Length 597
+>>
+stream
+q
+0.0 0.0 612 792 re
+W
+n
+q
+1 0 0 1 0 0 cm
+0 0 0 rg
+0 0 0 RG
+BT
+/FNat 10.8 Tf
+143.12 645.13 Td
+(14\05703\0572026) Tj
+ET
+BT
+/FNat 11 Tf
+177.32 610.63 Td
+(3) Tj
+ET
+BT
+/FNat 7 Tf
+148.88 575.79 Td
+(ada\056obi\100example\056com) Tj
+ET
+BT
+/FNat 7 Tf
+57.8 484.71 Td
+(12 Marina Road\054 Lagos) Tj
+ET
+q
+1.2 w
+226.66 444.82 m
+234.14 451.94 l
+S
+226.66 451.94 m
+234.14 444.82 l
+S
+Q
+BT
+/FNat 11 Tf
+85.88 410.47 Td
+(3) Tj
+ET
+q
+1.2 w
+238.18 341.14 m
+245.3 348.62 l
+S
+238.18 348.62 m
+245.3 341.14 l
+S
+Q
+BT
+/FNat 7.3 Tf
+143.12 306.57 Td
+(08031234567) Tj
+ET
+BT
+/FNat 7 Tf
+137.36 272.31 Td
+(Example answer) Tj
+ET
+Q
+Q
+
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000123 00000 n 
+0000000372 00000 n 
+0000000469 00000 n 
+0000000500 00000 n 
+0000000539 00000 n 
+0000002045 00000 n 
+trailer
+<<
+/Size 9
+/Root 1 0 R
+/Info 6 0 R
+>>
+startxref
+2693
+%%EOF

@@ -1,0 +1,173 @@
+[
+  {
+    "id": "option_1",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "option_2",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "option_3",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "date_of_commencement_of_business",
+    "status": "filled",
+    "value": "14/03/2026"
+  },
+  {
+    "id": "general_nature_of_business_2",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "address",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "city_town_village",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "local_government",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "state",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "address_2",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "city_town_village_2",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "local_government_2",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "state_2",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "surname",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "first_name",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "other_name_s",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "former_name_s",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "nationality",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "former_nationality",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "gender",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "date_of_birth",
+    "status": "filled",
+    "value": "14/03/2026"
+  },
+  {
+    "id": "phone_number",
+    "status": "filled",
+    "value": "08031234567"
+  },
+  {
+    "id": "email",
+    "status": "filled",
+    "value": "ada.obi@example.com"
+  },
+  {
+    "id": "identity_number",
+    "status": "filled",
+    "value": "3"
+  },
+  {
+    "id": "nin",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "identity_type",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "occupation",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "address_3",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "city_town_village_3",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "local_government_3",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "state_3",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "attestation",
+    "status": "filled",
+    "value": "Example answer",
+    "warning": "text may not fit the answer box"
+  },
+  {
+    "id": "signature",
+    "status": "filled",
+    "value": "Example answer"
+  },
+  {
+    "id": "date",
+    "status": "filled",
+    "value": "14/03/2026"
+  }
+]

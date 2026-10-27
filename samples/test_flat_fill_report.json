@@ -1,0 +1,47 @@
+[
+  {
+    "id": "date_of_visit",
+    "status": "filled",
+    "value": "14/03/2026"
+  },
+  {
+    "id": "number_of_children",
+    "status": "filled",
+    "value": "3"
+  },
+  {
+    "id": "email_address",
+    "status": "filled",
+    "value": "ada.obi@example.com"
+  },
+  {
+    "id": "home_address",
+    "status": "filled",
+    "value": "12 Marina Road, Lagos"
+  },
+  {
+    "id": "marital_status",
+    "status": "filled",
+    "value": "X in 'Married'"
+  },
+  {
+    "id": "age",
+    "status": "filled",
+    "value": "3"
+  },
+  {
+    "id": "preferred_contact",
+    "status": "filled",
+    "value": "X in 'SMS'"
+  },
+  {
+    "id": "mobile_phone",
+    "status": "filled",
+    "value": "08031234567"
+  },
+  {
+    "id": "next_of_kin",
+    "status": "filled",
+    "value": "Example answer"
+  }
+]

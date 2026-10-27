@@ -1,0 +1,191 @@
+{
+  "seed": 1,
+  "page_size_pt": [
+    612,
+    792
+  ],
+  "font_size": 11,
+  "title": "CLINIC REGISTRATION",
+  "fillable": true,
+  "fields": [
+    {
+      "name": "f1_fld47",
+      "label": "Date of visit",
+      "type": "date",
+      "style": "box",
+      "label_above": false,
+      "format_action": "AFDate_FormatEx(\"dd/mm/yyyy\");",
+      "rects": [
+        [
+          141.6984096864936,
+          640.8198053517457,
+          406.0404220551849,
+          658.4198053517457
+        ]
+      ]
+    },
+    {
+      "name": "f2_q22",
+      "label": "Number of children",
+      "type": "number",
+      "style": "box",
+      "label_above": false,
+      "tooltip": "Number of children",
+      "rects": [
+        [
+          176.01840968649358,
+          606.3239128708653,
+          365.9679937550825,
+          623.9239128708654
+        ]
+      ]
+    },
+    {
+      "name": "f3_txt52",
+      "label": "Email address",
+      "type": "email",
+      "style": "line",
+      "label_above": false,
+      "rects": [
+        [
+          147.4184096864936,
+          571.828020389985,
+          312.75248340300084,
+          589.428020389985
+        ]
+      ]
+    },
+    {
+      "name": "f4_q64",
+      "label": "Home address",
+      "type": "text",
+      "style": "line",
+      "label_above": true,
+      "rects": [
+        [
+          56.338409686493584,
+          480.814316067564,
+          210.1552888355127,
+          498.414316067564
+        ]
+      ]
+    },
+    {
+      "name": "f5_txt48",
+      "label": "Marital status",
+      "type": "choice",
+      "style": "choice:Single|Married|Other",
+      "label_above": false,
+      "tooltip": "Marital status",
+      "rects": [
+        [
+          153.1384096864936,
+          442.9436289626396,
+          164.1384096864936,
+          453.9436289626396
+        ],
+        [
+          224.8584096864936,
+          442.9436289626396,
+          235.8584096864936,
+          453.9436289626396
+        ],
+        [
+          302.2984096864936,
+          442.9436289626396,
+          313.2984096864936,
+          453.9436289626396
+        ]
+      ],
+      "options": [
+        "Single",
+        "Married",
+        "Other"
+      ]
+    },
+    {
+      "name": "f6_fld85",
+      "label": "Age",
+      "type": "number",
+      "style": "box",
+      "label_above": false,
+      "format_action": "AFNumber_Format(0, 0, 0, 0, \"\", true);",
+      "rects": [
+        [
+          84.49840968649359,
+          406.24773648175915,
+          379.85450723060853,
+          423.84773648175917
+        ]
+      ]
+    },
+    {
+      "name": "f7_fld63",
+      "label": "Preferred contact",
+      "type": "choice",
+      "style": "choice:Email|SMS|Call",
+      "label_above": false,
+      "rects": [
+        [
+          170.29840968649359,
+          339.4559515199984,
+          181.29840968649359,
+          350.4559515199984
+        ],
+        [
+          236.29840968649359,
+          339.4559515199984,
+          247.29840968649359,
+          350.4559515199984
+        ],
+        [
+          290.8584096864936,
+          339.4559515199984,
+          301.8584096864936,
+          350.4559515199984
+        ]
+      ],
+      "options": [
+        "Email",
+        "SMS",
+        "Call"
+      ]
+    },
+    {
+      "name": "f8_q57",
+      "label": "Mobile phone",
+      "type": "phone",
+      "style": "line",
+      "label_above": false,
+      "tooltip": "Mobile phone",
+      "rects": [
+        [
+          141.6984096864936,
+          302.76005903911795,
+          432.57346252878153,
+          320.36005903911797
+        ]
+      ]
+    },
+    {
+      "name": "f9_txt30",
+      "label": "Next of kin",
+      "type": "unknown",
+      "style": "line",
+      "label_above": false,
+      "rects": [
+        [
+          135.9784096864936,
+          268.26416655823755,
+          387.50569066398975,
+          285.86416655823757
+        ]
+      ]
+    }
+  ],
+  "sections": [
+    "Personal details",
+    "Contact information",
+    "Other information"
+  ]
+}
