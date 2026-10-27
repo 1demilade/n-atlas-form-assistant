@@ -8,6 +8,7 @@ import numpy as np
 MAX_LABEL_WORDS = 8        # longer lines are treated as instructions, not labels
 MAX_PLAIN_LABEL_WORDS = 5  # labels without ':' or '?' must be this short
 OPTION_WORDS = {'yes', 'no', 'y', 'n', 'true', 'false'}
+BOX_GLYPHS = '□■☐☑☒▢▣◻◼'
 
 
 def clean_items(raw):
@@ -23,7 +24,9 @@ def clean_items(raw):
             box, (text, score) = item[0], item[1]
             page = 1
 
-        if not str(text).strip() or box is None:
+        # OCR sometimes reads a printed checkbox as a glyph glued to its option ('□No').
+        text = str(text).strip().strip(BOX_GLYPHS).strip()
+        if not text or box is None:
             continue
         if len(box) == 4 and isinstance(box[0], (list, tuple)):
             xs = [point[0] for point in box]

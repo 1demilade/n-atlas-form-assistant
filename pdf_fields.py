@@ -199,8 +199,10 @@ def _union(boxes):
 
 
 def _nearest(target, candidates, text_height, sides, exclude=()):
-    """Closest candidate (dict with 'box') on the allowed sides of target, or (None, None)."""
-    best, best_distance, best_side = None, None, None
+    """Closest candidate (dict with 'box') on the allowed sides of target, or (None, None).
+    Sides are tried in the given order: a label on an earlier side beats a closer one on a
+    later side (a label on the same row beats a heading just above the input)."""
+    best, best_rank, best_side = None, None, None
     for candidate in candidates:
         box = candidate['box']
         if any(box == other for other in exclude):
@@ -215,13 +217,16 @@ def _nearest(target, candidates, text_height, sides, exclude=()):
             horizontal = (_overlap(box[0], box[2], target[0], target[2]) > 0
                           or abs(box[0] - target[0]) <= 2 * text_height)
             if gap <= ABOVE_MAX * text_height and horizontal:
-                distance, side = max(0, gap) * 1.5, 'above'  # prefer a label on the same row
+                distance, side = max(0, gap), 'above'
         if distance is None and 'right' in sides and _same_row(box, target) and box[0] >= target[2] - text_height * 0.5:
             gap = box[0] - target[2]
             if gap <= RIGHT_MAX * text_height:
                 distance, side = max(0, gap), 'right'
-        if distance is not None and (best_distance is None or distance < best_distance):
-            best, best_distance, best_side = candidate, distance, side
+        if distance is None:
+            continue
+        rank = (sides.index(side), distance)
+        if best_rank is None or rank < best_rank:
+            best, best_rank, best_side = candidate, rank, side
     return best, best_side
 
 
@@ -269,13 +274,16 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
         return [e for e in entries if e['page'] == page
                 and not any(_covered(e['box'], w) > INSIDE_SHARE for w in widget_boxes.get(page, []))]
 
-    questions, layoutlm_error = [], None
+    questions, headers, layoutlm_error = [], [], None
     if use_layoutlm and items:
         try:
             from layout import _layoutlm_candidates
-            candidates, _ = _layoutlm_candidates(items, pages, entities)
+            candidates, others = _layoutlm_candidates(items, pages, entities)
             questions = [{'text': c['label'], 'box': c['label_box'], 'page': c['page'],
                           'confidence': c['confidence']} for c in candidates]
+            # The model sometimes tags a label as a heading; next to an input it is still a label.
+            headers = [{'text': e['text'], 'box': e['box'], 'page': e['page'],
+                        'confidence': e['confidence']} for e in others if e['kind'] == 'header']
         except Exception as error:  # LayoutLM missing or failed: nearby text is still used
             layoutlm_error = repr(error)
 
@@ -303,12 +311,19 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
                     option_boxes.append(text['box'])
 
         # Label: LayoutLM question, then tooltip, then nearby text, then the field name.
-        sides = ('left', 'above', 'right') if is_box and len(on_page) == 1 else ('left', 'above')
+        sides = ('left', 'right', 'above') if is_box and len(on_page) == 1 else ('left', 'above')
         label, label_box, label_source, confidence = None, None, None, None
         hit, side = _nearest(group_box, free(questions, page), text_height, sides, option_boxes)
+        header_hit, header_side = (None, None) if hit else _nearest(
+            group_box, free(headers, page), text_height, sides, option_boxes)
         if hit:
             label, label_box, confidence = hit['text'], hit['box'], hit['confidence']
             label_source = f'layoutlm_{side}'
+        elif header_hit:
+            label, label_box = header_hit['text'], header_hit['box']
+            # Tagged as a heading, so less sure: always reviewed (see needs_review below).
+            confidence = min(header_hit['confidence'], REVIEW_BELOW_CONFIDENCE - 0.01)
+            label_source = f'layoutlm_header_{header_side}'
         elif raw['tooltip']:
             label, label_source = raw['tooltip'].strip(), 'tooltip'
         else:

@@ -23,6 +23,9 @@ DRAWN_METHODS = {'table_cell', 'box', 'underline', 'checkboxes', 'layoutlm_answe
                  'box_below', 'underline_below'}
 # A label alone in a table row at least this wide (share of the page's text width) is a heading.
 SECTION_ROW_SHARE = 0.6
+# A label with only a guessed answer area, printed this much taller than the page's median
+# text, is a heading (headings are usually set larger).
+SECTION_TEXT_SCALE = 1.15
 
 
 def _same_row(a, b, share=0.5):
@@ -161,7 +164,7 @@ def _finish(candidates, items, pages, entities=()):
                     option_boxes.append(max(left_of, key=lambda c: c[0]))
 
         confidence = round(float(candidate['confidence']), 3)
-        section_reason = _section_reason(candidate, method, box, regions[page], page_items)
+        section_reason = _section_reason(candidate, method, box, regions[page], page_items, text_height)
         fields.append({
             'id': _slug(candidate['label'], used_ids),
             'label': candidate['label'],
@@ -182,14 +185,19 @@ def _finish(candidates, items, pages, entities=()):
     return fields
 
 
-def _section_reason(candidate, method, label_box, regions, page_items):
+def _section_reason(candidate, method, label_box, regions, page_items, text_height=None):
     """Why this label is a section heading rather than a field, or None.
-    Generic: uses the model's own 'header' tag and the shape of the row, never the wording."""
+    Generic: uses the model's own 'header' tag, the shape of the row and the text size,
+    never the wording."""
     from answer_areas import _cell_of
     if candidate.get('from_header'):
         return None if method in DRAWN_METHODS else 'layoutlm_header'
     if method == 'none':
         return 'no_answer_area'
+    line_heights = [item['box'][3] - item['box'][1] for item in candidate.get('label_items', [])]
+    if (text_height and method in GUESSED_METHODS and line_heights
+            and min(line_heights) >= SECTION_TEXT_SCALE * text_height):
+        return 'larger_text_no_drawn_area'
     if method == 'own_cell':
         cell = _cell_of(label_box, regions['cells'])
         left = min(item['box'][0] for item in page_items)
