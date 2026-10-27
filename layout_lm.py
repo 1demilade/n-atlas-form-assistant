@@ -9,6 +9,7 @@ TOKENIZER_NAME = 'microsoft/layoutlm-base-uncased'
 MAX_LENGTH = 512           # LayoutLM position limit
 STRIDE = 128               # tokens shared between overlapping windows on long pages
 ROW_TOLERANCE = 0.5        # boxes whose centres differ by < this * height are on one row
+UNSURE_WORD = 0.6          # words below this probability join the previous entity on their line
 
 _MODEL = None
 _TOKENIZER = None
@@ -147,6 +148,9 @@ def group_entities(words, probabilities, id2label, page):
         label_id = int(np.argmax(probs))
         tag, kind = split_label(id2label[label_id])
         current = entities[-1] if entities else None
+        # An unsure word continues the entity before it on the same line.
+        if current and current['line'] == word['line'] and probs[label_id] < UNSURE_WORD:
+            tag, kind = 'I', current['kind']
         if (current and current['kind'] == kind and current['line'] == word['line']
                 and tag != 'B'):
             current['words'].append(word)

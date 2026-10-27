@@ -146,7 +146,8 @@ def find_answer_box(label_box, page_items, regions, page_size, text_height,
     # 1. LayoutLM answer on the same row to the right, or right below the label.
     for answer in answer_entities:
         box = answer['box']
-        right = _same_row(label_box, box) and box[0] >= label_box[2] - gap
+        right = (_same_row(label_box, box) and label_box[2] - gap <= box[0] < right_edge
+                 and box[0] - label_box[2] <= 6 * text_height)
         below = (0 <= box[1] - label_box[3] <= 1.5 * text_height
                  and _overlap(label_box[0], label_box[2], box[0], box[2]) > 0)
         if right or below:

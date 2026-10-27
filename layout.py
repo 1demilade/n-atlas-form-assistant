@@ -25,22 +25,29 @@ def _same_row(a, b, share=0.5):
     return overlap >= share * min(a[3] - a[1], b[3] - b[1])
 
 
+INSTRUCTION_START = re.compile(r'^(please|kindly|note|n\.b|important)\b', re.IGNORECASE)
+MAX_QUESTION_WORDS = 12
+
+
 def _items_in(box, items, page):
-    """OCR items on `page` whose centre lies inside box."""
-    result = []
-    for item in items:
-        x1, y1, x2, y2 = item['box']
-        cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
-        if item['page'] == page and box[0] <= cx <= box[2] and box[1] <= cy <= box[3]:
-            result.append(item)
-    return result
+    """OCR items on `page` that overlap box (a LayoutLM entity can be part of an OCR line)."""
+    return [item for item in items if item['page'] == page
+            and min(box[2], item['box'][2]) > max(box[0], item['box'][0])
+            and min(box[3], item['box'][3]) > max(box[1], item['box'][1])]
+
+
+def _is_instruction(text):
+    """Sentences telling the user what to do are not fields, even if tagged as questions."""
+    return bool(INSTRUCTION_START.match(text)) or (
+        len(text.split()) > MAX_QUESTION_WORDS and not text.rstrip().endswith('?'))
 
 
 def _layoutlm_candidates(items, pages):
+    """Return (label candidates, other LayoutLM entities: answers/headers/other text)."""
     from layout_lm import extract_entities
     entities = extract_entities(items, pages)
     questions = [e for e in entities if e['kind'] == 'question']
-    answers = [e for e in entities if e['kind'] == 'answer']
+    others = [e for e in entities if e['kind'] != 'question']
 
     # Join question pieces that sit side by side on one row (the model sometimes splits a label).
     questions.sort(key=lambda e: (e['page'], e['box'][1], e['box'][0]))
@@ -60,6 +67,7 @@ def _layoutlm_candidates(items, pages):
     for entity in merged:
         label = clean_label(entity['text'])
         if not re.search(r'[A-Za-z]{2,}', label) or is_option_word(label):
+            others.append(entity)
             continue
         candidates.append({
             'label': label,
@@ -70,7 +78,15 @@ def _layoutlm_candidates(items, pages):
             'label_items': _items_in(entity['box'], items, entity['page']),
         })
     candidates, _ = _merge_wrapped_labels(candidates, items)
-    return candidates, answers
+    # Instructions are dropped after merging, so their wrapped second lines go with them.
+    kept = []
+    for candidate in candidates:
+        if _is_instruction(candidate['label']):
+            others.append({'kind': 'other', 'text': candidate['label'],
+                           'box': candidate['label_box'], 'page': candidate['page']})
+        else:
+            kept.append(candidate)
+    return kept, others
 
 
 def _slug(label, used):
@@ -82,8 +98,12 @@ def _slug(label, used):
     return slug
 
 
-def _finish(candidates, items, pages, answers):
-    """Add answer_box, type, id and needs_review to each label candidate."""
+def _finish(candidates, items, pages, entities=()):
+    """Add answer_box, type, id and needs_review to each label candidate.
+    entities = non-question LayoutLM entities (answers are used; other text blocks empty space)."""
+    answers = [e for e in entities if e['kind'] == 'answer']
+    blockers = [{'text': e['text'], 'box': e['box'], 'page': e['page']}
+                for e in entities if e['kind'] != 'answer']
     regions, heights = {}, {}
     for page in {c['page'] for c in candidates}:
         page_items = [item for item in items if item['page'] == page]
@@ -109,8 +129,9 @@ def _finish(candidates, items, pages, answers):
         right_limit = min(next_labels) - text_height * 0.3 if next_labels else None
 
         page_answers = [a for a in answers if a['page'] == page]
+        blocking = page_items + [b for b in blockers if b['page'] == page]
         answer_box, method = find_answer_box(
-            box, page_items, regions[page], (image.shape[1], image.shape[0]), text_height,
+            box, blocking, regions[page], (image.shape[1], image.shape[0]), text_height,
             page_answers, candidate['label_items'], right_limit)
 
         limit = right_limit if right_limit is not None else image.shape[1]
@@ -146,21 +167,21 @@ def find_fields(ocr_items, image_path, method='auto', clean=True):
     from ocr import prepare_pages
     pages = prepare_pages(image_path, clean)
     items = clean_items(ocr_items)
-    answers = []
+    entities = []
     candidates = None
     if method in ('auto', 'layoutlm'):
         try:
-            candidates, answers = _layoutlm_candidates(items, pages)
+            candidates, entities = _layoutlm_candidates(items, pages)
             if not candidates:
                 raise RuntimeError('LayoutLM found no question/label text.')
         except Exception as error:
             if method == 'layoutlm':
                 raise
             print(f'LayoutLM failed ({error!r}); using rule-based fallback.', file=sys.stderr)
-            candidates, answers = None, []
+            candidates, entities = None, []
     if candidates is None:
         candidates = extract_fields(items)
-    return _finish(candidates, items, pages, answers)
+    return _finish(candidates, items, pages, entities)
 
 
 def explain_fields_in_language(fields, language):
