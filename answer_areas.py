@@ -189,6 +189,24 @@ def find_answer_box(label_box, page_items, regions, page_size, text_height,
             if not _contains_text(box, page_items, label_items):
                 return box, 'underline'
 
+    # 3c. Label printed above its input: an underline or write-in box just below the label,
+    #     starting near the label's left edge, with no text in between. Not inside table cells,
+    #     where the line below a label is the cell border.
+    if own is None:
+        below = [(b[1], b, 'box_below') for b in regions.get('boxes', [])]
+        below += [((l[1] + l[3]) / 2, l, 'underline_below') for l in regions['lines']]
+        for y, shape, kind in sorted(below, key=lambda entry: entry[0]):
+            if not (label_box[3] <= y <= label_box[3] + 2.5 * text_height):
+                continue
+            if not (abs(shape[0] - label_box[0]) <= 2 * text_height
+                    and shape[2] - shape[0] >= 2 * text_height and shape[0] < right_edge):
+                continue
+            box = (list(shape) if kind == 'box_below'
+                   else [shape[0], int(max(label_box[3], y - 1.2 * text_height)), shape[2], int(y)])
+            gap = [box[0], label_box[3], box[2], box[3]]
+            if not _contains_text(gap, page_items, label_items):
+                return [int(v) for v in box], kind
+
     # 4. Checkboxes on the label's row.
     boxes = nearby_checkboxes(label_box, regions, page_items, text_height, right_edge + text_height)
     if boxes:

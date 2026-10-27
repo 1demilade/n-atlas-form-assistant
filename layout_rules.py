@@ -206,8 +206,10 @@ def extract_fields(ocr_items):
     return labels
 
 
-def draw_boxes(fields, form_path, out_path='form_boxes.png', ocr_items=None, clean=True):
-    """Draw labels (red) and answer areas (blue) on the same page images that were OCR'd.
+def draw_boxes(fields, form_path, out_path='form_boxes.png', ocr_items=None, clean=True,
+               sections=None):
+    """Draw labels (red), answer areas (blue) and section headings (green) on the same page
+    images that were OCR'd (PDFs: the colour render). Fillable fields: every widget is drawn.
     ocr_items is kept for backward compatibility; when given, OCR text is outlined in grey."""
     from ocr import prepare_pages
     pages = [page.copy() for page in prepare_pages(form_path, clean)]
@@ -221,11 +223,21 @@ def draw_boxes(fields, form_path, out_path='form_boxes.png', ocr_items=None, cle
             raise ValueError(f"Field {field['id']} refers to missing page {field.get('page')}.")
         page = pages[page_index]
         thickness = max(2, page.shape[1] // 600)
-        x1, y1, x2, y2 = field['label_box']
-        cv2.rectangle(page, (x1, y1), (x2, y2), (0, 0, 255), thickness)
-        if field.get('answer_box'):
+        if field.get('label_box'):
+            x1, y1, x2, y2 = field['label_box']
+            cv2.rectangle(page, (x1, y1), (x2, y2), (0, 0, 255), thickness)
+        widgets = (field.get('pdf') or {}).get('widgets')
+        if widgets:
+            for widget in widgets:
+                x1, y1, x2, y2 = widget['box']
+                cv2.rectangle(pages[widget['page'] - 1], (x1, y1), (x2, y2), (255, 0, 0), thickness)
+        elif field.get('answer_box'):
             x1, y1, x2, y2 = field['answer_box']
             cv2.rectangle(page, (x1, y1), (x2, y2), (255, 0, 0), thickness)
+    for section in sections or []:
+        page = pages[section['page'] - 1]
+        x1, y1, x2, y2 = section['box']
+        cv2.rectangle(page, (x1, y1), (x2, y2), (0, 160, 0), max(2, page.shape[1] // 600))
 
     gutter = 20
     width = max(page.shape[1] for page in pages)

@@ -18,6 +18,11 @@ from layout_rules import (_merge_wrapped_labels, clean_items, clean_label, draw_
 REVIEW_BELOW_CONFIDENCE = 0.6
 # Answer areas found this way are plausible but often wrong (e.g. a section heading's own row).
 GUESSED_METHODS = {'own_cell', 'empty_right', 'empty_below', 'none'}
+# Answer areas drawn on the form itself: text tagged as a heading that has one is a field.
+DRAWN_METHODS = {'table_cell', 'box', 'underline', 'checkboxes', 'layoutlm_answer',
+                 'box_below', 'underline_below'}
+# A label alone in a table row at least this wide (share of the page's text width) is a heading.
+SECTION_ROW_SHARE = 0.6
 
 
 def _same_row(a, b, share=0.5):
@@ -42,10 +47,11 @@ def _is_instruction(text):
         len(text.split()) > MAX_QUESTION_WORDS and not text.rstrip().endswith('?'))
 
 
-def _layoutlm_candidates(items, pages):
-    """Return (label candidates, other LayoutLM entities: answers/headers/other text)."""
+def _layoutlm_candidates(items, pages, entities=None):
+    """Return (label candidates, other LayoutLM entities: answers/headers/other text).
+    entities: reuse an earlier extract_entities() result instead of running the model again."""
     from layout_lm import extract_entities
-    entities = extract_entities(items, pages)
+    entities = extract_entities(items, pages) if entities is None else entities
     questions = [e for e in entities if e['kind'] == 'question']
     others = [e for e in entities if e['kind'] != 'question']
 
@@ -104,8 +110,9 @@ def _finish(candidates, items, pages, entities=()):
     """Add answer_box, type, id and needs_review to each label candidate.
     entities = non-question LayoutLM entities (answers are used; other text blocks empty space)."""
     answers = [e for e in entities if e['kind'] == 'answer']
+    header_boxes = [c['label_box'] for c in candidates if c.get('from_header')]
     blockers = [{'text': e['text'], 'box': e['box'], 'page': e['page']}
-                for e in entities if e['kind'] != 'answer']
+                for e in entities if e['kind'] != 'answer' and e['box'] not in header_boxes]
     regions, heights = {}, {}
     for page in {c['page'] for c in candidates}:
         page_items = [item for item in items if item['page'] == page]
@@ -138,13 +145,23 @@ def _finish(candidates, items, pages, entities=()):
 
         limit = right_limit if right_limit is not None else image.shape[1]
         checkboxes = nearby_checkboxes(box, regions[page], page_items, text_height, limit)
-        options = [item['text'] for item in page_items
-                   if _same_row(box, item['box'], 0.3) and box[2] < item['box'][0] < limit
-                   and (is_option_word(item['text'])
-                        or next_to_checkbox(item['box'], checkboxes, text_height))]
+        option_items = [item for item in page_items
+                        if _same_row(box, item['box'], 0.3) and box[2] < item['box'][0] < limit
+                        and (is_option_word(item['text'])
+                             or next_to_checkbox(item['box'], checkboxes, text_height))]
+        options = [item['text'] for item in option_items]
         field_type = guess_type(candidate['label'], options, len(checkboxes))
+        # The checkbox each option belongs to (the nearest one to the option's left), for filling.
+        option_boxes = []
+        for item in option_items:
+            if checkboxes:
+                left_of = [c for c in checkboxes if c[0] <= item['box'][0] + text_height
+                           and _same_row(c, item['box'], 0.3)]
+                if left_of:
+                    option_boxes.append(max(left_of, key=lambda c: c[0]))
 
         confidence = round(float(candidate['confidence']), 3)
+        section_reason = _section_reason(candidate, method, box, regions[page], page_items)
         fields.append({
             'id': _slug(candidate['label'], used_ids),
             'label': candidate['label'],
@@ -153,37 +170,207 @@ def _finish(candidates, items, pages, entities=()):
             'type': field_type,
             'source': candidate['source'],
             'confidence': confidence,
-            'needs_review': confidence < REVIEW_BELOW_CONFIDENCE or method in GUESSED_METHODS,
+            'needs_review': (confidence < REVIEW_BELOW_CONFIDENCE or method in GUESSED_METHODS
+                             or bool(candidate.get('from_header'))),
             'page': page,
             'answer_method': method,
             'options': options,
+            'option_boxes': [[int(v) for v in b] for b in option_boxes]
+            if len(option_boxes) == len(options) else [],
+            'section_reason': section_reason,
         })
     return fields
 
 
-def find_fields(ocr_items, image_path, method='auto', clean=True):
-    """OCR items (Shape 1) + the form file they came from -> list of fields (Shape 2).
+def _section_reason(candidate, method, label_box, regions, page_items):
+    """Why this label is a section heading rather than a field, or None.
+    Generic: uses the model's own 'header' tag and the shape of the row, never the wording."""
+    from answer_areas import _cell_of
+    if candidate.get('from_header'):
+        return None if method in DRAWN_METHODS else 'layoutlm_header'
+    if method == 'none':
+        return 'no_answer_area'
+    if method == 'own_cell':
+        cell = _cell_of(label_box, regions['cells'])
+        left = min(item['box'][0] for item in page_items)
+        right = max(item['box'][2] for item in page_items)
+        if cell and (cell[2] - cell[0]) >= SECTION_ROW_SHARE * max(1, right - left):
+            return 'alone_in_full_width_row'
+    return None
+
+
+def _split_sections(entries):
+    """Separate section headings from fields; link every field to the nearest heading above it."""
+    fields, sections = [], []
+    for entry in sorted(entries, key=lambda e: (e['page'], e['label_box'][1], e['label_box'][0])):
+        reason = entry.pop('section_reason', None)
+        if reason:
+            sections.append({
+                'id': 'section_' + entry['id'],
+                'title': entry['label'],
+                'box': entry['label_box'],
+                'page': entry['page'],
+                'source': entry['source'],
+                'reason': reason,
+                'confidence': entry['confidence'],
+                # The model's own header tag is trusted; geometry-only headings are a guess.
+                'needs_review': reason != 'layoutlm_header' or entry['confidence'] < REVIEW_BELOW_CONFIDENCE,
+            })
+        else:
+            fields.append(entry)
+    _assign_sections(fields, sections)
+    return fields, sections
+
+
+def _inside(box, outer, share=0.8):
+    """True if at least `share` of box's area lies within outer."""
+    ix = max(0, min(box[2], outer[2]) - max(box[0], outer[0]))
+    iy = max(0, min(box[3], outer[3]) - max(box[1], outer[1]))
+    return ix * iy >= share * max(1, (box[2] - box[0]) * (box[3] - box[1]))
+
+
+def _whole_line(entity, items):
+    """(text, box) of the text lines a heading entity sits in: the model may tag only part of a
+    heading (e.g. 'information' of 'Other information') as header."""
+    lines = _items_in(entity['box'], items, entity['page'])
+    if not lines:
+        return entity['text'], entity['box']
+    lines.sort(key=lambda item: (item['box'][1], item['box'][0]))
+    return ' '.join(item['text'] for item in lines), union_box([item['box'] for item in lines])
+
+
+def _header_candidates(entities, items):
+    """Text the model tagged as a heading, as label candidates (checked for an answer area)."""
+    candidates, seen = [], set()
+    for entity in entities:
+        if entity['kind'] != 'header':
+            continue
+        text, box = _whole_line(entity, items)
+        if (entity['page'], tuple(box)) in seen:
+            continue  # two header pieces of one line
+        seen.add((entity['page'], tuple(box)))
+        entity = dict(entity, text=text, box=box)
+        label = clean_label(entity['text'])
+        if not re.search(r'[A-Za-z]{2,}', label) or _is_instruction(label):
+            continue
+        candidates.append({'label': label, 'label_box': entity['box'], 'page': entity['page'],
+                           'confidence': entity['confidence'], 'source': 'layoutlm',
+                           'label_items': _items_in(entity['box'], items, entity['page']),
+                           'from_header': True})
+    return candidates
+
+
+def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, entities=None):
+    """Flat forms: words (Shape 1) + the form file -> (fields (Shape 2), section headings).
 
     method: 'auto' (LayoutLM, falling back to rules), 'layoutlm', or 'rules'.
+    entities: reuse an earlier layout_lm.extract_entities() result.
     """
     from ocr import prepare_pages
     pages = prepare_pages(image_path, clean)
     items = clean_items(ocr_items)
-    entities = []
+    others = []
     candidates = None
     if method in ('auto', 'layoutlm'):
         try:
-            candidates, entities = _layoutlm_candidates(items, pages)
+            candidates, others = _layoutlm_candidates(items, pages, entities)
             if not candidates:
                 raise RuntimeError('LayoutLM found no question/label text.')
+            headers = _header_candidates(others, items)
+            # A 'question' piece inside a heading's line is part of that heading, not a field.
+            candidates = [c for c in candidates if not any(
+                h['page'] == c['page'] and _inside(c['label_box'], h['label_box']) for h in headers)]
+            candidates += headers
         except Exception as error:
             if method == 'layoutlm':
                 raise
             print(f'LayoutLM failed ({error!r}); using rule-based fallback.', file=sys.stderr)
-            candidates, entities = None, []
+            candidates, others = None, []
     if candidates is None:
         candidates = extract_fields(items)
-    return _finish(candidates, items, pages, entities)
+    return _split_sections(_finish(candidates, items, pages, others))
+
+
+def find_fields(ocr_items, image_path, method='auto', clean=True):
+    """OCR items (Shape 1) + the form file they came from -> list of fields (Shape 2).
+    Section headings are left out; use find_fields_and_sections() to get them too."""
+    return find_fields_and_sections(ocr_items, image_path, method, clean)[0]
+
+
+def _assign_sections(fields, sections):
+    for field in fields:
+        anchor = field['label_box'] or field['answer_box']
+        above = [s for s in sections if (s['page'], s['box'][1]) <= (field['page'], anchor[1])]
+        field['section'] = above[-1]['id'] if above else None
+
+
+def _fillable_sections(entities, fields, items):
+    """Headings on a fillable PDF: text the model tagged as a header that is not a field label."""
+    labels = [(f['page'], f['label_box']) for f in fields if f['label_box']]
+    widgets = [(w['page'], w['box']) for f in fields for w in f['pdf']['widgets']]
+    sections, used, seen = [], set(), set()
+    for entity in entities:
+        if entity['kind'] == 'header':
+            text, box = _whole_line(entity, items)
+            if (entity['page'], tuple(box)) in seen:
+                continue  # two header pieces of one line
+            seen.add((entity['page'], tuple(box)))
+            entity = dict(entity, text=text, box=box)
+        title = clean_label(entity['text'])
+        if (entity['kind'] != 'header' or not re.search(r'[A-Za-z]{2,}', title)
+                or _is_instruction(title)):
+            continue
+        box = entity['box']
+        if any(page == entity['page'] and min(box[2], b[2]) > max(box[0], b[0])
+               and min(box[3], b[3]) > max(box[1], b[1]) for page, b in labels + widgets):
+            continue
+        sections.append({'id': 'section_' + _slug(title, used), 'title': title, 'box': box,
+                         'page': entity['page'], 'source': 'layoutlm', 'reason': 'layoutlm_header',
+                         'confidence': round(float(entity['confidence']), 3),
+                         'needs_review': entity['confidence'] < REVIEW_BELOW_CONFIDENCE})
+    return sorted(sections, key=lambda s: (s['page'], s['box'][1], s['box'][0]))
+
+
+def analyse_form(path, ocr_items=None, method='auto', clean=True):
+    """Whole pipeline for one form -> one JSON-ready object:
+    {file, kind ('fillable' | 'flat' | 'image'), dpi, pages, method, fields, sections, notes}.
+    All boxes are pixels of the page images from ocr.prepare_pages (PDFs: the dpi render)."""
+    from pathlib import Path
+
+    from ocr import PDF_SUFFIXES, prepare_pages, read_form
+    items = read_form(path, clean) if ocr_items is None else ocr_items
+    pages = prepare_pages(path, clean)
+    if Path(path).suffix.lower() in PDF_SUFFIXES:
+        from pdf_input import describe_pdf
+        info = describe_pdf(path, items)
+    else:
+        info = {'file': str(path), 'kind': 'image', 'dpi': None,
+                'pages': [{'page': n, 'width_px': int(p.shape[1]), 'height_px': int(p.shape[0]),
+                           'word_source': 'ocr'} for n, p in enumerate(pages, start=1)]}
+    notes, entities = [], None
+    if method != 'rules':
+        try:
+            from layout_lm import extract_entities
+            entities = extract_entities(clean_items(items), pages)
+        except Exception as error:
+            if method == 'layoutlm':
+                raise
+            notes.append(f'LayoutLM failed ({error!r}); labels come from rules/nearby text.')
+
+    if info['kind'] == 'fillable':
+        from pdf_fields import find_fillable_fields
+        fields, error = find_fillable_fields(path, items, entities is not None, entities)
+        if error:
+            notes.append(f'LayoutLM label linking failed ({error}).')
+        sections = _fillable_sections(entities or [], fields, clean_items(items))
+        _assign_sections(fields, sections)
+        used = 'acroform+layoutlm' if entities is not None else 'acroform'
+    else:
+        fields, sections = find_fields_and_sections(
+            items, path, 'rules' if entities is None else method, clean, entities)
+        used = '+'.join(sorted({f['source'] for f in fields})) or 'none'
+    info.update({'method': used, 'fields': fields, 'sections': sections, 'notes': notes})
+    return info
 
 
 def explain_fields_in_language(fields, language):
@@ -212,17 +399,26 @@ def main():
         with open(args.ocr_out, 'w', encoding='utf-8') as file:
             json.dump(ocr_items, file, indent=2, ensure_ascii=False)
 
-    fields = find_fields(ocr_items, args.input, args.method, clean)
+    form = analyse_form(args.input, ocr_items, args.method, clean)
+    fields, sections = form['fields'], form['sections']
     with open(args.fields, 'w', encoding='utf-8') as file:
-        json.dump(fields, file, indent=2, ensure_ascii=False)
-    draw_boxes(fields, args.input, args.boxes, clean=clean)
+        json.dump(form, file, indent=2, ensure_ascii=False)
+    draw_boxes(fields, args.input, args.boxes, clean=clean, sections=sections)
 
+    pages = ', '.join(f"p{p['page']}={p.get('word_source')}" for p in form['pages'])
+    print(f"kind={form['kind']} method={form['method']} words: {pages}")
+    for note in form['notes']:
+        print('NOTE:', note)
+    for section in sections:
+        flag = ' (review)' if section['needs_review'] else ''
+        print(f"p{section['page']} SECTION {section['title']!r} [{section['reason']}]{flag}")
     for field in fields:
         flag = ' (review)' if field['needs_review'] else ''
+        how = field.get('label_source') or field['answer_method']
         print(f"p{field['page']} {field['label']!r:45} {field['type']:8} "
-              f"{field['source']}/{field['answer_method']}{flag}")
-    print(f'{len(fields)} fields found. Saved {args.fields} and {args.boxes} '
-          '(red = label, blue = answer area).')
+              f"{field['source']}/{how}{flag}")
+    print(f'{len(fields)} fields, {len(sections)} sections. Saved {args.fields} and {args.boxes} '
+          '(red = label, blue = answer area, green = section).')
 
 
 if __name__ == '__main__':
