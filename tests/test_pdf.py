@@ -339,6 +339,26 @@ class FillTests(Tmp):
         self.assertIn('is not in the PDF', report[radio['id']]['reason'])
         self.assertEqual(len(report), len(truth['fields']))
 
+    def test_fields_list_or_form_object(self):
+        """fill_form(pdf_path, fields, ...) takes the bare fields list too (page sizes from a render)."""
+        import pdfplumber
+        path = self.tmp / 'b.pdf'
+        truth = make_flat_pdf(path, 2, 8)
+        render = prepare_pages(path)[0]
+        fields = [{'id': f'f{n}', 'label': t['label'], 'page': 1, 'options': [], 'answer_method': 'box',
+                   'answer_box': to_px(t['rects'][0], truth, render)}
+                  for n, t in enumerate(truth['fields']) if t['style'] in ('line', 'box')]
+        answers = {f['id']: 'Lagos' for f in fields}
+        form = {'form': {'pages': describe_pdf(path)['pages']}, 'fields': fields, 'sections': []}
+        words = []
+        for name, given in (('obj.pdf', form), ('list.pdf', fields)):
+            report = fill_form(path, given, answers, self.tmp / name)
+            self.assertTrue(all(r['status'] == 'filled' for r in report), report)
+            with pdfplumber.open(str(self.tmp / name)) as pdf:
+                words.append([(w['text'], round(w['x0'], 1), round(w['top'], 1))
+                              for w in pdf.pages[0].extract_words()])
+        self.assertEqual(words[0], words[1])
+
     def test_flat_text_and_crosses_land_in_place(self):
         import numpy as np
         import pdfplumber

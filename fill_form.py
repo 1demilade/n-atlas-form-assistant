@@ -298,11 +298,23 @@ def _fill_flat(reader, fields, answers, sizes_px, writer=None):
     return writer, report
 
 
-def fill_form(pdf_path, form, answers, out_path):
-    """Fill pdf_path with answers; write out_path. form = the JSON object from layout.py (or its
-    path); answers = {field id: English text} (or its path). Returns the per-field report."""
+def _page_sizes(form, pdf_path):
+    """Pixel size of each page the boxes refer to: from the form JSON, else from a render at the
+    same DPI the pipeline uses."""
+    pages = (form.get('form') or {}).get('pages')
+    if pages:
+        return [(p['width_px'], p['height_px']) for p in pages]
+    from ocr import prepare_pages
+    return [(p.shape[1], p.shape[0]) for p in prepare_pages(pdf_path, clean=False)]
+
+
+def fill_form(pdf_path, fields, answers, out_path):
+    """Fill pdf_path with answers; write out_path. fields = the fields list, or the whole JSON
+    object from layout.py, or its path; answers = {field id or key: English text} (or its path).
+    Returns the per-field report."""
     from pypdf import PdfReader
-    form, answers = _load(form), _load(answers)
+    fields, answers = _load(fields), _load(answers)
+    form = fields if isinstance(fields, dict) else {'fields': fields}
     reader = PdfReader(str(pdf_path))
     answers, conflicts, unknown = _resolve(form['fields'], answers)
     # Each field is filled the way it was found: AcroForm widget, or drawn on the page.
@@ -310,7 +322,7 @@ def fill_form(pdf_path, form, answers, out_path):
     flat = [f for f in form['fields'] if not f.get('pdf_field_name')]
     writer, report = _fill_acroform(reader, fillable, answers) if fillable else (None, [])
     if flat:
-        sizes = [(p['width_px'], p['height_px']) for p in form['form']['pages']]
+        sizes = _page_sizes(form, pdf_path)
         writer, flat_report = _fill_flat(reader, flat, answers, sizes, writer)
         report += flat_report
     if writer is None:
