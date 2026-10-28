@@ -128,10 +128,19 @@ def union_box(boxes):
             max(b[2] for b in boxes), max(b[3] for b in boxes)]
 
 
+# An item number in front of a label: '10.', '3)', '(a)', 'b.', 'iv)', '(ii)'. Needs a space
+# after it, so 'e.g. Lagos', 'No. of children' and '1.5 kg' are not touched.
+ENUMERATOR = re.compile(r'^\s*(\(?\d{1,3}[.)]|\([a-z]\)|[a-z][.)]|\([ivx]{1,4}\)|[ivx]{1,4}[.)])\s+',
+                        re.IGNORECASE)
+
+
 def clean_label(text):
-    """Strip filler around a label: trailing ':', '*', dots/underscores, brackets of blanks."""
+    """Strip filler around a label: trailing ':', '*', dots/underscores, brackets of blanks, and
+    an item number in front ('17. Have you...' -> 'Have you...': the number is not the question)."""
     text = re.sub(r'[_.…]{2,}', ' ', text)
     text = re.sub(r'\s+', ' ', text).strip(' :*-–—\t')
+    while ENUMERATOR.match(text) and ENUMERATOR.sub('', text, count=1).strip():
+        text = ENUMERATOR.sub('', text, count=1)
     return text
 
 

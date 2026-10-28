@@ -587,6 +587,49 @@ class LabelLinkingTests(Tmp):
                 self.assertEqual(far['label_source'], 'none')
 
 
+def _flat_form(path, tag_all_as_questions=False):
+    """(fields, sections) of a generated flat PDF. tag_all_as_questions: stand-in for LayoutLM
+    that tags every printed line as a question; otherwise the rules path."""
+    from layout import find_fields_and_sections
+    items = read_pdf_words(path, ocr_images=False)
+    entities = None
+    if tag_all_as_questions:
+        entities = [{'kind': 'question', 'text': i['text'], 'box': i['box'], 'page': i['page'],
+                     'confidence': 0.99} for i in items]
+    return find_fields_and_sections(items, path, 'layoutlm' if tag_all_as_questions else 'rules',
+                                    clean=False, entities=entities, checkbox_rule=True)
+
+
+def _underlined(rows, size=10, x=56, right=540):
+    """texts and lines for make_widget_pdf: each label with an underline starting right after it."""
+    from make_test_pdfs import _text_width
+    texts = [(x, y, label) for label, y in rows]
+    lines = [(x + _text_width(label, size) + 6, y - 2, right) for label, y in rows]
+    return texts, lines
+
+
+class FlatLabelTests(Tmp):
+    def test_item_numbers_are_not_part_of_labels(self):
+        """'17. Have you ever ...?' is the question 'Have you ever ...?' (so it is typed yes_no);
+        '(a)' and '10.' are dropped from labels and ids."""
+        from make_test_pdfs import make_widget_pdf
+        path = self.tmp / 'numbered.pdf'
+        texts, lines = _underlined([('1. Full name:', 700), ('10. Other commodity:', 670),
+                                    ('17. Have you ever taken insurance on your farm?', 640),
+                                    ('(a) How long:', 610)])
+        texts.append((56, 740, 'Registration form for the members of our farmers club'))
+        make_widget_pdf(path, texts, [], lines=lines)
+        for tagged in (True, False):
+            with self.subTest(layoutlm_questions=tagged):
+                fields = {f['label']: f for f in _flat_form(path, tagged)[0]}
+                for label in ('Full name', 'Other commodity', 'How long'):
+                    self.assertIn(label, fields)
+                    self.assertFalse(re.match(r'\d', fields[label]['id']), fields[label]['id'])
+                insurance = fields['Have you ever taken insurance on your farm?']
+                self.assertEqual(insurance['type'], 'yes_no')
+                self.assertTrue(insurance['id'].startswith('have_you_ever_taken'), insurance['id'])
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""

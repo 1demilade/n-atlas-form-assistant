@@ -322,9 +322,11 @@ def make_checkbox_group_pdf(out_path, size=10):
     return truth
 
 
-def make_widget_pdf(out_path, texts, widgets, page_size=(612, 792), size=10):
-    """One fillable page from an explicit layout (for label-linking cases a test spells out).
+def make_widget_pdf(out_path, texts, widgets, page_size=(612, 792), size=10, lines=()):
+    """One page from an explicit layout (for label-linking cases a test spells out); with no
+    widgets it is a flat page (no AcroForm).
     texts: [(x, y, text)] printed in Helvetica at `size` (PDF points, baseline y).
+    lines: [(x0, y, x1)] printed underlines.
     widgets: [{'name', 'kind': 'text'|'combo', 'rect', optional 'options', 'flags' (/Ff bits),
               'hidden', 'calculate' (JavaScript of a calculate action), 'value'}]."""
     from pypdf import PdfWriter
@@ -332,6 +334,7 @@ def make_widget_pdf(out_path, texts, widgets, page_size=(612, 792), size=10):
                                NumberObject, TextStringObject)
     width, height = page_size
     ops = [f'BT /F1 {size} Tf {x:.2f} {y:.2f} Td ({_escape(text)}) Tj ET' for x, y, text in texts]
+    ops += [f'0.8 w {x0:.2f} {y:.2f} m {x1:.2f} {y:.2f} l S' for x0, y, x1 in lines]
     for spec in widgets:
         r = spec['rect']
         ops.append(f'q 0.5 w {r[0]:.2f} {r[1]:.2f} {r[2] - r[0]:.2f} {r[3] - r[1]:.2f} re S Q')
@@ -363,6 +366,10 @@ def make_widget_pdf(out_path, texts, widgets, page_size=(612, 792), size=10):
             d[NameObject('/AA')] = DictionaryObject({NameObject('/C'): js})
             calculated.append(ref)
         annots.append(ref)
+    if not widgets:
+        with open(out_path, 'wb') as file:
+            writer.write(file)
+        return {'page_size_pt': [width, height], 'texts': texts, 'widgets': [], 'lines': list(lines)}
     page[NameObject('/Annots')] = annots
     acroform = DictionaryObject({
         NameObject('/Fields'): ArrayObject(list(annots)), NameObject('/NeedAppearances'): BooleanObject(True),
