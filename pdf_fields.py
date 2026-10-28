@@ -84,6 +84,19 @@ def _format_script(widget):
     return ' '.join(scripts)
 
 
+def _calculated(widget):
+    """True if the field has a calculate action (its value is computed from other fields)."""
+    actions = _get(widget, '/AA')
+    return actions is not None and '/C' in actions.get_object()
+
+
+def _skip_reasons(read_only, calculated, hidden):
+    """Why the user should not be asked for this field (empty: ask)."""
+    return ([r for r, on in (('read-only in the PDF', read_only),
+                             ('calculated by the PDF from other fields', calculated),
+                             ('hidden in the PDF', hidden)) if on])
+
+
 def _options(widget):
     """(display texts, export values) of a choice field's /Opt."""
     raw = _get(widget, '/Opt')
@@ -162,6 +175,9 @@ def read_acroform(path):
     from pypdf import PdfReader
     reader = PdfReader(str(path))
     renders = prepare_pages(path, clean=False)
+    acroform = reader.trailer['/Root'].get('/AcroForm')
+    order = acroform.get_object().get('/CO') if acroform is not None else None
+    calculation_order = {_full_name(ref.get_object()) for ref in (order.get_object() if order else [])}
     fields = {}
     for page_number, (page, render) in enumerate(zip(reader.pages, renders), start=1):
         size_px = (render.shape[1], render.shape[0])
@@ -189,6 +205,7 @@ def read_acroform(path):
                     'option_texts': displays,
                     'option_values': exports,
                     'format_script': _format_script(widget),
+                    'calculated': _calculated(widget) or name in calculation_order,
                     'widgets': [],
                 }
             rect = [float(v) for v in widget['/Rect']]
@@ -474,6 +491,8 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             group_box, page, page_items, text_height, sides, option_boxes, raw['tooltip'])
         field_type, type_source = _field_type(raw, label, option_texts)
         flags = raw['flags']
+        hidden = all(w['hidden'] for w in raw['widgets'])
+        skip = _skip_reasons(flags['read_only'], raw.get('calculated', False), hidden)
         fields.append({
             'id': raw['name'],
             'label': label,
@@ -484,7 +503,10 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             'confidence': round(float(confidence), 3),
             'needs_review': (confidence < REVIEW_BELOW_CONFIDENCE
                              or not label_source.startswith('layoutlm') or bool(alternatives)
-                             or label_source.endswith('above_left')),
+                             or label_source.endswith('above_left') or hidden),
+            'ask_user': not skip,  # False: keep the field, but do not ask for it or fill it
+            'skip_reason': '; '.join(skip) or None,
+            'hidden': hidden,
             'page': page,
             'pdf_field_name': raw['name'],
             'required': flags['required'],  # the PDF's own Required flag, never guessed
@@ -499,6 +521,7 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
                 'flags': {k: v for k, v in flags.items() if v},
                 'required': flags['required'],
                 'read_only': flags['read_only'],
+                'calculated': raw.get('calculated', False),
                 'tooltip': raw['tooltip'],
                 'max_length': raw['max_length'],
                 'default_value': raw['default_value'],
@@ -529,6 +552,9 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
         label, label_box, label_source, confidence, alternatives = find_label(
             box, page, page_items, text_height, ('left', 'above', 'above_left'), option_boxes, None)
         names = [m['name'] for m in members]
+        hidden = all(w['hidden'] for raw in group for w in raw['widgets'])
+        skip = _skip_reasons(all(m['read_only'] for m in members),
+                             any(raw.get('calculated', False) for raw in group), hidden)
         fields.append({
             'id': '+'.join(names),
             'label': label,
@@ -538,6 +564,9 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             'source': 'acroform',
             'confidence': round(float(confidence), 3),
             'needs_review': True,
+            'ask_user': not skip,
+            'skip_reason': '; '.join(skip) or None,
+            'hidden': hidden,
             'page': page,
             'pdf_field_name': names,  # one PDF field per option
             'required': any(m['required'] for m in members),

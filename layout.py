@@ -463,6 +463,10 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
         for page in info['pages']:
             if page['kind'] != 'fillable' and page['page'] not in field_pages:
                 page['kind'] = 'instructions'
+    for field in fields:  # only AcroForm fields can be read-only, calculated or hidden
+        field.setdefault('ask_user', True)
+        field.setdefault('skip_reason', None)
+        field.setdefault('hidden', False)
     fields.sort(key=_anchor)
     sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))
     _assign_sections(fields, sections)

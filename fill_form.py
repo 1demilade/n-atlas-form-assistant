@@ -120,6 +120,10 @@ def _fill_acroform(reader, fields, answers):
     report, values = [], {}
     for field in fields:
         fid = field['id']
+        if field.get('ask_user') is False:  # read-only, calculated or hidden: never written
+            report.append({'id': fid, 'status': 'skipped',
+                           'reason': f"not asked: {field.get('skip_reason') or 'ask_user is false'}"})
+            continue
         if fid not in answers:
             report.append({'id': fid, 'status': 'skipped', 'reason': 'no answer'})
             continue

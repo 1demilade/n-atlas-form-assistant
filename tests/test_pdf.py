@@ -573,6 +573,57 @@ class LabelLinkingTests(Tmp):
                 self.assertEqual(far['label_source'], 'none')
 
 
+class NotAskedFieldTests(Tmp):
+    def test_read_only_calculated_and_hidden_fields(self):
+        """Kept in fields, marked ask_user: false with a reason; hidden ones also flagged;
+        fill_form writes none of them even when answers.json has a value."""
+        from pypdf import PdfReader
+        from make_test_pdfs import make_widget_pdf
+        path, out = self.tmp / 'calc.pdf', self.tmp / 'calc_out.pdf'
+        make_widget_pdf(path, [(56, 700, 'Price:'), (56, 660, 'Reference:'), (56, 620, 'Total:'),
+                               (56, 580, 'Discount:'), (56, 540, 'Spouse name:')], [
+            {'name': 'price', 'kind': 'text', 'rect': [140, 696, 300, 712]},
+            {'name': 'ref', 'kind': 'text', 'rect': [140, 656, 300, 672], 'flags': 1, 'value': 'R-1'},
+            {'name': 'total', 'kind': 'text', 'rect': [140, 616, 300, 632], 'flags': 1,
+             'calculate': 'AFSimple_Calculate("SUM", new Array ("price"));'},
+            {'name': 'discount', 'kind': 'text', 'rect': [140, 576, 300, 592],
+             'calculate': 'event.value = 0;'},
+            {'name': 'spouse', 'kind': 'text', 'rect': [140, 536, 300, 552], 'hidden': True,
+             'value': 'kept'},
+        ])
+        fields = _link(path)
+        expected = {'price': (True, None, False),
+                    'ref': (False, 'read-only in the PDF', False),
+                    'total': (False, 'read-only in the PDF; calculated by the PDF from other fields', False),
+                    'discount': (False, 'calculated by the PDF from other fields', False),
+                    'spouse': (False, 'hidden in the PDF', True)}
+        for name, (ask, reason, hidden) in expected.items():
+            field = fields[name]
+            self.assertEqual((field['ask_user'], field['skip_reason'], field['hidden']), (ask, reason, hidden), name)
+        self.assertTrue(fields['spouse']['needs_review'])
+        self.assertEqual(fields['spouse']['label'], 'Spouse name')  # a hidden field keeps its label
+
+        form = {'form': {'pages': describe_pdf(path)['pages']}, 'fields': list(fields.values()), 'sections': []}
+        report = {r['id']: r for r in fill_form(path, form, {n: '12' for n in expected}, out)}
+        self.assertEqual(report['price']['status'], 'filled')
+        for name in ('ref', 'total', 'discount', 'spouse'):
+            self.assertEqual(report[name]['status'], 'skipped', report[name])
+            self.assertEqual(report[name]['reason'], 'not asked: ' + expected[name][1])
+        values = {k: str(v.get('/V')) for k, v in PdfReader(str(out)).get_fields().items()}
+        self.assertEqual((values['price'], values['ref'], values['spouse']), ('12', 'R-1', 'kept'))
+        self.assertEqual(values['total'], 'None')  # not written
+        self.assertEqual(values['discount'], 'None')
+
+    def test_flat_fields_are_asked(self):
+        from layout import analyse_form
+        path = self.tmp / 'flat.pdf'
+        make_flat_pdf(path, 1, 6)
+        form = analyse_form(str(path), method='rules')
+        self.assertTrue(form['fields'])
+        for field in form['fields']:
+            self.assertEqual((field['ask_user'], field['skip_reason'], field['hidden']), (True, None, False))
+
+
 def check_groups(test, form, truth):
     """Fields of make_checkbox_group_pdf: one flagged 'choice' per group, a 'yes_no' lone box."""
     by_name = {tuple(f['pdf_field_name']) if isinstance(f['pdf_field_name'], list)
