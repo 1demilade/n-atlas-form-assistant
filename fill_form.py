@@ -256,6 +256,20 @@ def _overlay_reader(page_ops, geometry, mediabox):
     return PdfReader(buffer)
 
 
+def _flat_problem(field, answer):
+    """Why a flat answer is invalid for the field's type and options, or None (same rules as
+    fillable fields: type patterns; options for choice/yes_no; yes/no words for yes_no)."""
+    field_type, options = field.get('type'), field.get('options') or []
+    problem = check_value(field_type, answer)
+    if problem:
+        return f'{problem} ({field_type} field)'
+    if field_type in ('choice', 'yes_no') and options and _match_option(answer, options, []) is None:
+        return f'answer {answer!r} matches no option {options}'
+    if field_type == 'yes_no' and not options and _truth(answer) is None:
+        return f'answer {answer!r} is not yes/no'
+    return None
+
+
 def _fill_flat(reader, fields, answers, sizes_px, writer=None):
     """writer: continue an existing writer (a mixed PDF's AcroForm values are already in it)."""
     from pypdf import PdfWriter
@@ -280,12 +294,16 @@ def _fill_flat(reader, fields, answers, sizes_px, writer=None):
                                    '_check': {'page': page, 'box': option_boxes[0], 'ink': False}})
                     continue
             if index is None or index >= len(option_boxes):
-                report.append({'id': fid, 'status': 'skipped',
+                report.append({'id': fid, 'status': 'refused',
                                'reason': f'answer {answer!r} matches no option {field.get("options")}'})
                 continue
             ops_by_page.setdefault(page, []).extend(_cross_ops(_box_to_points(option_boxes[index], geometry)))
             report.append({'id': fid, 'status': 'filled', 'value': f"X in '{field['options'][index]}'",
                            '_check': {'page': page, 'box': option_boxes[index], 'ink': True}})
+            continue
+        problem = _flat_problem(field, answer)
+        if problem:
+            report.append({'id': fid, 'status': 'refused', 'reason': problem})
             continue
         if not field.get('answer_box'):
             report.append({'id': fid, 'status': 'skipped', 'reason': 'no answer_box'})

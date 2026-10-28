@@ -293,6 +293,38 @@ class FillTests(Tmp):
                 self.assertNotEqual(str(values[field['pdf_field_name']].get('/V')), 'not valid')
         self.assertGreater(found, 0, 'no typed text field in the generated forms')
 
+    def test_flat_invalid_values_are_refused(self):
+        import pdfplumber
+        path, out = self.tmp / 'b.pdf', self.tmp / 'o.pdf'
+        truth = make_flat_pdf(path, 3, 10)
+        render = prepare_pages(path)[0]
+        fields, answers, expected = [], {}, {}
+        for n, t in enumerate(truth['fields']):
+            field = {'id': f'f{n}', 'label': t['label'], 'page': 1, 'type': t['type'],
+                     'options': t.get('options', [])}
+            if t['style'] in ('line', 'box', 'combo'):
+                field.update(answer_box=to_px(t['rects'][0], truth, render), answer_method='box')
+            else:
+                boxes = [to_px(r, truth, render) for r in t['rects']]
+                field.update(answer_box=boxes[0], answer_method='checkboxes', option_boxes=boxes)
+            fields.append(field)
+            if t['type'] in ('number', 'date', 'email', 'phone') or t.get('options'):
+                answers[field['id']], expected[field['id']] = 'not valid', 'refused'
+            else:
+                answers[field['id']], expected[field['id']] = 'Lagos', 'filled'
+        self.assertIn('refused', expected.values())
+        form = {'form': {'pages': describe_pdf(path)['pages']}, 'fields': fields, 'sections': []}
+        report = {r['id']: r for r in fill_form(path, form, answers, out)}
+        for fid, status in expected.items():
+            self.assertEqual(report[fid]['status'], status, report[fid])
+        with pdfplumber.open(str(out)) as pdf:
+            self.assertNotIn('valid', pdf.pages[0].extract_text())  # nothing drawn for refusals
+        # yes_no without printed options takes yes/no words only
+        field = dict(fields[0], type='yes_no', options=[], answer_method='box')
+        report = fill_form(path, [field], {field['id']: 'perhaps'}, out)
+        self.assertEqual(report[0]['status'], 'refused')
+        self.assertEqual(fill_form(path, [field], {field['id']: 'Yes'}, out)[0]['status'], 'filled')
+
     def test_on_states_come_from_the_pdf(self):
         from pypdf import PdfReader, PdfWriter
         from pypdf.generic import (ArrayObject, DecodedStreamObject, DictionaryObject, FloatObject,
@@ -543,7 +575,8 @@ class OutputFormatTests(Tmp):
             self.assertIn(field['type'], ALLOWED_TYPES)
         json.dumps(form)
         text = next(f for f in page1 if f['pdf']['field_type'] == 'Tx' and f['type'] == 'text')
-        drawn = next(f for f in page2 if f['answer_box'] and f['answer_method'] != 'checkboxes')
+        drawn = next(f for f in page2 if f['answer_box'] and f['answer_method'] != 'checkboxes'
+                     and f['type'] in ('text', 'unknown'))
         report = {r['id']: r for r in fill_form(mixed, form, {text['id']: 'Lagos',
                                                               drawn['id']: 'Kano'}, out)}
         self.assertEqual(report[text['id']]['status'], 'filled')
