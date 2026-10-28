@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 LINE_ABOVE_GAP = 0.6   # a label printed under its line sits at most this far below it (text heights)
+NEXT_LINE_GAP = (0.8, 2.5)  # a blank ruled line continuing an answer lies this far below the last one
 
 
 def median_text_height(items):
@@ -135,6 +136,27 @@ def nearby_checkboxes(label_box, regions, items, text_height, right_limit):
     return [c for c in regions['checkboxes']
             if c[0] >= label_box[2] - text_height and c[2] <= right_limit
             and _same_row(label_box, c, 0.3)]
+
+
+def continuation_lines(answer_box, lines, page_items, text_height):
+    """Blank ruled lines that continue a one-line answer area downwards (a long answer written
+    over several lines): each starts at or left of the area, ends about where it ends, lies
+    NEXT_LINE_GAP below the previous one and has no text anywhere on its row (a row with a
+    label is the next field). Returns the line areas [x0, top, x1, y] below the first."""
+    found, last = [], answer_box
+    for line in sorted(lines, key=lambda l: l[1]):
+        y = (line[1] + line[3]) / 2
+        if not (NEXT_LINE_GAP[0] * text_height <= y - last[3] <= NEXT_LINE_GAP[1] * text_height):
+            continue
+        if line[0] > answer_box[0] + text_height or line[2] < answer_box[2] - 2 * text_height:
+            continue
+        band = [0, int(y - 1.2 * text_height), line[2], int(y + 0.3 * text_height)]
+        if any(_overlap(band[1], band[3], i['box'][1], i['box'][3]) > 0 and i['box'][0] < line[2]
+               for i in page_items):
+            continue
+        last = [line[0], int(y - 1.2 * text_height), line[2], int(y)]
+        found.append(last)
+    return found
 
 
 def find_answer_box(label_box, page_items, regions, page_size, text_height,

@@ -273,6 +273,24 @@ def _text_ops(text, box_pt):
     return ops, overflow or block > height + size
 
 
+def _lines_ops(text, line_boxes_pt):
+    """Text written on a field's ruled lines, one line after another (an answer area of several
+    lines). Font as for one line; words wrap to the next line; overflow is reported."""
+    if len(text) * CHAR_WIDTH_EM * min(MAX_FONT_PT, (line_boxes_pt[0][3] - line_boxes_pt[0][1]) * 0.75)             <= line_boxes_pt[0][2] - line_boxes_pt[0][0] - 2 * PADDING_PT:
+        return _text_ops(text, line_boxes_pt[0])  # fits on the first line
+    size = max(MIN_FONT_PT, min(MAX_FONT_PT, (min(b[3] - b[1] for b in line_boxes_pt) - 2 * PADDING_PT) * 0.75))
+    words, ops = text.split(), []
+    for x0, y0, x1, y1 in line_boxes_pt:
+        per_line = max(1, int((x1 - x0 - 2 * PADDING_PT) / (CHAR_WIDTH_EM * size)))
+        current = ''
+        while words and (not current or len(f'{current} {words[0]}') <= per_line):
+            current = f'{current} {words.pop(0)}'.strip()
+        if current:
+            ops.append(f'BT /FNat {size:.1f} Tf {x0 + PADDING_PT:.2f} {y0 + PADDING_PT + size * 0.25:.2f} Td '
+                       f'({_escape(current)}) Tj ET')
+    return ops, bool(words)
+
+
 def _cross_ops(box_pt):
     x0, y0, x1, y1 = box_pt
     inset = 0.2 * min(x1 - x0, y1 - y0)
@@ -361,7 +379,10 @@ def _fill_flat(reader, fields, answers, sizes_px, writer=None):
             report.append({'id': fid, 'status': 'skipped',
                            'reason': 'answer has characters the built-in Helvetica font cannot show'})
             continue
-        ops, overflow = _text_ops(answer, _box_to_points(field['answer_box'], geometry))
+        if len(field.get('answer_lines') or []) >= 2:
+            ops, overflow = _lines_ops(answer, [_box_to_points(b, geometry) for b in field['answer_lines']])
+        else:
+            ops, overflow = _text_ops(answer, _box_to_points(field['answer_box'], geometry))
         ops_by_page.setdefault(page, []).extend(ops)
         entry = {'id': fid, 'status': 'filled', 'value': answer,
                  '_check': {'page': page, 'box': field['answer_box'], 'ink': bool(answer)}}

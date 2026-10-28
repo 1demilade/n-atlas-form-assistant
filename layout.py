@@ -10,8 +10,8 @@ import re
 import sys
 from collections import Counter
 
-from answer_areas import (detect_regions, find_answer_box, median_text_height, nearby_checkboxes,
-                          next_to_checkbox)
+from answer_areas import (continuation_lines, detect_regions, find_answer_box, median_text_height,
+                          nearby_checkboxes, next_to_checkbox)
 from field_types import guess_type
 from layout_rules import (_merge_wrapped_labels, clean_items, clean_label, draw_boxes,
                           extract_fields, is_option_word, union_box)
@@ -152,6 +152,14 @@ def _finish(candidates, items, pages, entities=(), checkbox_rule=False):
             anchor, blocking, regions[page], (image.shape[1], image.shape[0]), text_height,
             page_answers, candidate['label_items'], right_limit)
 
+        answer_lines = []
+        if method in ('underline', 'underline_below', 'line_above'):
+            more = continuation_lines(answer_box, regions[page]['lines'], page_items, text_height)
+            if more:  # an answer ruled over several lines: one area, filled line by line
+                answer_lines = [list(answer_box)] + more
+                answer_box = [min(b[0] for b in answer_lines), answer_box[1],
+                              max(b[2] for b in answer_lines), more[-1][3]]
+
         limit = right_limit if right_limit is not None else image.shape[1]
         checkboxes = nearby_checkboxes(anchor, regions[page], page_items, text_height, limit)
         option_items = [item for item in page_items
@@ -188,6 +196,7 @@ def _finish(candidates, items, pages, entities=(), checkbox_rule=False):
             'options': options,
             'option_boxes': [[int(v) for v in b] for b in option_boxes]
             if len(option_boxes) == len(options) else [],
+            'answer_lines': [[int(v) for v in b] for b in answer_lines],
             'section_reason': section_reason,
         })
     return fields

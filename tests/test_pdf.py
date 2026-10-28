@@ -684,6 +684,46 @@ class FlatLabelTests(Tmp):
                 self.assertEqual(fields['Bank details']['answer_method'], 'underline')
 
 
+    def test_answer_ruled_over_several_lines(self):
+        """A blank ruled line under an answer line continues it (one area, filled line by line);
+        a ruled line with a label on its row is the next field, however close."""
+        import pdfplumber
+        from make_test_pdfs import make_widget_pdf
+        path, out = self.tmp / 'lines.pdf', self.tmp / 'lines_out.pdf'
+        texts, lines = _underlined([('Address:', 700), ('Ward:', 680),
+                                    ('Input uses - types, quantities and sources:', 640), ('Next of kin:', 598)])
+        texts.append((56, 750, 'Registration form for the members of our farmers club'))
+        lines[2] = (250, 638, 540)  # (the label really ends at about 243 pt)
+        lines.append((68, 620, 540))  # the blank second line of 'Input uses'
+        make_widget_pdf(path, texts, [], lines=lines)
+        scale = 200 / 72
+        for tagged in (True, False):
+            with self.subTest(layoutlm_questions=tagged):
+                fields, _ = _flat_form(path, tagged)
+                by_label = {f['label']: f for f in fields}
+                uses = by_label['Input uses - types, quantities and sources']
+                self.assertEqual(len(uses['answer_lines']), 2)
+                self.assertAlmostEqual(uses['answer_box'][3], (792 - 620) * scale, delta=6)
+                self.assertAlmostEqual(uses['answer_box'][0], 68 * scale, delta=6)
+                for label in ('Address', 'Ward', 'Next of kin'):
+                    self.assertEqual(by_label[label]['answer_lines'], [], label)
+                    self.assertEqual(by_label[label]['answer_method'], 'underline', label)
+        answer = 'Fertiliser, two bags a season from the cooperative shop and seeds from the state farm'
+        form = {'form': {'pages': describe_pdf(path)['pages']}, 'fields': fields, 'sections': []}
+        report = {r['id']: r for r in fill_form(path, form, {uses['id']: answer, by_label['Address']['id']: 'Lagos'}, out)}
+        self.assertEqual(report[uses['id']]['status'], 'filled')
+        self.assertNotIn('warning', report[uses['id']])
+        def page_words(pdf_path):
+            with pdfplumber.open(str(pdf_path)) as pdf:
+                return pdf.pages[0].extract_words()
+        printed = {(w['text'], round(w['x0']), round(w['top'])) for w in page_words(path)}
+        words = [w for w in page_words(out) if (w['text'], round(w['x0']), round(w['top'])) not in printed
+                 and w['text'] != 'Lagos']
+        rows = {round(792 - w['bottom']) for w in words}  # bottoms in PDF points
+        self.assertEqual(' '.join(w['text'] for w in sorted(words, key=lambda w: (round(w['top']), w['x0']))), answer)
+        self.assertTrue(any(abs(r - 638) <= 4 for r in rows) and any(abs(r - 620) <= 4 for r in rows), rows)
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""
