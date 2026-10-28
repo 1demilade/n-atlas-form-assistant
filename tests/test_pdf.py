@@ -142,6 +142,20 @@ class TextLayerTests(Tmp):
                                 self.assertLessEqual(abs(a - b), 1.5, (text, rotation, crop))
                     self.assertGreaterEqual(matched, 0.9 * len(base))
 
+    def test_pale_text_is_a_watermark(self):
+        """Pale grey letters are a watermark even with a dark underline drawn across them."""
+        import cv2
+        import numpy as np
+        from pdf_input import is_pale_text
+        page = np.full((200, 800, 3), 255, np.uint8)
+        cv2.putText(page, 'WATERMARK', (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 2.5, (215, 215, 215), 6)
+        cv2.line(page, (0, 60), (800, 60), (0, 0, 0), 2)  # an answer line over the watermark
+        cv2.putText(page, 'Signature', (20, 170), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (20, 20, 20), 3)
+        cv2.putText(page, 'Red text', (500, 170), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (36, 28, 237), 3)
+        self.assertTrue(is_pale_text(page, [10, 10, 520, 100]))
+        self.assertFalse(is_pale_text(page, [10, 125, 300, 185]))
+        self.assertFalse(is_pale_text(page, [490, 125, 790, 185]))  # coloured print is not pale
+
     def test_kind_detection(self):
         fillable, flat, image = self.tmp / 'a.pdf', self.tmp / 'b.pdf', self.tmp / 'c.pdf'
         make_fillable_pdf(fillable, 1, 6)
@@ -890,6 +904,25 @@ class FullPipelineOnPdfs(Tmp):
         self.assertEqual(form['form']['pdf_kind'], 'fillable', form['form']['notes'])
         self.assertEqual(form['form']['pages'][1]['kind'], 'instructions')
         self.assertEqual([f['label'] for f in form['fields'] if f['page'] == 2], [])
+
+    def test_watermark_does_not_cut_answer_lines(self):
+        """OCR of embedded pictures keeps a dark picture label but drops pale watermark letters,
+        so the underline under the watermark is still the whole answer area."""
+        from layout import analyse_form
+        from make_test_pdfs import make_watermark_pdf
+        path = self.tmp / 'wm.pdf'
+        truth = make_watermark_pdf(path)
+        items = read_pdf_words(path)
+        texts = ' '.join(i['text'] for i in items).lower()
+        self.assertIn('signature', texts)  # the picture label is read
+        self.assertNotIn('water', texts)
+        self.assertNotIn('mark', texts)
+        form = analyse_form(str(path), items)
+        email = next(f for f in form['fields'] if norm(f['label']) == 'e mail')
+        scale = 200 / 72
+        line = [v * scale for v in truth['lines_pt']['E-mail']]
+        self.assertEqual(email['answer_method'], 'underline')
+        self.assertGreaterEqual(email['answer_box'][2] - email['answer_box'][0], 0.9 * (line[1] - line[0]))
 
     def test_image_only_pdf(self):
         from layout import analyse_form

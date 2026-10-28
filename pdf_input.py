@@ -20,6 +20,8 @@ MIN_IMAGE_SIDE_PT = 6       # embedded images thinner than this cannot hold read
 MAX_IMAGE_PAGE_SHARE = 0.9  # an image covering the whole page is a scan behind its own text layer
 IMAGE_PAD_PX = 12           # white border added around an image crop before OCR
 OCR_OVERLAP_DROP = 0.5      # OCR text overlapping text-layer words this much is a duplicate
+INK_PIXEL = 235             # a render pixel darker than this (0-255 grey) is ink
+PALE_INK = 180              # OCR text whose median ink is lighter than this is a watermark
 
 BAD_WORD = re.compile(r'\(cid:\d+\)|�')
 
@@ -121,6 +123,20 @@ def _phrase_item(words, page):
     }
 
 
+def is_pale_text(render, box):
+    """True if the ink inside box is pale grey (a watermark or background art), not printed
+    text. The median of the inked pixels is used, so a dark line crossing the box (an underline
+    drawn over a watermark) does not count."""
+    import cv2
+    import numpy as np
+    crop = render[max(0, box[1]):box[3], max(0, box[0]):box[2]]
+    if crop.size == 0:
+        return False
+    gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY) if crop.ndim == 3 else crop
+    ink = gray[gray < INK_PIXEL]
+    return bool(ink.size) and float(np.median(ink)) > PALE_INK
+
+
 def _ocr_images(plumber_page, render, frame, page_number, layer_items):
     """OCR only the embedded images of a text-layer page; drop text the layer already has."""
     page_area = plumber_page.width * plumber_page.height
@@ -147,6 +163,8 @@ def _ocr_images(plumber_page, render, frame, page_number, layer_items):
                 continue
             if any(_overlap_share(item['box'], other['box']) > OCR_OVERLAP_DROP for other in layer_items):
                 continue
+            if is_pale_text(render, item['box']):
+                continue  # watermark letters would block answer lines and confuse the model
             found.append(item)
     return found
 

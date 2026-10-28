@@ -376,6 +376,58 @@ def make_widget_pdf(out_path, texts, widgets, page_size=(612, 792), size=10):
     return {'page_size_pt': [width, height], 'texts': texts, 'widgets': widgets}
 
 
+def _text_image_page(text, grey, size_pt, dpi=200):
+    """A one-page PDF holding only a picture of `text` (grey 0-255) of size_pt (w, h) points."""
+    import io
+    from PIL import Image, ImageDraw, ImageFont
+    from pypdf import PdfReader
+    w, h = int(size_pt[0] * dpi / 72), int(size_pt[1] * dpi / 72)
+    image = Image.new('RGB', (w, h), 'white')
+    font = ImageFont.load_default(size=int(h * 0.6))
+    ImageDraw.Draw(image).text((int(h * 0.1), int(h * 0.15)), text, fill=(grey, grey, grey), font=font)
+    buffer = io.BytesIO()
+    image.save(buffer, 'PDF', resolution=dpi)
+    buffer.seek(0)
+    return PdfReader(buffer).pages[0]
+
+
+def make_watermark_pdf(out_path, size=10):
+    """Flat page with a text layer, underlined fields, a pale watermark picture lying across one
+    underline, and one label that exists only as a (dark) picture. Returns the ground truth."""
+    from pypdf import PdfWriter, Transformation
+    width, height = 595.28, 841.89
+    rows = [('Full name:', 760), ('E-mail:', 730), ('Home town:', 700)]
+    ops = [f'BT /F1 {size * 1.4:.1f} Tf 56 790 Td (Application form for membership of the club) Tj ET']
+    lines = {}
+    for label, y in rows:
+        ops.append(f'BT /F1 {size} Tf 56 {y:.2f} Td ({_escape(label)}) Tj ET')
+        start = 56 + _text_width(label, size) + 6
+        ops.append(f'0.8 w {start:.2f} {y - 2:.2f} m 520 {y - 2:.2f} l S')
+        lines[label.rstrip(':')] = [start, 520]
+    ops.append(f'0.8 w 130 {640 - 2:.2f} m 520 {640 - 2:.2f} l S')  # line of the picture label
+    import io
+    from pypdf import PdfReader
+    text_writer = PdfWriter()
+    _text_page(text_writer, width, height, ops)
+    buffer = io.BytesIO()
+    text_writer.write(buffer)
+    buffer.seek(0)
+    writer = PdfWriter()
+    page = writer.add_blank_page(width=width, height=height)
+    # Pictures first (under the text and lines, as a watermark is printed).
+    # Watermark: pale grey letters across the E-mail underline.
+    page.merge_transformed_page(_text_image_page('WATERMARK', 215, (300, 40)),
+                                Transformation().translate(160, 712))
+    # A real label that is only a picture (dark): must still be read.
+    page.merge_transformed_page(_text_image_page('Signature:', 20, (70, 16)),
+                                Transformation().translate(54, 636))
+    page.merge_page(PdfReader(buffer).pages[0])
+    with open(out_path, 'wb') as file:
+        writer.write(file)
+    return {'page_size_pt': [width, height], 'labels': [r[0].rstrip(':') for r in rows] + ['Signature'],
+            'watermark': 'WATERMARK', 'lines_pt': lines}
+
+
 def make_image_pdf(src_path, out_path, dpi=200):
     """Image-only copy of a PDF: every page rendered and saved as a picture (no text layer)."""
     import cv2
