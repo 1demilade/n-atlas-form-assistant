@@ -45,6 +45,9 @@ def expected_type(truth_field, fillable):
     # On a flat page a combo box is an empty rectangle: its options are not visible.
     if not fillable and truth_field['style'] == 'combo':
         return 'unknown'
+    # A group of options (radio or checkboxes, even Yes/No) is 'choice' on PDFs.
+    if len(truth_field.get('options') or []) >= 2 and truth_field['style'] != 'combo':
+        return 'choice'
     return truth_field['type']
 
 
@@ -360,6 +363,7 @@ class FillTests(Tmp):
         writer.write(str(path))
         form = _fillable_form(path)
         field = form['fields'][0]
+        self.assertEqual(field['type'], 'yes_no')  # a lone checkbox
         field['pdf']['widgets'][0]['export_value'] = 'Yes'  # a wrong JSON must not matter
         report = fill_form(path, form, {field['id']: 'yes'}, out)
         self.assertEqual(report[0]['status'], 'filled', report)

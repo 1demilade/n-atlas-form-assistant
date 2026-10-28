@@ -109,9 +109,10 @@ def _slug(label, used):
     return slug
 
 
-def _finish(candidates, items, pages, entities=()):
+def _finish(candidates, items, pages, entities=(), checkbox_rule=False):
     """Add answer_box, type, id and needs_review to each label candidate.
-    entities = non-question LayoutLM entities (answers are used; other text blocks empty space)."""
+    entities = non-question LayoutLM entities (answers are used; other text blocks empty space).
+    checkbox_rule (PDFs): a checkbox group is 'choice', a lone checkbox is 'yes_no'."""
     answers = [e for e in entities if e['kind'] == 'answer']
     header_boxes = [c['label_box'] for c in candidates if c.get('from_header')]
     blockers = [{'text': e['text'], 'box': e['box'], 'page': e['page']}
@@ -154,6 +155,8 @@ def _finish(candidates, items, pages, entities=()):
                              or next_to_checkbox(item['box'], checkboxes, text_height))]
         options = [item['text'] for item in option_items]
         field_type = guess_type(candidate['label'], options, len(checkboxes))
+        if checkbox_rule and method == 'checkboxes':
+            field_type = 'choice' if len(checkboxes) >= 2 else 'yes_no'
         # The checkbox each option belongs to (the nearest one to the option's left), for filling.
         option_boxes = []
         for item in option_items:
@@ -268,11 +271,13 @@ def _header_candidates(entities, items):
     return candidates
 
 
-def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, entities=None):
+def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, entities=None,
+                             checkbox_rule=False):
     """Flat forms: words (Shape 1) + the form file -> (fields (Shape 2), section headings).
 
     method: 'auto' (LayoutLM, falling back to rules), 'layoutlm', or 'rules'.
     entities: reuse an earlier layout_lm.extract_entities() result.
+    checkbox_rule: see _finish (on for PDFs; the photo path keeps guess_type's types).
     """
     from ocr import prepare_pages
     pages = prepare_pages(image_path, clean)
@@ -296,7 +301,7 @@ def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, e
             candidates, others = None, []
     if candidates is None:
         candidates = extract_fields(items)
-    return _split_sections(_finish(candidates, items, pages, others))
+    return _split_sections(_finish(candidates, items, pages, others, checkbox_rule))
 
 
 def find_fields(ocr_items, image_path, method='auto', clean=True):
@@ -392,7 +397,8 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
     from ocr import PDF_SUFFIXES, prepare_pages, read_form
     items = read_form(path, clean) if ocr_items is None else ocr_items
     pages = prepare_pages(path, clean)
-    if Path(path).suffix.lower() in PDF_SUFFIXES:
+    is_pdf = Path(path).suffix.lower() in PDF_SUFFIXES
+    if is_pdf:
         from pdf_input import describe_pdf
         info = describe_pdf(path, items)
     else:  # photo fallback: an image is a scanned flat page
@@ -427,7 +433,8 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
         flat_entities = None if entities is None else [
             e for e in entities if e['page'] not in widget_pages]
         flat, flat_sections = find_fields_and_sections(
-            flat_items, path, 'rules' if entities is None else method, clean, flat_entities)
+            flat_items, path, 'rules' if entities is None else method, clean, flat_entities,
+            checkbox_rule=is_pdf)
         if widget_pages:
             # A fillable PDF: pages without widgets are usually instructions. Only confident flat
             # fields count as real ones there; flagged ones (low confidence, guessed answer area,

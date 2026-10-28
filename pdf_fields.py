@@ -261,10 +261,8 @@ def _field_type(raw, label, options):
         if guessed in TEXT_TYPES_FROM_WORDS:
             return guessed, 'label_words'
         return 'text', 'pdf_field'
-    if kind == 'Btn':
-        if len(options) >= 2:
-            return guess_type('', options, 0) if options else 'choice', 'pdf_field'
-        return 'yes_no', 'pdf_field'
+    if kind == 'Btn':  # a group of options (even Yes/No) is a choice; a lone checkbox is yes/no
+        return ('choice' if len(options) >= 2 else 'yes_no'), 'pdf_field'
     if kind == 'Ch':
         return 'choice', 'pdf_field'
     return 'unknown', 'pdf_field'  # signature fields and anything else
