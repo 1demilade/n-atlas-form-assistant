@@ -2,7 +2,9 @@
 
 Fillable PDFs: values are written into the AcroForm fields with pypdf.
 Flat PDFs: answers are drawn as text (Helvetica) inside each field's answer_box; checkbox
-answers get an X in the chosen option's box. Every field gets a status in the report.
+answers get an X in the chosen option's box. Every field gets a status in the report:
+'filled', 'refused' (invalid value) or 'skipped'. Filled entries are verified on the written file
+(values read back for fillable fields, new ink inside the box on a render for all).
 
 Usage: python fill_form.py FORM.pdf --form form_fields.json --answers answers.json [--out FORM_filled.pdf]
 """
@@ -19,6 +21,7 @@ MIN_FONT_PT = 6        # smallest; text that still does not fit is reported as '
 CHAR_WIDTH_EM = 0.56   # Helvetica average glyph width (conservative) used to fit text
 LINE_GAP = 1.15        # line height as a multiple of the font size
 PADDING_PT = 2         # space kept between the text and the answer box edge
+MIN_NEW_INK_PX = 5     # a filled answer must add at least this many dark pixels inside its box
 TRUE_WORDS = {'yes', 'y', 'true', '1', 'x', 'checked', 'on', 'tick', 'ticked'}
 FALSE_WORDS = {'no', 'n', 'false', '0', 'unchecked', 'off', ''}
 
@@ -141,7 +144,14 @@ def _fill_acroform(reader, fields, answers):
         else:
             report.append({'id': fid, 'status': 'skipped', 'reason': f'{kind or "unknown"} field cannot be filled with text'})
             continue
-        report.append({'id': fid, 'status': 'filled', 'value': str(values[name])})
+        written = str(values[name])
+        box = field['answer_box']
+        if kind == 'Btn' and written != '/Off':  # the chosen radio/checkbox widget
+            box = next((w['box'] for w in pdf['widgets'] if w['page'] == field['page']
+                        and w['export_value'] == written.lstrip('/')), box)
+        report.append({'id': fid, 'status': 'filled', 'value': written,
+                       '_check': {'name': name, 'value': written, 'page': field['page'], 'box': box,
+                                  'ink': written not in ('', '/Off')}})
 
     for page in writer.pages:
         writer.update_page_form_field_values(page, values, auto_regenerate=False)
@@ -266,14 +276,16 @@ def _fill_flat(reader, fields, answers, sizes_px, writer=None):
             if index is None and len(option_boxes) == 1 and _truth(answer) is not None:
                 index = 0 if _truth(answer) else None
                 if index is None:
-                    report.append({'id': fid, 'status': 'filled', 'value': 'left unticked'})
+                    report.append({'id': fid, 'status': 'filled', 'value': 'left unticked',
+                                   '_check': {'page': page, 'box': option_boxes[0], 'ink': False}})
                     continue
             if index is None or index >= len(option_boxes):
                 report.append({'id': fid, 'status': 'skipped',
                                'reason': f'answer {answer!r} matches no option {field.get("options")}'})
                 continue
             ops_by_page.setdefault(page, []).extend(_cross_ops(_box_to_points(option_boxes[index], geometry)))
-            report.append({'id': fid, 'status': 'filled', 'value': f"X in '{field['options'][index]}'"})
+            report.append({'id': fid, 'status': 'filled', 'value': f"X in '{field['options'][index]}'",
+                           '_check': {'page': page, 'box': option_boxes[index], 'ink': True}})
             continue
         if not field.get('answer_box'):
             report.append({'id': fid, 'status': 'skipped', 'reason': 'no answer_box'})
@@ -286,7 +298,8 @@ def _fill_flat(reader, fields, answers, sizes_px, writer=None):
             continue
         ops, overflow = _text_ops(answer, _box_to_points(field['answer_box'], geometry))
         ops_by_page.setdefault(page, []).extend(ops)
-        entry = {'id': fid, 'status': 'filled', 'value': answer}
+        entry = {'id': fid, 'status': 'filled', 'value': answer,
+                 '_check': {'page': page, 'box': field['answer_box'], 'ink': bool(answer)}}
         if overflow:
             entry['warning'] = 'text may not fit the answer box'
         report.append(entry)
@@ -349,7 +362,37 @@ def fill_form(pdf_path, fields, answers, out_path=None):
     report.extend({'id': fid, 'status': 'skipped', 'reason': 'no field with this id'} for fid in unknown)
     with open(out_path, 'wb') as file:
         writer.write(file)
+    _verify(pdf_path, out_path, report)
     return report
+
+
+def _verify(pdf_path, out_path, report):
+    """Check the written file: fillable values are read back with pypdf, and every answer must
+    add ink inside its box when the original and the filled PDF are rendered."""
+    from pypdf import PdfReader
+
+    from ocr import render_pdf
+    checks = [entry for entry in report if '_check' in entry]
+    if not checks:
+        return
+    values = {name: field.get('/V') for name, field in (PdfReader(str(out_path)).get_fields() or {}).items()}
+    before, after = render_pdf(pdf_path), render_pdf(out_path)
+    for entry in checks:
+        check = entry.pop('_check')
+        verified = {}
+        if 'name' in check:
+            verified['value_read_back'] = str(values.get(check['name'])) == check['value']
+        if check['ink'] and check['box']:
+            page = check['page'] - 1
+            x0, y0, x1, y1 = [int(round(v)) for v in check['box']]
+            old = before[page][y0:y1, x0:x1].mean(axis=2)
+            new = after[page][y0:y1, x0:x1].mean(axis=2)
+            verified['ink_in_box'] = int(((new < 128) & (old >= 128)).sum()) >= MIN_NEW_INK_PX
+        entry['verified'] = verified
+        failed = [name for name, ok in verified.items() if not ok]
+        if failed:
+            entry['warning'] = '; '.join(filter(None, [entry.get('warning'),
+                                                       'verification failed: ' + ', '.join(failed)]))
 
 
 def main():
@@ -368,12 +411,16 @@ def main():
         print(f"{entry['status']:8} {entry['id']!r:40} {detail}{warning}")
     filled = sum(1 for e in report if e['status'] == 'filled')
     refused = [e for e in report if e['status'] == 'refused']
+    unverified = [e for e in report if e['status'] == 'filled' and not all(e['verified'].values())]
     print(f'{filled} filled, {len(refused)} refused, {len(report) - filled - len(refused)} skipped. '
           f'Saved {args.out}')
     if refused:
         print('Refused (invalid values, nothing written):')
         for entry in refused:
             print(f"  {entry['id']!r}: {entry['reason']}")
+    checked = sum(1 for e in report if e['status'] == 'filled' and e['verified'])
+    print(f'Verified on the written file: {checked - len(unverified)}/{checked} ok'
+          + (f"; FAILED: {', '.join(repr(e['id']) for e in unverified)}" if unverified else ''))
     if args.report:
         with open(args.report, 'w', encoding='utf-8') as file:
             json.dump(report, file, indent=2, ensure_ascii=False)

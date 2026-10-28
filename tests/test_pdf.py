@@ -232,6 +232,8 @@ class FillTests(Tmp):
                 answers = {t['name']: example_answer(t) for t in truth['fields']}
                 report = fill_form(path, form, answers, out)
                 self.assertTrue(all(r['status'] == 'filled' for r in report), report)
+                for r in report:
+                    self.assertEqual(r['verified'], {'value_read_back': True, 'ink_in_box': True}, r)
                 values = {k: v.get('/V') for k, v in PdfReader(str(out)).get_fields().items()}
                 for t in truth['fields']:
                     field = next(f for f in form['fields'] if f['id'] == t['name'])
@@ -339,6 +341,16 @@ class FillTests(Tmp):
         self.assertIn('is not in the PDF', report[radio['id']]['reason'])
         self.assertEqual(len(report), len(truth['fields']))
 
+    def test_verification_catches_missing_ink(self):
+        from fill_form import _verify
+        path = self.tmp / 'b.pdf'
+        make_flat_pdf(path, 1, 6)
+        report = [{'id': 'x', 'status': 'filled', 'value': 'v',
+                   '_check': {'page': 1, 'box': [0, 0, 40, 40], 'ink': True}}]
+        _verify(path, path, report)  # nothing was drawn: same file before and after
+        self.assertEqual(report[0]['verified'], {'ink_in_box': False})
+        self.assertIn('verification failed', report[0]['warning'])
+
     def test_never_overwrites_the_original(self):
         path = self.tmp / 'my form.pdf'
         make_fillable_pdf(path, 1, 6)
@@ -396,6 +408,8 @@ class FillTests(Tmp):
                         'fields': fields, 'sections': []}
                 report = fill_form(path, form, answers, out)
                 self.assertTrue(all(r['status'] == 'filled' for r in report), report)
+                for r in report:
+                    self.assertEqual(r['verified'], {'ink_in_box': True}, r)
 
                 before = render.mean(axis=2)
                 after = prepare_pages(out)[0].mean(axis=2)
