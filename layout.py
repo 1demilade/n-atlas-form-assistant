@@ -456,7 +456,8 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
                 section['id'] = _slug(section['id'], seen)
         sections += flat_sections
         fields += flat
-        used.append('+'.join(sorted({f['source'] for f in flat})) or 'none')
+        if flat or not widget_pages:  # instructions pages add no method
+            used.append('+'.join(sorted({f['source'] for f in flat})) or 'none')
     if widget_pages:
         field_pages = {f['page'] for f in fields}
         for page in info['pages']:
