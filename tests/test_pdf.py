@@ -808,6 +808,28 @@ class FlatLabelTests(Tmp):
         self.assertIn('official use', report[by_label['Remarks']['id']]['reason'])
 
 
+    def test_signature_fields_are_not_asked(self):
+        """Signature and thumbprint fields are kept but not asked (signed by hand); a date of
+        signature and ordinary fields are asked."""
+        from layout import analyse_form
+        from make_test_pdfs import make_widget_pdf
+        path = self.tmp / 'sign.pdf'
+        texts, lines = _underlined([('Full name:', 700), ("Applicant's signature / right thumb print:", 670),
+                                    ('Date of signature:', 640)])
+        texts += [(56, 760, 'Registration form for the members of our farmers club'), (100, 590, 'Signature')]
+        lines[1] = (290, 668, 540)
+        lines.append((56, 600, 220))
+        make_widget_pdf(path, texts, [], lines=lines)
+        form = analyse_form(str(path), read_pdf_words(path, ocr_images=False), method='rules')
+        by_label = {f['label']: f for f in form['fields']}
+        for label in ("Applicant's signature / right thumb print", 'Signature'):
+            self.assertFalse(by_label[label]['ask_user'], label)
+            self.assertIn('signature', by_label[label]['skip_reason'])
+        self.assertEqual(by_label['Date of signature']['type'], 'date')
+        self.assertTrue(by_label['Date of signature']['ask_user'])
+        self.assertTrue(by_label['Full name']['ask_user'])
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""

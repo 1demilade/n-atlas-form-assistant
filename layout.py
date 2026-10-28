@@ -35,6 +35,8 @@ OFFICIAL_USE = re.compile(
     r'|attest(ation|ed)|countersign(ed)?)\s+by\b'
     r'|\bto\s+be\s+(completed|filled|signed)\s+by\s+(the\s+)?'
     r'(officer|office|official|bank|staff|secretary|chairman|coordinator|agent)', re.IGNORECASE)
+# Fields signed or thumb-printed by hand on the printed form: they cannot be typed in.
+SIGNATURE = re.compile(r'\bsignature\b|\bsign\s+here\b|\bthumb\s*print\b|\binitials\b', re.IGNORECASE)
 
 
 def _same_row(a, b, share=0.5):
@@ -473,6 +475,16 @@ def _mark_official_use(fields, sections):
                 break
 
 
+def _mark_signatures(fields):
+    """Signature / thumbprint fields (by label, or an AcroForm signature field) are not asked:
+    they are signed by hand. A date of signature is still asked."""
+    for field in fields:
+        signature_field = (field.get('pdf') or {}).get('field_type') == 'Sig'
+        if signature_field or (field.get('label') and SIGNATURE.search(field['label'])
+                               and field.get('type') != 'date'):
+            _not_asked(field, 'signature or thumbprint: done by hand on the printed form')
+
+
 def _flag_shared_labels(fields):
     """Fields with the same label (e.g. several boxes under one printed label) cannot be told
     apart by a user who only hears the label: each one is reviewed."""
@@ -572,6 +584,7 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
     sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))
     _assign_sections(fields, sections)
     _mark_official_use(fields, sections)
+    _mark_signatures(fields)
     _add_keys(fields)
     form = {'source_file': info['file'], 'pdf_kind': pdf_kind(info['pages']),
             'pages': info['pages'], 'method': ', '.join(used) or 'none', 'notes': notes}
