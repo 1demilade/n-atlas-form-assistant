@@ -1,35 +1,30 @@
-﻿.venv\Scripts\python.exe : test_fields_match_ground_truth (test_pdf.AcroFormTests.test_fields_match_ground_truth) ... 
-ok
-At line:1 char:321
-+ ... N_SLOW='1'; .venv\Scripts\python.exe -m unittest discover -s tests -v ...
-+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (test_fields_mat...d_truth) ... ok:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
+test_field_name_is_never_a_label (test_pdf.AcroFormTests.test_field_name_is_never_a_label)
+A widget with no question, tooltip or nearby text gets no label, not 'Text1'. ... ok
+test_fields_match_ground_truth (test_pdf.AcroFormTests.test_fields_match_ground_truth) ... ok
 test_labels_and_types_without_layoutlm (test_pdf.AcroFormTests.test_labels_and_types_without_layoutlm)
 Fallback linking (tooltip, nearby text) must already find the right label. ... ok
+test_check_value (test_pdf.FillTests.test_check_value) ... ok
+test_fields_list_or_form_object (test_pdf.FillTests.test_fields_list_or_form_object)
+fill_form(pdf_path, fields, ...) takes the bare fields list too (page sizes from a render). ... ok
 test_fillable_round_trip (test_pdf.FillTests.test_fillable_round_trip) ... ok
 test_fillable_skips_with_reasons (test_pdf.FillTests.test_fillable_skips_with_reasons) ... ok
+test_filled_flagged_fields_are_listed (test_pdf.FillTests.test_filled_flagged_fields_are_listed) ... ok
 test_flat_text_and_crosses_land_in_place (test_pdf.FillTests.test_flat_text_and_crosses_land_in_place) ... ok
-test_generated_pdfs (test_pdf.FullPipelineOnPdfs.test_generated_pdfs) ... 
-Loading weights:   0%|          | 0/205 [00:00<?, ?it/s]
-Loading weights: 100%|██████████| 205/205 [00:00<00:00, 4517.73it/s]
+test_invalid_values_are_refused (test_pdf.FillTests.test_invalid_values_are_refused) ... ok
+test_never_overwrites_the_original (test_pdf.FillTests.test_never_overwrites_the_original) ... ok
+test_on_states_come_from_the_pdf (test_pdf.FillTests.test_on_states_come_from_the_pdf) ... ok
+test_verification_catches_missing_ink (test_pdf.FillTests.test_verification_catches_missing_ink) ... ok
+test_generated_pdfs (test_pdf.FullPipelineOnPdfs.test_generated_pdfs) ... Loading weights:   0%|          | 0/205 [00:00<?, ?it/s]Loading weights: 100%|██████████| 205/205 [00:00<00:00, 11048.56it/s]
 ok
-test_image_only_pdf (test_pdf.FullPipelineOnPdfs.test_image_only_pdf) ... INFO: Could not find files for the given 
-pattern(s).
-C:\Users\LC\Documents\ncair internship\data_science_advanced\n-atlas-form-assistant\.venv\Lib\site-packages\paddle\util
-s\cpp_extension\extension_utils.py:718: UserWarning: No ccache found. Please be aware that recompiling all source 
-files may be required. You can download and install ccache from: 
-https://github.com/ccache/ccache/blob/master/doc/INSTALL.md
+test_image_only_pdf (test_pdf.FullPipelineOnPdfs.test_image_only_pdf) ... INFO: Could not find files for the given pattern(s).
+C:\Users\LC\Documents\ncair internship\data_science_advanced\n-atlas-form-assistant\.venv\Lib\site-packages\paddle\utils\cpp_extension\extension_utils.py:718: UserWarning: No ccache found. Please be aware that recompiling all source files may be required. You can download and install ccache from: https://github.com/ccache/ccache/blob/master/doc/INSTALL.md
   warnings.warn(warning_message)
 Creating model: ('PP-OCRv6_medium_det', None, None)
-Model files already exist. Using cached files. To redownload, please delete the directory manually: 
-`C:\Users\LC\.paddlex\official_models\PP-OCRv6_medium_det`.
+Model files already exist. Using cached files. To redownload, please delete the directory manually: `C:\Users\LC\.paddlex\official_models\PP-OCRv6_medium_det`.
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1027 22:07:46.883430 21636 onednn_context.cc:81] oneDNN v3.6.2
+I1028 02:08:42.303901 25764 onednn_context.cc:81] oneDNN v3.6.2
 Creating model: ('PP-OCRv6_medium_rec', None, None)
-Model files already exist. Using cached files. To redownload, please delete the directory manually: 
-`C:\Users\LC\.paddlex\official_models\PP-OCRv6_medium_rec`.
+Model files already exist. Using cached files. To redownload, please delete the directory manually: `C:\Users\LC\.paddlex\official_models\PP-OCRv6_medium_rec`.
 ReduceMeanCheckIfOneDNNSupport
 ReduceMeanCheckIfOneDNNSupport
 ReduceMeanCheckIfOneDNNSupport
@@ -42,6 +37,12 @@ ReduceMeanCheckIfOneDNNSupport
 ReduceMeanCheckIfOneDNNSupport
 ReduceMeanCheckIfOneDNNSupport
 ok
+test_answers_by_key_or_id (test_pdf.OutputFormatTests.test_answers_by_key_or_id) ... ok
+test_keys_from_labels (test_pdf.OutputFormatTests.test_keys_from_labels) ... ok
+test_mixed_pdf_uses_both_paths (test_pdf.OutputFormatTests.test_mixed_pdf_uses_both_paths)
+Page 1 has widgets, page 2 is flat: each page goes through its own path and fills. ... No fields to update on this page
+ok
+test_pdf_kind (test_pdf.OutputFormatTests.test_pdf_kind) ... ok
 test_boxes_follow_rotation_and_crop (test_pdf.TextLayerTests.test_boxes_follow_rotation_and_crop) ... ok
 test_kind_detection (test_pdf.TextLayerTests.test_kind_detection) ... ok
 test_real_text_rule (test_pdf.TextLayerTests.test_real_text_rule) ... ok
@@ -49,13 +50,12 @@ test_words_land_on_ink (test_pdf.TextLayerTests.test_words_land_on_ink) ... ok
 test_keywords (test_pipeline.FieldTypeTests.test_keywords) ... ok
 test_options_beat_keywords (test_pipeline.FieldTypeTests.test_options_beat_keywords) ... ok
 test_ocr_and_layoutlm_on_synthetic (test_pipeline.FullPipelineSlow.test_ocr_and_layoutlm_on_synthetic) ... ok
-test_label_names_are_parsed_not_assumed (test_pipeline.LayoutLMInputTests.test_label_names_are_parsed_not_assumed) ... 
-ok
+test_label_names_are_parsed_not_assumed (test_pipeline.LayoutLMInputTests.test_label_names_are_parsed_not_assumed) ... ok
 test_normalize_uses_real_size (test_pipeline.LayoutLMInputTests.test_normalize_uses_real_size) ... ok
 test_words_get_own_boxes_inside_line (test_pipeline.LayoutLMInputTests.test_words_get_own_boxes_inside_line) ... ok
 test_generated_forms (test_pipeline.RulesOnSyntheticForms.test_generated_forms) ... ok
 
 ----------------------------------------------------------------------
-Ran 18 tests in 156.547s
+Ran 30 tests in 184.084s
 
 OK
