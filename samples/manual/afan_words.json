@@ -1,0 +1,2092 @@
+[
+  {
+    "text": "ALL FARMERS ASSOCIATION OF NIGERIA (AFAN)",
+    "box": [
+      276,
+      69,
+      1541,
+      131
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "ALL",
+        "box": [
+          276,
+          69,
+          376,
+          131
+        ]
+      },
+      {
+        "text": "FARMERS",
+        "box": [
+          392,
+          69,
+          642,
+          131
+        ]
+      },
+      {
+        "text": "ASSOCIATION",
+        "box": [
+          658,
+          69,
+          1023,
+          131
+        ]
+      },
+      {
+        "text": "OF",
+        "box": [
+          1039,
+          69,
+          1110,
+          131
+        ]
+      },
+      {
+        "text": "NIGERIA",
+        "box": [
+          1125,
+          69,
+          1349,
+          131
+        ]
+      },
+      {
+        "text": "(AFAN)",
+        "box": [
+          1364,
+          69,
+          1541,
+          131
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Head Office:",
+    "box": [
+      835,
+      130,
+      982,
+      155
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Head",
+        "box": [
+          835,
+          130,
+          896,
+          155
+        ]
+      },
+      {
+        "text": "Office:",
+        "box": [
+          903,
+          130,
+          982,
+          155
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Suite A22, Hawthorn Suites by Wyndham, No. 1, Uke Street, Area 11, Garki, Abuja, Nigeria.",
+    "box": [
+      403,
+      158,
+      1414,
+      183
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Suite",
+        "box": [
+          403,
+          158,
+          460,
+          183
+        ]
+      },
+      {
+        "text": "A22,",
+        "box": [
+          466,
+          158,
+          517,
+          183
+        ]
+      },
+      {
+        "text": "Hawthorn",
+        "box": [
+          524,
+          158,
+          631,
+          183
+        ]
+      },
+      {
+        "text": "Suites",
+        "box": [
+          638,
+          158,
+          707,
+          183
+        ]
+      },
+      {
+        "text": "by",
+        "box": [
+          714,
+          158,
+          741,
+          183
+        ]
+      },
+      {
+        "text": "Wyndham,",
+        "box": [
+          748,
+          158,
+          867,
+          183
+        ]
+      },
+      {
+        "text": "No.",
+        "box": [
+          874,
+          158,
+          913,
+          183
+        ]
+      },
+      {
+        "text": "1,",
+        "box": [
+          920,
+          158,
+          941,
+          183
+        ]
+      },
+      {
+        "text": "Uke",
+        "box": [
+          948,
+          158,
+          992,
+          183
+        ]
+      },
+      {
+        "text": "Street,",
+        "box": [
+          999,
+          158,
+          1073,
+          183
+        ]
+      },
+      {
+        "text": "Area",
+        "box": [
+          1078,
+          158,
+          1131,
+          183
+        ]
+      },
+      {
+        "text": "11,",
+        "box": [
+          1138,
+          158,
+          1171,
+          183
+        ]
+      },
+      {
+        "text": "Garki,",
+        "box": [
+          1178,
+          158,
+          1245,
+          183
+        ]
+      },
+      {
+        "text": "Abuja,",
+        "box": [
+          1250,
+          158,
+          1321,
+          183
+        ]
+      },
+      {
+        "text": "Nigeria.",
+        "box": [
+          1328,
+          158,
+          1414,
+          183
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Tel: +234 803 787 3326; E-mail: afanigeria2014@gmail.com",
+    "box": [
+      576,
+      186,
+      1242,
+      211
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Tel:",
+        "box": [
+          576,
+          186,
+          615,
+          211
+        ]
+      },
+      {
+        "text": "+234",
+        "box": [
+          622,
+          186,
+          678,
+          211
+        ]
+      },
+      {
+        "text": "803",
+        "box": [
+          685,
+          186,
+          727,
+          211
+        ]
+      },
+      {
+        "text": "787",
+        "box": [
+          734,
+          186,
+          776,
+          211
+        ]
+      },
+      {
+        "text": "3326;",
+        "box": [
+          783,
+          186,
+          845,
+          211
+        ]
+      },
+      {
+        "text": "E-mail:",
+        "box": [
+          852,
+          186,
+          930,
+          211
+        ]
+      },
+      {
+        "text": "afanigeria2014@gmail.com",
+        "box": [
+          937,
+          186,
+          1242,
+          211
+        ]
+      }
+    ]
+  },
+  {
+    "text": "No Farmer No Nation",
+    "box": [
+      712,
+      235,
+      1106,
+      279
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "No",
+        "box": [
+          712,
+          235,
+          764,
+          279
+        ]
+      },
+      {
+        "text": "Farmer",
+        "box": [
+          775,
+          235,
+          911,
+          279
+        ]
+      },
+      {
+        "text": "No",
+        "box": [
+          922,
+          235,
+          974,
+          279
+        ]
+      },
+      {
+        "text": "Nation",
+        "box": [
+          985,
+          235,
+          1106,
+          279
+        ]
+      }
+    ]
+  },
+  {
+    "text": "No.",
+    "box": [
+      1091,
+      288,
+      1152,
+      327
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "No.",
+        "box": [
+          1091,
+          288,
+          1152,
+          327
+        ]
+      }
+    ]
+  },
+  {
+    "text": "2 PASSPORT",
+    "box": [
+      1361,
+      336,
+      1466,
+      352
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "2",
+        "box": [
+          1361,
+          336,
+          1371,
+          352
+        ]
+      },
+      {
+        "text": "PASSPORT",
+        "box": [
+          1375,
+          336,
+          1466,
+          352
+        ]
+      }
+    ]
+  },
+  {
+    "text": "MEMBERSHIP REGISTRATION FORM",
+    "box": [
+      564,
+      344,
+      1254,
+      383
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "MEMBERSHIP",
+        "box": [
+          564,
+          344,
+          828,
+          383
+        ]
+      },
+      {
+        "text": "REGISTRATION",
+        "box": [
+          838,
+          344,
+          1129,
+          383
+        ]
+      },
+      {
+        "text": "FORM",
+        "box": [
+          1139,
+          344,
+          1254,
+          383
+        ]
+      }
+    ]
+  },
+  {
+    "text": "PHOTOGRAPHS",
+    "box": [
+      1348,
+      354,
+      1479,
+      371
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "PHOTOGRAPHS",
+        "box": [
+          1348,
+          354,
+          1479,
+          371
+        ]
+      }
+    ]
+  },
+  {
+    "text": "1.",
+    "box": [
+      163,
+      533,
+      191,
+      566
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "1.",
+        "box": [
+          163,
+          533,
+          191,
+          566
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Full Name:",
+    "box": [
+      228,
+      533,
+      389,
+      566
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Full",
+        "box": [
+          228,
+          533,
+          282,
+          566
+        ]
+      },
+      {
+        "text": "Name:",
+        "box": [
+          291,
+          533,
+          389,
+          566
+        ]
+      }
+    ]
+  },
+  {
+    "text": "2.",
+    "box": [
+      163,
+      592,
+      191,
+      626
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "2.",
+        "box": [
+          163,
+          592,
+          191,
+          626
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Residential Address:",
+    "box": [
+      228,
+      592,
+      532,
+      626
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Residential",
+        "box": [
+          228,
+          592,
+          393,
+          626
+        ]
+      },
+      {
+        "text": "Address:",
+        "box": [
+          401,
+          592,
+          532,
+          626
+        ]
+      }
+    ]
+  },
+  {
+    "text": "3.",
+    "box": [
+      163,
+      652,
+      191,
+      685
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "3.",
+        "box": [
+          163,
+          652,
+          191,
+          685
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Ward/Village/Town:",
+    "box": [
+      228,
+      652,
+      512,
+      685
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Ward/Village/Town:",
+        "box": [
+          228,
+          652,
+          512,
+          685
+        ]
+      }
+    ]
+  },
+  {
+    "text": "4.",
+    "box": [
+      163,
+      711,
+      191,
+      745
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "4.",
+        "box": [
+          163,
+          711,
+          191,
+          745
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Local Government Area:",
+    "box": [
+      228,
+      711,
+      588,
+      745
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Local",
+        "box": [
+          228,
+          711,
+          308,
+          745
+        ]
+      },
+      {
+        "text": "Government",
+        "box": [
+          317,
+          711,
+          501,
+          745
+        ]
+      },
+      {
+        "text": "Area:",
+        "box": [
+          508,
+          711,
+          588,
+          745
+        ]
+      }
+    ]
+  },
+  {
+    "text": "5.",
+    "box": [
+      163,
+      771,
+      191,
+      804
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "5.",
+        "box": [
+          163,
+          771,
+          191,
+          804
+        ]
+      }
+    ]
+  },
+  {
+    "text": "State:",
+    "box": [
+      228,
+      771,
+      315,
+      804
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "State:",
+        "box": [
+          228,
+          771,
+          315,
+          804
+        ]
+      }
+    ]
+  },
+  {
+    "text": "6.",
+    "box": [
+      163,
+      830,
+      191,
+      864
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "6.",
+        "box": [
+          163,
+          830,
+          191,
+          864
+        ]
+      }
+    ]
+  },
+  {
+    "text": "E-mail:",
+    "box": [
+      228,
+      830,
+      332,
+      864
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "E-mail:",
+        "box": [
+          228,
+          830,
+          332,
+          864
+        ]
+      }
+    ]
+  },
+  {
+    "text": "7.",
+    "box": [
+      163,
+      890,
+      191,
+      923
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "7.",
+        "box": [
+          163,
+          890,
+          191,
+          923
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Date of Birth:",
+    "box": [
+      228,
+      890,
+      423,
+      923
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Date",
+        "box": [
+          228,
+          890,
+          299,
+          923
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          308,
+          890,
+          336,
+          923
+        ]
+      },
+      {
+        "text": "Birth:",
+        "box": [
+          345,
+          890,
+          423,
+          923
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Telephone:",
+    "box": [
+      959,
+      890,
+      1123,
+      923
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Telephone:",
+        "box": [
+          959,
+          890,
+          1123,
+          923
+        ]
+      }
+    ]
+  },
+  {
+    "text": "8.",
+    "box": [
+      163,
+      949,
+      191,
+      982
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "8.",
+        "box": [
+          163,
+          949,
+          191,
+          982
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Agric. Business/Farm Address:",
+    "box": [
+      226,
+      949,
+      682,
+      982
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Agric.",
+        "box": [
+          226,
+          949,
+          312,
+          982
+        ]
+      },
+      {
+        "text": "Business/Farm",
+        "box": [
+          321,
+          949,
+          543,
+          982
+        ]
+      },
+      {
+        "text": "Address:",
+        "box": [
+          551,
+          949,
+          682,
+          982
+        ]
+      }
+    ]
+  },
+  {
+    "text": "9.",
+    "box": [
+      163,
+      1009,
+      191,
+      1042
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "9.",
+        "box": [
+          163,
+          1009,
+          191,
+          1042
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Major Commodity Association:",
+    "box": [
+      228,
+      1009,
+      677,
+      1042
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Major",
+        "box": [
+          228,
+          1009,
+          312,
+          1042
+        ]
+      },
+      {
+        "text": "Commodity",
+        "box": [
+          321,
+          1009,
+          489,
+          1042
+        ]
+      },
+      {
+        "text": "Association:",
+        "box": [
+          497,
+          1009,
+          677,
+          1042
+        ]
+      }
+    ]
+  },
+  {
+    "text": "10. Other Commodity Association:",
+    "box": [
+      163,
+      1068,
+      677,
+      1101
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "10.",
+        "box": [
+          163,
+          1068,
+          210,
+          1101
+        ]
+      },
+      {
+        "text": "Other",
+        "box": [
+          228,
+          1068,
+          312,
+          1101
+        ]
+      },
+      {
+        "text": "Commodity",
+        "box": [
+          321,
+          1068,
+          489,
+          1101
+        ]
+      },
+      {
+        "text": "Association:",
+        "box": [
+          497,
+          1068,
+          677,
+          1101
+        ]
+      }
+    ]
+  },
+  {
+    "text": "11. Details of Membership",
+    "box": [
+      163,
+      1127,
+      581,
+      1161
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "11.",
+        "box": [
+          163,
+          1127,
+          207,
+          1161
+        ]
+      },
+      {
+        "text": "Details",
+        "box": [
+          226,
+          1127,
+          335,
+          1161
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          344,
+          1127,
+          376,
+          1161
+        ]
+      },
+      {
+        "text": "Membership",
+        "box": [
+          385,
+          1127,
+          581,
+          1161
+        ]
+      }
+    ]
+  },
+  {
+    "text": "(a) How Long:",
+    "box": [
+      228,
+      1187,
+      447,
+      1220
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "(a)",
+        "box": [
+          228,
+          1187,
+          269,
+          1220
+        ]
+      },
+      {
+        "text": "How",
+        "box": [
+          288,
+          1187,
+          354,
+          1220
+        ]
+      },
+      {
+        "text": "Long:",
+        "box": [
+          363,
+          1187,
+          447,
+          1220
+        ]
+      }
+    ]
+  },
+  {
+    "text": "(b) Registration No.",
+    "box": [
+      966,
+      1187,
+      1255,
+      1220
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "(b)",
+        "box": [
+          966,
+          1187,
+          1006,
+          1220
+        ]
+      },
+      {
+        "text": "Registration",
+        "box": [
+          1016,
+          1187,
+          1194,
+          1220
+        ]
+      },
+      {
+        "text": "No.",
+        "box": [
+          1203,
+          1187,
+          1255,
+          1220
+        ]
+      }
+    ]
+  },
+  {
+    "text": "(c) Rank in the Association:",
+    "box": [
+      228,
+      1246,
+      632,
+      1280
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "(c)",
+        "box": [
+          228,
+          1246,
+          267,
+          1280
+        ]
+      },
+      {
+        "text": "Rank",
+        "box": [
+          276,
+          1246,
+          354,
+          1280
+        ]
+      },
+      {
+        "text": "in",
+        "box": [
+          363,
+          1246,
+          389,
+          1280
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          399,
+          1246,
+          445,
+          1280
+        ]
+      },
+      {
+        "text": "Association:",
+        "box": [
+          452,
+          1246,
+          632,
+          1280
+        ]
+      }
+    ]
+  },
+  {
+    "text": "12. Are you a service provider (Agric input, Dealer, Processor, Marketer,",
+    "box": [
+      163,
+      1306,
+      1231,
+      1339
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "12.",
+        "box": [
+          163,
+          1306,
+          210,
+          1339
+        ]
+      },
+      {
+        "text": "Are",
+        "box": [
+          226,
+          1306,
+          278,
+          1339
+        ]
+      },
+      {
+        "text": "you",
+        "box": [
+          288,
+          1306,
+          341,
+          1339
+        ]
+      },
+      {
+        "text": "a",
+        "box": [
+          351,
+          1306,
+          369,
+          1339
+        ]
+      },
+      {
+        "text": "service",
+        "box": [
+          378,
+          1306,
+          484,
+          1339
+        ]
+      },
+      {
+        "text": "provider",
+        "box": [
+          493,
+          1306,
+          614,
+          1339
+        ]
+      },
+      {
+        "text": "(Agric",
+        "box": [
+          623,
+          1306,
+          710,
+          1339
+        ]
+      },
+      {
+        "text": "input,",
+        "box": [
+          719,
+          1306,
+          801,
+          1339
+        ]
+      },
+      {
+        "text": "Dealer,",
+        "box": [
+          810,
+          1306,
+          916,
+          1339
+        ]
+      },
+      {
+        "text": "Processor,",
+        "box": [
+          925,
+          1306,
+          1083,
+          1339
+        ]
+      },
+      {
+        "text": "Marketer,",
+        "box": [
+          1092,
+          1306,
+          1231,
+          1339
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Other (Specify):",
+    "box": [
+      228,
+      1365,
+      462,
+      1399
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Other",
+        "box": [
+          228,
+          1365,
+          312,
+          1399
+        ]
+      },
+      {
+        "text": "(Specify):",
+        "box": [
+          321,
+          1365,
+          462,
+          1399
+        ]
+      }
+    ]
+  },
+  {
+    "text": "13. Size of Farm(s) /Agric. Business:",
+    "box": [
+      163,
+      1425,
+      714,
+      1458
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "13.",
+        "box": [
+          163,
+          1425,
+          210,
+          1458
+        ]
+      },
+      {
+        "text": "Size",
+        "box": [
+          228,
+          1425,
+          293,
+          1458
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          302,
+          1425,
+          330,
+          1458
+        ]
+      },
+      {
+        "text": "Farm(s)",
+        "box": [
+          339,
+          1425,
+          456,
+          1458
+        ]
+      },
+      {
+        "text": "/Agric.",
+        "box": [
+          465,
+          1425,
+          560,
+          1458
+        ]
+      },
+      {
+        "text": "Business:",
+        "box": [
+          569,
+          1425,
+          714,
+          1458
+        ]
+      }
+    ]
+  },
+  {
+    "text": "14. Type / Livestock:",
+    "box": [
+      163,
+      1484,
+      476,
+      1518
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "14.",
+        "box": [
+          163,
+          1484,
+          210,
+          1518
+        ]
+      },
+      {
+        "text": "Type",
+        "box": [
+          228,
+          1484,
+          300,
+          1518
+        ]
+      },
+      {
+        "text": "/",
+        "box": [
+          309,
+          1484,
+          318,
+          1518
+        ]
+      },
+      {
+        "text": "Livestock:",
+        "box": [
+          328,
+          1484,
+          476,
+          1518
+        ]
+      }
+    ]
+  },
+  {
+    "text": "15. Bank Details:",
+    "box": [
+      163,
+      1544,
+      425,
+      1577
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "15.",
+        "box": [
+          163,
+          1544,
+          210,
+          1577
+        ]
+      },
+      {
+        "text": "Bank",
+        "box": [
+          228,
+          1544,
+          304,
+          1577
+        ]
+      },
+      {
+        "text": "Details:",
+        "box": [
+          313,
+          1544,
+          425,
+          1577
+        ]
+      }
+    ]
+  },
+  {
+    "text": "16. Input Uses - Types, Quantities and Sources:",
+    "box": [
+      163,
+      1603,
+      880,
+      1636
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "16.",
+        "box": [
+          163,
+          1603,
+          210,
+          1636
+        ]
+      },
+      {
+        "text": "Input",
+        "box": [
+          228,
+          1603,
+          302,
+          1636
+        ]
+      },
+      {
+        "text": "Uses",
+        "box": [
+          312,
+          1603,
+          388,
+          1636
+        ]
+      },
+      {
+        "text": "-",
+        "box": [
+          397,
+          1603,
+          408,
+          1636
+        ]
+      },
+      {
+        "text": "Types,",
+        "box": [
+          417,
+          1603,
+          515,
+          1636
+        ]
+      },
+      {
+        "text": "Quantities",
+        "box": [
+          524,
+          1603,
+          674,
+          1636
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          683,
+          1603,
+          739,
+          1636
+        ]
+      },
+      {
+        "text": "Sources:",
+        "box": [
+          748,
+          1603,
+          880,
+          1636
+        ]
+      }
+    ]
+  },
+  {
+    "text": "17. Have you ever taken Insurance on your farm or Agric. Business:",
+    "box": [
+      163,
+      1722,
+      1172,
+      1755
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "17.",
+        "box": [
+          163,
+          1722,
+          210,
+          1755
+        ]
+      },
+      {
+        "text": "Have",
+        "box": [
+          228,
+          1722,
+          306,
+          1755
+        ]
+      },
+      {
+        "text": "you",
+        "box": [
+          315,
+          1722,
+          369,
+          1755
+        ]
+      },
+      {
+        "text": "ever",
+        "box": [
+          378,
+          1722,
+          443,
+          1755
+        ]
+      },
+      {
+        "text": "taken",
+        "box": [
+          452,
+          1722,
+          534,
+          1755
+        ]
+      },
+      {
+        "text": "Insurance",
+        "box": [
+          543,
+          1722,
+          690,
+          1755
+        ]
+      },
+      {
+        "text": "on",
+        "box": [
+          699,
+          1722,
+          736,
+          1755
+        ]
+      },
+      {
+        "text": "your",
+        "box": [
+          745,
+          1722,
+          810,
+          1755
+        ]
+      },
+      {
+        "text": "farm",
+        "box": [
+          819,
+          1722,
+          886,
+          1755
+        ]
+      },
+      {
+        "text": "or",
+        "box": [
+          895,
+          1722,
+          925,
+          1755
+        ]
+      },
+      {
+        "text": "Agric.",
+        "box": [
+          932,
+          1722,
+          1018,
+          1755
+        ]
+      },
+      {
+        "text": "Business:",
+        "box": [
+          1027,
+          1722,
+          1172,
+          1755
+        ]
+      }
+    ]
+  },
+  {
+    "text": "18. Next of Kin:",
+    "box": [
+      163,
+      1781,
+      401,
+      1815
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "18.",
+        "box": [
+          163,
+          1781,
+          210,
+          1815
+        ]
+      },
+      {
+        "text": "Next",
+        "box": [
+          228,
+          1781,
+          297,
+          1815
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          306,
+          1781,
+          334,
+          1815
+        ]
+      },
+      {
+        "text": "Kin:",
+        "box": [
+          343,
+          1781,
+          401,
+          1815
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Applicant’s Signature / Right Thumb Print:",
+    "box": [
+      233,
+      1879,
+      851,
+      1913
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Applicant’s",
+        "box": [
+          233,
+          1879,
+          393,
+          1913
+        ]
+      },
+      {
+        "text": "Signature",
+        "box": [
+          403,
+          1879,
+          545,
+          1913
+        ]
+      },
+      {
+        "text": "/",
+        "box": [
+          555,
+          1879,
+          564,
+          1913
+        ]
+      },
+      {
+        "text": "Right",
+        "box": [
+          573,
+          1879,
+          651,
+          1913
+        ]
+      },
+      {
+        "text": "Thumb",
+        "box": [
+          660,
+          1879,
+          763,
+          1913
+        ]
+      },
+      {
+        "text": "Print:",
+        "box": [
+          773,
+          1879,
+          851,
+          1913
+        ]
+      }
+    ]
+  },
+  {
+    "text": "RECOMMENDATION BY LOCAL GOVERNMENT AFAN COORDINATOR",
+    "box": [
+      270,
+      1968,
+      1377,
+      2001
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "RECOMMENDATION",
+        "box": [
+          270,
+          1968,
+          593,
+          2001
+        ]
+      },
+      {
+        "text": "BY",
+        "box": [
+          602,
+          1968,
+          649,
+          2001
+        ]
+      },
+      {
+        "text": "LOCAL",
+        "box": [
+          657,
+          1968,
+          772,
+          2001
+        ]
+      },
+      {
+        "text": "GOVERNMENT",
+        "box": [
+          781,
+          1968,
+          1020,
+          2001
+        ]
+      },
+      {
+        "text": "AFAN",
+        "box": [
+          1028,
+          1968,
+          1119,
+          2001
+        ]
+      },
+      {
+        "text": "COORDINATOR",
+        "box": [
+          1128,
+          1968,
+          1377,
+          2001
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Signature",
+    "box": [
+      280,
+      2120,
+      423,
+      2153
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Signature",
+        "box": [
+          280,
+          2120,
+          423,
+          2153
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Date",
+    "box": [
+      1181,
+      2126,
+      1252,
+      2160
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Date",
+        "box": [
+          1181,
+          2126,
+          1252,
+          2160
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Approval by State AFAN Chairman:",
+    "box": [
+      164,
+      2228,
+      685,
+      2262
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Approval",
+        "box": [
+          164,
+          2228,
+          296,
+          2262
+        ]
+      },
+      {
+        "text": "by",
+        "box": [
+          305,
+          2228,
+          340,
+          2262
+        ]
+      },
+      {
+        "text": "State",
+        "box": [
+          349,
+          2228,
+          427,
+          2262
+        ]
+      },
+      {
+        "text": "AFAN",
+        "box": [
+          435,
+          2228,
+          522,
+          2262
+        ]
+      },
+      {
+        "text": "Chairman:",
+        "box": [
+          531,
+          2228,
+          685,
+          2262
+        ]
+      }
+    ]
+  },
+  {
+    "text": "R",
+    "box": [
+      177,
+      130,
+      206,
+      149
+    ],
+    "score": 0.2643667757511139,
+    "page": 1,
+    "source": "ocr"
+  },
+  {
+    "text": "RSAS",
+    "box": [
+      676,
+      795,
+      963,
+      857
+    ],
+    "score": 0.9984550476074219,
+    "page": 1,
+    "source": "ocr"
+  }
+]
