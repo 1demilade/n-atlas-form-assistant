@@ -4,3 +4,4 @@ __pycache__/
 samples/*_boxes*.png
 samples/*_fields*.json
 samples/*_ocr.json
+samples/real/*.pdf
