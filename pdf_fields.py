@@ -1,8 +1,8 @@
 """Fillable PDFs: read every AcroForm field with pypdf and link it to its printed label.
 
 Boxes are converted to pixels of the PDF_DPI render of the page (same space as pdf_input words).
-Label linking uses LayoutLM question entities first; tooltip, nearby text, and the field name are
-fallbacks (flagged needs_review). Nothing here knows any particular form.
+Label linking uses LayoutLM question entities first; tooltip, then nearby text are fallbacks
+(flagged needs_review). Field names are not labels. Nothing here knows any particular form.
 """
 import re
 
@@ -16,7 +16,7 @@ RIGHT_MAX = 3        # checkbox/radio labels and option texts sit right of the b
 ROW_SHARE = 0.3      # vertical overlap (share of the smaller height) to count as the same row
 INSIDE_SHARE = 0.5   # text covered this much by a widget is the widget's value, not a label
 REVIEW_BELOW_CONFIDENCE = 0.6
-FALLBACK_CONFIDENCE = {'tooltip': 0.5, 'nearby_text': 0.4, 'field_name': 0.2}
+FALLBACK_CONFIDENCE = {'tooltip': 0.5, 'nearby_text': 0.4, 'none': 0.0}
 
 # Field flags (PDF 32000-1, tables 221, 226, 228, 230); bit n -> 1 << (n - 1).
 FLAG_BITS = {
@@ -310,34 +310,37 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
                 if text:
                     option_boxes.append(text['box'])
 
-        # Label: LayoutLM question, then tooltip, then nearby text, then the field name.
+        # Label: LayoutLM question, then tooltip, then the nearest text (a LayoutLM header first).
+        # The field name (e.g. 'Text1') is never a label: with none of these, label is None.
         sides = ('left', 'right', 'above') if is_box and len(on_page) == 1 else ('left', 'above')
-        label, label_box, label_source, confidence = None, None, None, None
+        label, label_box, label_source, confidence = None, None, 'none', None
         hit, side = _nearest(group_box, free(questions, page), text_height, sides, option_boxes)
-        header_hit, header_side = (None, None) if hit else _nearest(
-            group_box, free(headers, page), text_height, sides, option_boxes)
         if hit:
             label, label_box, confidence = hit['text'], hit['box'], hit['confidence']
             label_source = f'layoutlm_{side}'
-        elif header_hit:
-            label, label_box = header_hit['text'], header_hit['box']
-            # Tagged as a heading, so less sure: always reviewed (see needs_review below).
-            confidence = min(header_hit['confidence'], REVIEW_BELOW_CONFIDENCE - 0.01)
-            label_source = f'layoutlm_header_{header_side}'
-        elif raw['tooltip']:
+        elif raw['tooltip'] and raw['tooltip'].strip():
             label, label_source = raw['tooltip'].strip(), 'tooltip'
         else:
-            hit, side = _nearest(group_box, page_items, text_height, sides, option_boxes)
-            if hit:
-                label, label_box, label_source = hit['text'], hit['box'], f'nearby_text_{side}'
+            header_hit, header_side = _nearest(group_box, free(headers, page), text_height, sides,
+                                               option_boxes)
+            if header_hit:
+                label, label_box = header_hit['text'], header_hit['box']
+                # Tagged as a heading, so less sure: always reviewed (see needs_review below).
+                confidence = min(header_hit['confidence'], REVIEW_BELOW_CONFIDENCE - 0.01)
+                label_source = f'layoutlm_header_{header_side}'
             else:
-                label, label_source = _humanize(raw['name']), 'field_name'
+                hit, side = _nearest(group_box, page_items, text_height, sides, option_boxes)
+                if hit:
+                    label, label_box, label_source = hit['text'], hit['box'], f'nearby_text_{side}'
         if confidence is None:
             confidence = FALLBACK_CONFIDENCE[label_source.rsplit('_', 1)[0]
                                              if label_source.startswith('nearby_text') else label_source]
 
         from layout_rules import clean_label
-        label = clean_label(label) or _humanize(raw['name'])
+        label = clean_label(label) if label else None
+        if not label:
+            label, label_box, label_source = None, None, 'none'
+            confidence = FALLBACK_CONFIDENCE['none']
         field_type, type_source = _field_type(raw, label, option_texts)
         flags = raw['flags']
         fields.append({

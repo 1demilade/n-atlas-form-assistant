@@ -194,6 +194,23 @@ class AcroFormTests(Tmp):
                     if t.get('options'):
                         self.assertEqual(field['options'], t['options'])
 
+    def test_field_name_is_never_a_label(self):
+        """A widget with no question, tooltip or nearby text gets no label, not 'Text1'."""
+        import numpy as np
+        from pdf_fields import FLAG_BITS
+        raw = {'name': 'Text1', 'pdf_type': 'Tx', 'flags': {k: False for k in FLAG_BITS},
+               'flags_value': 0, 'tooltip': None, 'max_length': None, 'default_value': None,
+               'value': None, 'option_texts': [], 'option_values': [], 'format_script': '',
+               'widgets': [{'page': 1, 'box': [100, 100, 300, 140], 'rect_pt': [0, 0, 1, 1],
+                            'export_value': None, 'hidden': False}]}
+        far = {'text': 'Text far away', 'box': [1000, 2000, 1200, 2030], 'score': 1.0, 'page': 1}
+        fields, _ = link_fields([raw], [far], [np.full((2339, 1655, 3), 255, np.uint8)],
+                                use_layoutlm=False)
+        self.assertIsNone(fields[0]['label'])
+        self.assertIsNone(fields[0]['label_box'])
+        self.assertEqual(fields[0]['label_source'], 'none')
+        self.assertTrue(fields[0]['needs_review'])
+
 
 def _fillable_form(path):
     items = read_pdf_words(path, ocr_images=False)
@@ -293,7 +310,9 @@ class FullPipelineOnPdfs(Tmp):
             self.assertEqual(field['type'], expected_type(t, fillable), t['label'])
             if fillable:
                 self.assertEqual(field['id'], t['name'])
-                self.assertTrue(field['label_source'].startswith('layoutlm'), field)
+                # Brief: LayoutLM question first, then the tooltip (generated tooltips = label).
+                self.assertTrue(field['label_source'].startswith('layoutlm')
+                                or field['label_source'] == 'tooltip', field)
         # Extras (usually headings the model tagged as questions) are allowed only if flagged.
         expected = {norm(t['label']) for t in truth['fields']}
         extras = [f for f in form['fields'] if norm(f['label']) not in expected]
