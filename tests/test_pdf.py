@@ -487,6 +487,23 @@ class FillTests(Tmp):
                     self.assertEqual(' '.join(inside), answers[field['id']], field['label'])
 
 
+def check_groups(test, form, truth):
+    """Fields of make_checkbox_group_pdf: one flagged 'choice' per group, a 'yes_no' lone box."""
+    by_name = {tuple(f['pdf_field_name']) if isinstance(f['pdf_field_name'], list)
+               else f['pdf_field_name']: f for f in form['fields']}
+    test.assertEqual(len(form['fields']), len(truth['groups']) + 2, [f['id'] for f in form['fields']])
+    for group in truth['groups']:
+        field = by_name[tuple(group['names'])]
+        test.assertEqual(field['type'], 'choice')
+        test.assertEqual(norm(field['label']), norm(group['label']))
+        test.assertEqual(field['options'], group['options'])
+        test.assertTrue(field['multiple'])
+        test.assertTrue(field['needs_review'])
+    lone = by_name[truth['lone']['name']]
+    test.assertEqual(lone['type'], 'yes_no')
+    test.assertEqual(norm(lone['label']), norm(truth['lone']['label']))
+
+
 def _fillable_plus_instructions(tmp):
     from pypdf import PdfReader, PdfWriter
     a, b, out = tmp / 'a.pdf', tmp / 'notes.pdf', tmp / 'with_notes.pdf'
@@ -543,6 +560,44 @@ class OutputFormatTests(Tmp):
         values = PdfReader(str(out)).get_fields()
         self.assertEqual(str(values[by_key['pdf_field_name']]['/V']), 'Lagos')
         self.assertEqual(str(values[by_id['pdf_field_name']]['/V']), 'Abuja')
+
+    def test_independent_checkbox_groups(self):
+        """Separate checkbox fields side by side or stacked are one 'choice' field (flagged) that
+        takes a list; a lone checkbox stays 'yes_no'."""
+        from pypdf import PdfReader
+        from layout import _add_keys
+        path, out = self.tmp / 'cb.pdf', self.tmp / 'cb_out.pdf'
+        truth = make_checkbox_group_pdf(path)
+        form = _fillable_form(path)
+        _add_keys(form['fields'])
+        check_groups(self, form, truth)
+        lone = next(f for f in form['fields'] if f['pdf_field_name'] == truth['lone']['name'])
+        group1, group2 = [next(f for f in form['fields'] if f['pdf_field_name'] == g['names'])
+                          for g in truth['groups']]
+        text = next(f for f in form['fields'] if f['pdf_field_name'] == truth['text']['name'])
+        o1, o2 = truth['groups'][0]['options'], truth['groups'][1]['options']
+        report = {r['id']: r for r in fill_form(path, form, {
+            group1['key']: [o1[0], o1[2]], group2['id']: o2[2], lone['id']: 'yes',
+            text['id']: ['a', 'list']}, out)}
+        for field in (group1, group2, lone):
+            self.assertEqual(report[field['id']]['status'], 'filled', report[field['id']])
+            self.assertEqual(report[field['id']]['verified'],
+                             {'value_read_back': True, 'ink_in_box': True}, report[field['id']])
+        self.assertTrue(report[group1['id']]['needs_review'])
+        self.assertEqual(report[text['id']]['status'], 'refused')
+        values = {k: str(v.get('/V')) for k, v in PdfReader(str(out)).get_fields().items()}
+        names1, names2 = truth['groups'][0]['names'], truth['groups'][1]['names']
+        self.assertNotEqual(values[names1[0]], '/Off')
+        self.assertEqual(values[names1[1]], '/Off')
+        self.assertNotEqual(values[names1[2]], '/Off')
+        self.assertEqual([values[n] == '/Off' for n in names2], [True, True, False])
+        # The real on-states differ per box ('/Yes' or '/On'); each is read from the PDF.
+        from pdf_fields import read_on_states
+        states = read_on_states(PdfReader(str(path)))
+        self.assertEqual(values[names1[0]], '/' + states[names1[0]][0][0])
+        report = {r['id']: r for r in fill_form(path, form, {group1['id']: [o1[0], 'French']}, out)}
+        self.assertEqual(report[group1['id']]['status'], 'refused')
+        self.assertIn('French', report[group1['id']]['reason'])
 
     def test_instructions_page_is_not_mixed(self):
         """Fillable page + instructions-only page: still 'fillable', no fields on the instructions."""
@@ -627,6 +682,14 @@ class FullPipelineOnPdfs(Tmp):
                     self.assertEqual(form['form']['pdf_kind'], 'fillable' if kind == 'fillable' else 'flat_text')
                     self.assertEqual(form['form']['pages'][0]['word_source'], 'pdf_text')
                     self.check(form, truth, kind == 'fillable')
+
+    def test_checkbox_groups_with_layoutlm(self):
+        from layout import analyse_form
+        path = self.tmp / 'cb.pdf'
+        truth = make_checkbox_group_pdf(path)
+        form = analyse_form(str(path))
+        self.assertEqual(form['form']['pdf_kind'], 'fillable')
+        check_groups(self, form, truth)
 
     def test_instructions_page_with_layoutlm(self):
         from layout import analyse_form

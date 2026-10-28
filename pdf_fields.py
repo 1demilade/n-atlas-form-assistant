@@ -16,6 +16,8 @@ RIGHT_MAX = 3        # checkbox/radio labels and option texts sit right of the b
 ROW_SHARE = 0.3      # vertical overlap (share of the smaller height) to count as the same row
 INSIDE_SHARE = 0.5   # text covered this much by a widget is the widget's value, not a label
 REVIEW_BELOW_CONFIDENCE = 0.6
+GROUP_ROW_GAP = 12      # lone checkboxes in one row this close (text heights) form one group
+GROUP_COLUMN_GAP = 1.5  # ...or stacked, left edges aligned, at most this far apart
 FALLBACK_CONFIDENCE = {'tooltip': 0.5, 'nearby_text': 0.4, 'none': 0.0}
 
 # Field flags (PDF 32000-1, tables 221, 226, 228, 230); bit n -> 1 << (n - 1).
@@ -275,6 +277,43 @@ def _humanize(name):
     return re.sub(r'[_\-]+', ' ', last).strip() or name
 
 
+def _checkbox_groups(raw_fields, shown_widgets, text_height_of):
+    """Lone checkboxes (separate fields, one widget each, not radio) that sit next to each other
+    in a row or a column -> list of groups (each a list of raw fields, reading order, 2+)."""
+    lone = [raw for raw in raw_fields
+            if raw['pdf_type'] == 'Btn' and not raw['flags']['radio'] and not raw['flags']['pushbutton']
+            and len(shown_widgets(raw)) == 1]
+    boxes = {raw['name']: shown_widgets(raw)[0] for raw in lone}
+    parent = {raw['name']: raw['name'] for raw in lone}
+
+    def root(name):
+        while parent[name] != name:
+            name = parent[name]
+        return name
+
+    for i, a in enumerate(lone):
+        for b in lone[i + 1:]:
+            wa, wb = boxes[a['name']], boxes[b['name']]
+            if wa['page'] != wb['page']:
+                continue
+            h = text_height_of(wa['page'])
+            ba, bb = wa['box'], wb['box']
+            in_row = _same_row(ba, bb) and max(bb[0] - ba[2], ba[0] - bb[2]) <= GROUP_ROW_GAP * h
+            in_column = (abs(ba[0] - bb[0]) <= h
+                         and max(bb[1] - ba[3], ba[1] - bb[3]) <= GROUP_COLUMN_GAP * h)
+            if in_row or in_column:
+                parent[root(a['name'])] = root(b['name'])
+    groups = {}
+    for raw in lone:
+        groups.setdefault(root(raw['name']), []).append(raw)
+    ordered = []
+    for group in groups.values():
+        if len(group) >= 2:
+            group.sort(key=lambda r: (boxes[r['name']]['box'][1], boxes[r['name']]['box'][0]))
+            ordered.append(group)
+    return ordered
+
+
 def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
     """Raw AcroForm fields + words on the pages -> (Shape 2 fields (source 'acroform'), error).
     entities: reuse an earlier layout_lm.extract_entities() result."""
@@ -305,15 +344,63 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
         except Exception as error:  # LayoutLM missing or failed: nearby text is still used
             layoutlm_error = repr(error)
 
+    def find_label(box, page, page_items, text_height, sides, option_boxes, tooltip):
+        """(label, label_box, label_source, confidence): LayoutLM question, then tooltip, then
+        the nearest text (a LayoutLM header first). The field name (e.g. 'Text1') is never a
+        label: with none of these, label is None."""
+        label, label_box, label_source, confidence = None, None, 'none', None
+        hit, side = _nearest(box, free(questions, page), text_height, sides, option_boxes)
+        if hit:
+            label, label_box, confidence = hit['text'], hit['box'], hit['confidence']
+            label_source = f'layoutlm_{side}'
+        elif tooltip and tooltip.strip():
+            label, label_source = tooltip.strip(), 'tooltip'
+        else:
+            header_hit, header_side = _nearest(box, free(headers, page), text_height, sides,
+                                               option_boxes)
+            if header_hit:
+                label, label_box = header_hit['text'], header_hit['box']
+                # Tagged as a heading, so less sure: always reviewed (see needs_review below).
+                confidence = min(header_hit['confidence'], REVIEW_BELOW_CONFIDENCE - 0.01)
+                label_source = f'layoutlm_header_{header_side}'
+            else:
+                hit, side = _nearest(box, page_items, text_height, sides, option_boxes)
+                if hit:
+                    label, label_box, label_source = hit['text'], hit['box'], f'nearby_text_{side}'
+        if confidence is None:
+            confidence = FALLBACK_CONFIDENCE[label_source.rsplit('_', 1)[0]
+                                             if label_source.startswith('nearby_text') else label_source]
+        from layout_rules import clean_label
+        label = clean_label(label) if label else None
+        if not label:
+            return None, None, 'none', FALLBACK_CONFIDENCE['none']
+        return label, label_box, label_source, confidence
+
+    def shown_widgets(raw):
+        """The visible widgets on the field's first page (all widgets if none is visible)."""
+        shown = [w for w in raw['widgets'] if not w['hidden']] or raw['widgets']
+        return [w for w in shown if w['page'] == shown[0]['page']]
+
+    heights = {}
+
+    def text_height_of(page):
+        if page not in heights:
+            heights[page] = median_text_height([i for i in items if i['page'] == page])
+        return heights[page]
+
+    groups = _checkbox_groups(raw_fields, shown_widgets, text_height_of)
+    grouped = {raw['name'] for group in groups for raw in group}
+
     fields = []
     for raw in raw_fields:
         if raw['pdf_type'] == 'Btn' and raw['flags']['pushbutton']:
             continue  # buttons do not hold answers
-        shown = [w for w in raw['widgets'] if not w['hidden']] or raw['widgets']
-        page = shown[0]['page']
-        on_page = [w for w in shown if w['page'] == page]
+        if raw['name'] in grouped:
+            continue  # an option of an independent-checkbox group (built below)
+        on_page = shown_widgets(raw)
+        page = on_page[0]['page']
         page_items = free(items, page)
-        text_height = median_text_height([i for i in items if i['page'] == page])
+        text_height = text_height_of(page)
         group_box = _union([w['box'] for w in on_page])
         is_box = raw['pdf_type'] == 'Btn'
 
@@ -328,37 +415,9 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
                 if text:
                     option_boxes.append(text['box'])
 
-        # Label: LayoutLM question, then tooltip, then the nearest text (a LayoutLM header first).
-        # The field name (e.g. 'Text1') is never a label: with none of these, label is None.
         sides = ('left', 'right', 'above') if is_box and len(on_page) == 1 else ('left', 'above')
-        label, label_box, label_source, confidence = None, None, 'none', None
-        hit, side = _nearest(group_box, free(questions, page), text_height, sides, option_boxes)
-        if hit:
-            label, label_box, confidence = hit['text'], hit['box'], hit['confidence']
-            label_source = f'layoutlm_{side}'
-        elif raw['tooltip'] and raw['tooltip'].strip():
-            label, label_source = raw['tooltip'].strip(), 'tooltip'
-        else:
-            header_hit, header_side = _nearest(group_box, free(headers, page), text_height, sides,
-                                               option_boxes)
-            if header_hit:
-                label, label_box = header_hit['text'], header_hit['box']
-                # Tagged as a heading, so less sure: always reviewed (see needs_review below).
-                confidence = min(header_hit['confidence'], REVIEW_BELOW_CONFIDENCE - 0.01)
-                label_source = f'layoutlm_header_{header_side}'
-            else:
-                hit, side = _nearest(group_box, page_items, text_height, sides, option_boxes)
-                if hit:
-                    label, label_box, label_source = hit['text'], hit['box'], f'nearby_text_{side}'
-        if confidence is None:
-            confidence = FALLBACK_CONFIDENCE[label_source.rsplit('_', 1)[0]
-                                             if label_source.startswith('nearby_text') else label_source]
-
-        from layout_rules import clean_label
-        label = clean_label(label) if label else None
-        if not label:
-            label, label_box, label_source = None, None, 'none'
-            confidence = FALLBACK_CONFIDENCE['none']
+        label, label_box, label_source, confidence = find_label(
+            group_box, page, page_items, text_height, sides, option_boxes, raw['tooltip'])
         field_type, type_source = _field_type(raw, label, option_texts)
         flags = raw['flags']
         fields.append({
@@ -391,6 +450,60 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
                 'option_values': option_values,
                 'format_script': raw['format_script'] or None,
                 'widgets': raw['widgets'],
+            },
+        })
+
+    # Independent checkboxes (one field each) side by side or stacked: one 'choice' field that
+    # takes a list of values. Always reviewed: the grouping is inferred from the layout.
+    for group in groups:
+        widgets = [shown_widgets(raw)[0] for raw in group]
+        page = widgets[0]['page']
+        page_items = free(items, page)
+        text_height = text_height_of(page)
+        members, option_boxes = [], []
+        for raw, widget in zip(group, widgets):
+            text, _ = _nearest(widget['box'], page_items, text_height, ('right',))
+            if text:
+                option_boxes.append(text['box'])
+            option = text['text'] if text else ((raw['tooltip'] or '').strip() or widget['export_value'])
+            members.append({'name': raw['name'], 'option': option, 'export_value': widget['export_value'],
+                            'box': widget['box'], 'read_only': raw['flags']['read_only'],
+                            'required': raw['flags']['required']})
+        box = _union([w['box'] for w in widgets])
+        label, label_box, label_source, confidence = find_label(
+            box, page, page_items, text_height, ('left', 'above'), option_boxes, None)
+        names = [m['name'] for m in members]
+        fields.append({
+            'id': '+'.join(names),
+            'label': label,
+            'label_box': [int(v) for v in label_box] if label_box else None,
+            'answer_box': [int(v) for v in box],
+            'type': 'choice',
+            'source': 'acroform',
+            'confidence': round(float(confidence), 3),
+            'needs_review': True,
+            'page': page,
+            'pdf_field_name': names,  # one PDF field per option
+            'required': any(m['required'] for m in members),
+            'answer_method': 'acroform_checkbox_group',
+            'options': [m['option'] for m in members],
+            'multiple': True,
+            'label_source': label_source,
+            'type_source': 'independent_checkboxes',
+            'pdf': {
+                'name': None,
+                'field_type': 'Btn',
+                'flags': {},
+                'required': any(m['required'] for m in members),
+                'read_only': all(m['read_only'] for m in members),
+                'tooltip': None,
+                'max_length': None,
+                'default_value': None,
+                'value': None,
+                'option_values': [m['export_value'] for m in members],
+                'format_script': None,
+                'widgets': [w for raw in group for w in raw['widgets']],
+                'members': members,
             },
         })
     fields.sort(key=lambda f: (f['page'], f['answer_box'][1], f['answer_box'][0]))

@@ -74,6 +74,42 @@ def _truth(answer):
 
 # ---------- fillable PDFs ----------
 
+def _fill_checkbox_group(field, answer, states, values):
+    """Independent checkboxes (one PDF field per option): answer is a list of options (or one
+    option). Chosen members get their real on-state from the PDF, the others /Off."""
+    from pypdf.generic import NameObject
+    fid, options = field['id'], field['options']
+    given = answer if isinstance(answer, list) else [answer]
+    given = [str(v).strip() for v in given if str(v).strip()]
+    chosen, bad = set(), []
+    for value in given:
+        index = _match_option(value, options, [])
+        if index is None:
+            bad.append(value)
+        else:
+            chosen.add(index)
+    if bad:
+        return {'id': fid, 'status': 'refused', 'reason': f'answer(s) {bad} match no option {options}'}
+    new, checks = {}, []
+    for index, member in enumerate(field['pdf']['members']):
+        real = sorted({s for widget in states.get(member['name'], []) for s in widget})
+        if index in chosen:
+            if member.get('read_only'):
+                return {'id': fid, 'status': 'skipped', 'reason': f"option {member['option']!r} is read-only"}
+            if len(real) != 1:
+                return {'id': fid, 'status': 'skipped',
+                        'reason': f"option {member['option']!r} has on-states {real} in the PDF (need one)"}
+            state = '/' + real[0]
+        else:
+            state = '/Off'
+        new[member['name']] = NameObject(state)
+        checks.append({'name': member['name'], 'value': state, 'page': field['page'],
+                       'box': member['box'], 'ink': state != '/Off'})
+    values.update(new)
+    return {'id': fid, 'status': 'filled',
+            'value': ', '.join(options[i] for i in sorted(chosen)) or 'none ticked', '_check': checks}
+
+
 def _fill_acroform(reader, fields, answers):
     from pypdf import PdfWriter
     from pypdf.generic import NameObject
@@ -84,11 +120,14 @@ def _fill_acroform(reader, fields, answers):
     report, values = [], {}
     for field in fields:
         fid = field['id']
-        name = field.get('pdf_field_name') or fid
-        real_states = sorted({s for widget in states.get(name, []) for s in widget})
         if fid not in answers:
             report.append({'id': fid, 'status': 'skipped', 'reason': 'no answer'})
             continue
+        if field.get('answer_method') == 'acroform_checkbox_group':
+            report.append(_fill_checkbox_group(field, answers[fid], states, values))
+            continue
+        name = field.get('pdf_field_name') or fid
+        real_states = sorted({s for widget in states.get(name, []) for s in widget})
         answer = str(answers[fid]).strip()
         pdf = field['pdf']
         kind = pdf['field_type']
@@ -359,6 +398,12 @@ def fill_form(pdf_path, fields, answers, out_path=None):
     form = fields if isinstance(fields, dict) else {'fields': fields}
     reader = PdfReader(str(pdf_path))
     answers, conflicts, unknown = _resolve(form['fields'], answers)
+    for field in form['fields']:  # a list of values only fits independent checkboxes
+        if (isinstance(answers.get(field['id']), list)
+                and field.get('answer_method') != 'acroform_checkbox_group'):
+            answers.pop(field['id'])
+            conflicts[field['id']] = {'status': 'refused',
+                                      'reason': 'a list of values is only accepted for independent checkboxes'}
     # Each field is filled the way it was found: AcroForm widget, or drawn on the page.
     fillable = [f for f in form['fields'] if f.get('pdf_field_name')]
     flat = [f for f in form['fields'] if not f.get('pdf_field_name')]
@@ -400,16 +445,19 @@ def _verify(pdf_path, out_path, report):
     values = {name: field.get('/V') for name, field in (PdfReader(str(out_path)).get_fields() or {}).items()}
     before, after = render_pdf(pdf_path), render_pdf(out_path)
     for entry in checks:
-        check = entry.pop('_check')
+        parts = entry.pop('_check')  # one check, or one per member of a checkbox group
         verified = {}
-        if 'name' in check:
-            verified['value_read_back'] = str(values.get(check['name'])) == check['value']
-        if check['ink'] and check['box']:
-            page = check['page'] - 1
-            x0, y0, x1, y1 = [int(round(v)) for v in check['box']]
-            old = before[page][y0:y1, x0:x1].mean(axis=2)
-            new = after[page][y0:y1, x0:x1].mean(axis=2)
-            verified['ink_in_box'] = int(((new < 128) & (old >= 128)).sum()) >= MIN_NEW_INK_PX
+        for check in parts if isinstance(parts, list) else [parts]:
+            if 'name' in check:
+                ok = str(values.get(check['name'])) == check['value']
+                verified['value_read_back'] = verified.get('value_read_back', True) and ok
+            if check['ink'] and check['box']:
+                page = check['page'] - 1
+                x0, y0, x1, y1 = [int(round(v)) for v in check['box']]
+                old = before[page][y0:y1, x0:x1].mean(axis=2)
+                new = after[page][y0:y1, x0:x1].mean(axis=2)
+                ok = int(((new < 128) & (old >= 128)).sum()) >= MIN_NEW_INK_PX
+                verified['ink_in_box'] = verified.get('ink_in_box', True) and ok
         entry['verified'] = verified
         failed = [name for name, ok in verified.items() if not ok]
         if failed:
