@@ -339,6 +339,21 @@ class FillTests(Tmp):
         self.assertIn('is not in the PDF', report[radio['id']]['reason'])
         self.assertEqual(len(report), len(truth['fields']))
 
+    def test_never_overwrites_the_original(self):
+        path = self.tmp / 'my form.pdf'
+        make_fillable_pdf(path, 1, 6)
+        before = path.read_bytes()
+        form = _fillable_form(path)
+        answer = {form['fields'][0]['id']: 'x'}
+        with self.assertRaises(ValueError):
+            fill_form(path, form, answer, path)
+        with self.assertRaises(ValueError):  # same file through another spelling
+            fill_form(path, form, answer, str(self.tmp / '.' / 'my form.pdf'))
+        self.assertEqual(path.read_bytes(), before)
+        fill_form(path, form, answer, None)
+        self.assertTrue((self.tmp / 'my form_filled.pdf').is_file())
+        self.assertEqual(path.read_bytes(), before)
+
     def test_fields_list_or_form_object(self):
         """fill_form(pdf_path, fields, ...) takes the bare fields list too (page sizes from a render)."""
         import pdfplumber

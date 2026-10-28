@@ -4,7 +4,7 @@ Fillable PDFs: values are written into the AcroForm fields with pypdf.
 Flat PDFs: answers are drawn as text (Helvetica) inside each field's answer_box; checkbox
 answers get an X in the chosen option's box. Every field gets a status in the report.
 
-Usage: python fill_form.py FORM.pdf --form form_fields.json --answers answers.json --out filled.pdf
+Usage: python fill_form.py FORM.pdf --form form_fields.json --answers answers.json [--out FORM_filled.pdf]
 """
 import argparse
 import io
@@ -308,11 +308,22 @@ def _page_sizes(form, pdf_path):
     return [(p.shape[1], p.shape[0]) for p in prepare_pages(pdf_path, clean=False)]
 
 
-def fill_form(pdf_path, fields, answers, out_path):
-    """Fill pdf_path with answers; write out_path. fields = the fields list, or the whole JSON
-    object from layout.py, or its path; answers = {field id or key: English text} (or its path).
-    Returns the per-field report."""
+def filled_path(pdf_path):
+    """<name>_filled.pdf next to the original."""
+    from pathlib import Path
+    path = Path(pdf_path)
+    return path.with_name(f'{path.stem}_filled.pdf')
+
+
+def fill_form(pdf_path, fields, answers, out_path=None):
+    """Fill pdf_path with answers; write out_path (default <name>_filled.pdf; never the original).
+    fields = the fields list, or the whole JSON object from layout.py, or its path;
+    answers = {field id or key: English text} (or its path). Returns the per-field report."""
+    import os
     from pypdf import PdfReader
+    out_path = out_path or filled_path(pdf_path)
+    if os.path.exists(out_path) and os.path.samefile(out_path, pdf_path):
+        raise ValueError(f'Refusing to overwrite the original PDF {pdf_path}; choose another out_path.')
     fields, answers = _load(fields), _load(answers)
     form = fields if isinstance(fields, dict) else {'fields': fields}
     reader = PdfReader(str(pdf_path))
@@ -346,9 +357,10 @@ def main():
     parser.add_argument('pdf')
     parser.add_argument('--form', default='form_fields.json', help='JSON written by layout.py')
     parser.add_argument('--answers', default='answers.json')
-    parser.add_argument('--out', default='form_filled.pdf')
+    parser.add_argument('--out', help='output PDF (default: <name>_filled.pdf next to the input)')
     parser.add_argument('--report', help='also save the per-field report as JSON here')
     args = parser.parse_args()
+    args.out = args.out or str(filled_path(args.pdf))
     report = fill_form(args.pdf, args.form, args.answers, args.out)
     for entry in report:
         detail = entry.get('value') or entry.get('reason', '')
