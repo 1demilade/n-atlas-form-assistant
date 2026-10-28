@@ -3,6 +3,51 @@
 Date: 2026-10-27, updated 2026-10-28 with the missing part of the brief (section 0) and your answers to my questions (section 00). Python 3.11.9 in `.venv`, CPU only.
 Scope (supervisor, 27 Oct 2026): input is a **digital PDF**, either (A) fillable (AcroForm fields) or (B) flat, with a text layer or image-only (scanned). Voice and N-ATLaS are later stages. Photos are no longer a main input; the photo path (OpenCV cleaning, perspective, deskew) is kept as a working fallback and its tests still pass. Answers come from `answers.json` (field id **or key** → English text).
 
+## 0000. Update 2026-10-28 (fourth round): a real flat form (`afan.pdf`) and nine generic fixes
+
+Details and before/after per field: `docs/real_form_test.md`, round 3.
+
+**First run:** found all 25 real fields of the AFAN membership form, but also:
+- a false field from the letterhead;
+- item 12 split in two;
+- a watermark cutting the E-mail line;
+- signature lines missed;
+- a two-line answer cut to one line;
+- item numbers inside labels;
+- a missed capitals heading;
+- no office-use or signature marker.
+
+**Fixes** (one commit each, each with a test on a generated PDF):
+
+| Commit | Fix |
+|---|---|
+| `634e571` | pale watermark OCR words dropped |
+| `e58123c` | item numbers stripped from labels |
+| `fc57d71` | wrapped questions after an unfinished line |
+| `9c2c4f5` | label printed under its line (`line_above`) |
+| `a1cfe93` | multi-line answer areas (`answer_lines`, filled line by line); fixes old bug #1 (section 4) |
+| `c3f6565` | capitals headings as sections |
+| `243a908` | on blank PDFs, printed text tagged as an answer is not a field (listed in `notes`) |
+| `8fb387b` | office-use fields: `ask_user: false`; `fill_form` skips these on flat pages too |
+| `c002133` | signature/thumbprint fields: `ask_user: false` |
+| `58f658e` | "specify" questions are `text` (a regression from stripping item numbers) |
+
+**Tests:** 51, all OK with `RUN_SLOW=1`.
+
+**After the fixes:**
+- **AFAN:** 25 fields, exactly the real ones; 3 real sections; every answer box on its line.
+- **Not asked:** the office and signature fields are kept with `ask_user: false`.
+- **Flagged:** only item 17 (no line on the page) and the official fields.
+- **`sample_form_1/2`:** re-run, unchanged.
+
+**New extra keys:**
+- every flat field: `answer_lines`;
+- `skip_reason` can now be "for official use (…)" or "signature or thumbprint: …".
+
+**Behaviour changes to know:**
+- `Business-Name-Form.pdf` was not re-run. Its "Signature" field will now be `ask_user: false`, so `fill_form` no longer types text into it.
+- Other changes there (watermark, numbers, headings) are possible.
+
 ## 000. Update 2026-10-28 (third round): two real fillable PDFs, and the fixes they led to
 
 Full details, per field: `docs/real_form_test.md`. The real PDFs are in `samples/real/` but not in git (`.gitignore`; `samples/real/README.md` says what they are).

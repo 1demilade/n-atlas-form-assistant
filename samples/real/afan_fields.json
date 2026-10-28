@@ -1,0 +1,911 @@
+{
+  "form": {
+    "source_file": "samples/real/afan.pdf",
+    "pdf_kind": "flat_text",
+    "pages": [
+      {
+        "page": 1,
+        "dpi": 200,
+        "width_px": 1654,
+        "height_px": 2339,
+        "width_pt": 595.28,
+        "height_pt": 841.89,
+        "rotation": 0,
+        "widgets": 0,
+        "word_source": "pdf_text+ocr_images",
+        "kind": "flat_text"
+      }
+    ],
+    "method": "layoutlm",
+    "notes": [
+      "p1 'ALL FARMERS ASSOCIATION OF NIGERIA (AFAN) Head Office' is not a field: its answer is printed text ('No. 1, Uke Street, Area 11, Garki,')."
+    ]
+  },
+  "sections": [
+    {
+      "id": "section_membership_registration_form",
+      "title": "MEMBERSHIP REGISTRATION FORM",
+      "box": [
+        564,
+        344,
+        1254,
+        383
+      ],
+      "page": 1,
+      "source": "layoutlm",
+      "reason": "layoutlm_header",
+      "confidence": 0.845,
+      "needs_review": false
+    },
+    {
+      "id": "section_details_of_membership",
+      "title": "Details of Membership",
+      "box": [
+        163,
+        1127,
+        581,
+        1161
+      ],
+      "page": 1,
+      "source": "layoutlm",
+      "reason": "layoutlm_header",
+      "confidence": 0.592,
+      "needs_review": true
+    },
+    {
+      "id": "section_recommendation_by_local_government_afan",
+      "title": "RECOMMENDATION BY LOCAL GOVERNMENT AFAN COORDINATOR",
+      "box": [
+        270,
+        1968,
+        1377,
+        2001
+      ],
+      "page": 1,
+      "source": "rules",
+      "reason": "caps_line",
+      "confidence": 0.5,
+      "needs_review": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "full_name",
+      "label": "Full Name",
+      "label_box": [
+        228,
+        533,
+        389,
+        566
+      ],
+      "answer_box": [
+        392,
+        517,
+        1493,
+        557
+      ],
+      "type": "text",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "full_name"
+    },
+    {
+      "id": "residential_address",
+      "label": "Residential Address",
+      "label_box": [
+        228,
+        592,
+        532,
+        626
+      ],
+      "answer_box": [
+        551,
+        578,
+        1494,
+        618
+      ],
+      "type": "text",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "residential_address"
+    },
+    {
+      "id": "ward_village_town",
+      "label": "Ward/Village/Town",
+      "label_box": [
+        228,
+        652,
+        512,
+        685
+      ],
+      "answer_box": [
+        518,
+        636,
+        1492,
+        676
+      ],
+      "type": "text",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "ward_village_town"
+    },
+    {
+      "id": "local_government_area",
+      "label": "Local Government Area",
+      "label_box": [
+        228,
+        711,
+        588,
+        745
+      ],
+      "answer_box": [
+        589,
+        695,
+        1490,
+        735
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "local_government_area"
+    },
+    {
+      "id": "state",
+      "label": "State",
+      "label_box": [
+        228,
+        771,
+        315,
+        804
+      ],
+      "answer_box": [
+        316,
+        754,
+        1493,
+        794
+      ],
+      "type": "text",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "state"
+    },
+    {
+      "id": "e_mail",
+      "label": "E-mail",
+      "label_box": [
+        228,
+        830,
+        332,
+        864
+      ],
+      "answer_box": [
+        334,
+        812,
+        1493,
+        852
+      ],
+      "type": "email",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "e_mail"
+    },
+    {
+      "id": "date_of_birth",
+      "label": "Date of Birth",
+      "label_box": [
+        228,
+        890,
+        423,
+        923
+      ],
+      "answer_box": [
+        425,
+        873,
+        960,
+        913
+      ],
+      "type": "date",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "date_of_birth"
+    },
+    {
+      "id": "telephone",
+      "label": "Telephone",
+      "label_box": [
+        959,
+        890,
+        1123,
+        923
+      ],
+      "answer_box": [
+        1132,
+        872,
+        1493,
+        912
+      ],
+      "type": "phone",
+      "source": "layoutlm",
+      "confidence": 0.996,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "telephone"
+    },
+    {
+      "id": "agric_business_farm_address",
+      "label": "Agric. Business/Farm Address",
+      "label_box": [
+        226,
+        949,
+        682,
+        982
+      ],
+      "answer_box": [
+        686,
+        933,
+        1493,
+        973
+      ],
+      "type": "text",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "agric_business_farm_address"
+    },
+    {
+      "id": "major_commodity_association",
+      "label": "Major Commodity Association",
+      "label_box": [
+        228,
+        1009,
+        677,
+        1042
+      ],
+      "answer_box": [
+        677,
+        991,
+        1494,
+        1031
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "major_commodity_association"
+    },
+    {
+      "id": "other_commodity_association",
+      "label": "Other Commodity Association",
+      "label_box": [
+        163,
+        1068,
+        677,
+        1101
+      ],
+      "answer_box": [
+        677,
+        1051,
+        1496,
+        1091
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_membership_registration_form",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "other_commodity_association"
+    },
+    {
+      "id": "how_long",
+      "label": "How Long",
+      "label_box": [
+        228,
+        1187,
+        447,
+        1220
+      ],
+      "answer_box": [
+        447,
+        1170,
+        962,
+        1210
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "how_long"
+    },
+    {
+      "id": "registration_no",
+      "label": "Registration No.",
+      "label_box": [
+        966,
+        1187,
+        1255,
+        1220
+      ],
+      "answer_box": [
+        1257,
+        1173,
+        1486,
+        1213
+      ],
+      "type": "number",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "registration_no"
+    },
+    {
+      "id": "rank_in_the_association",
+      "label": "Rank in the Association",
+      "label_box": [
+        228,
+        1246,
+        632,
+        1280
+      ],
+      "answer_box": [
+        632,
+        1230,
+        1493,
+        1270
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "rank_in_the_association"
+    },
+    {
+      "id": "are_you_a_service_provider_agric_input_d",
+      "label": "Are you a service provider (Agric input, Dealer, Processor, Marketer, Other (Specify)",
+      "label_box": [
+        163,
+        1306,
+        1231,
+        1399
+      ],
+      "answer_box": [
+        465,
+        1347,
+        1493,
+        1387
+      ],
+      "type": "text",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "are_you_a_service_provider_agric_input_d"
+    },
+    {
+      "id": "size_of_farm_s_agric_business",
+      "label": "Size of Farm(s) /Agric. Business",
+      "label_box": [
+        163,
+        1425,
+        714,
+        1458
+      ],
+      "answer_box": [
+        718,
+        1409,
+        1494,
+        1449
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.999,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "size_of_farm_s_agric_business"
+    },
+    {
+      "id": "type_livestock",
+      "label": "Type / Livestock",
+      "label_box": [
+        163,
+        1484,
+        476,
+        1518
+      ],
+      "answer_box": [
+        476,
+        1467,
+        1494,
+        1507
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "type_livestock"
+    },
+    {
+      "id": "bank_details",
+      "label": "Bank Details",
+      "label_box": [
+        163,
+        1544,
+        425,
+        1577
+      ],
+      "answer_box": [
+        429,
+        1528,
+        1493,
+        1568
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "bank_details"
+    },
+    {
+      "id": "input_uses_types_quantities_and_sources",
+      "label": "Input Uses - Types, Quantities and Sources",
+      "label_box": [
+        163,
+        1603,
+        880,
+        1636
+      ],
+      "answer_box": [
+        228,
+        1589,
+        1493,
+        1684
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.996,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [
+        [
+          885,
+          1589,
+          1493,
+          1629
+        ],
+        [
+          228,
+          1644,
+          1491,
+          1684
+        ]
+      ],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "input_uses_types_quantities_and_sources"
+    },
+    {
+      "id": "have_you_ever_taken_insurance_on_your_fa",
+      "label": "Have you ever taken Insurance on your farm or Agric. Business",
+      "label_box": [
+        163,
+        1722,
+        1172,
+        1755
+      ],
+      "answer_box": [
+        1181,
+        1722,
+        1531,
+        1755
+      ],
+      "type": "yes_no",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": true,
+      "page": 1,
+      "answer_method": "empty_right",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "have_you_ever_taken_insurance_on_your_fa"
+    },
+    {
+      "id": "next_of_kin",
+      "label": "Next of Kin",
+      "label_box": [
+        163,
+        1781,
+        401,
+        1815
+      ],
+      "answer_box": [
+        409,
+        1766,
+        1491,
+        1806
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
+      "editable": false,
+      "key": "next_of_kin"
+    },
+    {
+      "id": "applicant_s_signature_right_thumb_print",
+      "label": "Applicant’s Signature / Right Thumb Print",
+      "label_box": [
+        233,
+        1879,
+        851,
+        1913
+      ],
+      "answer_box": [
+        862,
+        1861,
+        1497,
+        1901
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "answer_method": "underline",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_details_of_membership",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": false,
+      "skip_reason": "signature or thumbprint: done by hand on the printed form",
+      "hidden": false,
+      "editable": false,
+      "key": "applicant_s_signature_right_thumb_print"
+    },
+    {
+      "id": "signature",
+      "label": "Signature",
+      "label_box": [
+        280,
+        2120,
+        423,
+        2153
+      ],
+      "answer_box": [
+        164,
+        2078,
+        538,
+        2118
+      ],
+      "type": "unknown",
+      "source": "layoutlm",
+      "confidence": 0.578,
+      "needs_review": true,
+      "page": 1,
+      "answer_method": "line_above",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_recommendation_by_local_government_afan",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": false,
+      "skip_reason": "for official use ('RECOMMENDATION BY LOCAL GOVERNMENT AFAN COORDINATOR'); signature or thumbprint: done by hand on the printed form",
+      "hidden": false,
+      "editable": false,
+      "key": "signature"
+    },
+    {
+      "id": "date",
+      "label": "Date",
+      "label_box": [
+        1181,
+        2126,
+        1252,
+        2160
+      ],
+      "answer_box": [
+        1032,
+        2078,
+        1405,
+        2118
+      ],
+      "type": "date",
+      "source": "layoutlm",
+      "confidence": 0.749,
+      "needs_review": true,
+      "page": 1,
+      "answer_method": "line_above",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_recommendation_by_local_government_afan",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": false,
+      "skip_reason": "for official use ('RECOMMENDATION BY LOCAL GOVERNMENT AFAN COORDINATOR')",
+      "hidden": false,
+      "editable": false,
+      "key": "date"
+    },
+    {
+      "id": "approval_by_state_afan_chairman",
+      "label": "Approval by State AFAN Chairman",
+      "label_box": [
+        164,
+        2228,
+        685,
+        2262
+      ],
+      "answer_box": [
+        694,
+        2228,
+        1531,
+        2262
+      ],
+      "type": "text",
+      "source": "layoutlm",
+      "confidence": 0.997,
+      "needs_review": true,
+      "page": 1,
+      "answer_method": "empty_right",
+      "options": [],
+      "option_boxes": [],
+      "answer_lines": [],
+      "section": "section_recommendation_by_local_government_afan",
+      "pdf_field_name": null,
+      "required": null,
+      "ask_user": false,
+      "skip_reason": "for official use ('Approval by State AFAN Chairman')",
+      "hidden": false,
+      "editable": false,
+      "key": "approval_by_state_afan_chairman"
+    }
+  ]
+}

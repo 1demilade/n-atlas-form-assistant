@@ -7,6 +7,92 @@ Python: `.venv\Scripts\python.exe`, CPU only. The two source PDFs are not in git
 
 ---
 
+## Round 3 (2026-10-28): `afan.pdf`, a real flat form, and nine generic fixes
+
+### R3.1 The form and the first run
+
+`afan.pdf`, the AFAN "Membership Registration Form":
+- one A4 page, made in CorelDRAW, with no AcroForm (`scripts/list_widgets.py`: 0 widgets);
+- a text layer, plus two embedded pictures: the logo and a pale watermark across the middle of the page;
+- **25 real fields**, which I counted on my own render:
+  - items 1–18, where item 7 holds two (Date of Birth, Telephone), item 11 holds three (a, b, c), and item 12 is one question wrapped over two lines;
+  - the applicant's signature;
+  - the coordinator's Signature and Date;
+  - the Chairman's approval.
+
+The first run found 27 fields: all 25 real ones, plus two that are not fields. Problems:
+
+| Problem | Flagged? | Cause |
+|---|---|---|
+| Letterhead "ALL FARMERS ASSOCIATION OF NIGERIA (AFAN) Head Office" was a field; its "answer" was part of the address | yes | the model tagged printed text as an answer |
+| Item 12 split into two fields; "Other (Specify)" got only half the question | first half yes, second no | the wrapped-line rule wanted a lowercase second line |
+| E-mail box covered a third of its line | yes | OCR read the watermark ("RSAS"), and that word cut the line |
+| Coordinator's Signature and Date: boxes to the right, not on the lines above | yes | no rule for a label printed under its line |
+| Item 16: only the first of its two ruled lines | no | old one-line limit |
+| Items 10–18 kept their number in the label; items 12 and 17 typed `unknown` | — | the number broke the yes/no rule |
+| "RECOMMENDATION BY …" heading missed, so the fields under it went to the wrong section | — | the model tagged it `other` |
+| Office fields (coordinator, Chairman) and signatures asked like normal fields | — | no office-use or signature marker |
+
+### R3.2 Fixes
+
+Each fix is a separate commit with a test on a generated PDF. Each test was first shown to fail on the code before its fix, or the test checks a key the old code didn't have.
+
+| # | Commit | Fix |
+|---|---|---|
+| 1 | `634e571` | OCR words from embedded pictures whose ink is pale (median grey > 180) are dropped as watermark. Measured on this page: watermark 227; black, red and green print 38–106. |
+| 2 | `e58123c` | `clean_label` drops a leading item number (`17.`, `(a)`, `iv)`, followed by a space); `e.g.`, `No. of` and `1.5` are untouched. |
+| 3 | `fc57d71` | A label line that stops mid-sentence (`,`, `(`, open bracket, joining word) takes the next line; a label also takes an unfinished line right above it. The answer is searched beside the last line. |
+| 4 | `9c2c4f5` | New answer step `line_above`: a line just above a label (at most 0.6 text heights) that spans it, with no other text under it. |
+| 5 | `a1cfe93` | Blank ruled lines directly under an answer line (no text on their row) extend it: `answer_lines`; `fill_form` writes long answers line by line. |
+| 6 | `c3f6565` | A capitals line (2+ words, alone on its row, no `:`) is a heading candidate: a section (`caps_line`, flagged), or a flagged field if it has a drawn answer area. |
+| 7 | `243a908` | PDF input only: a label whose only answer is printed text, with nothing drawn there, is not a field; it is listed in `form.notes`. A placeholder on a line, or an option word next to its checkbox, still counts. |
+| 8 | `8fb387b` | Office-use wording in the label or section heading (official use, approval/recommendation/endorsed/verified/certified by, to be completed by the officer…) → `ask_user: false` + reason + `needs_review`. `fill_form` now skips `ask_user: false` on flat pages too. |
+| 9 | `c002133` | Signature / thumbprint / initials fields (and AcroForm `/Sig` fields) → `ask_user: false`; a date of signature is still asked. |
+| — | `58f658e` | Regression from fix 2: "Are you … Other (Specify)" became `yes_no`, so a real answer would be refused. A label asking to "specify" is now `text`. |
+
+**Tests:** 51 tests, all OK with `RUN_SLOW=1` (192 s). The photo-path tests are unchanged and pass.
+
+**Other forms:** `sample_form_1.pdf` and `sample_form_2.pdf`, re-run from their saved words, give exactly the same fields, labels, types, boxes, flags and sections as before.
+
+### R3.3 AFAN after the fixes
+
+Same `layout.py` command. 83 s, almost all of it PaddleOCR (loading it and reading the 2 pictures).
+
+**Result: 25 fields, the real 25; no false field; 3 sections, all real.**
+- Note: "'ALL FARMERS ASSOCIATION OF NIGERIA (AFAN) Head Office' is not a field: its answer is printed text ('No. 1, Uke Street, Area 11, Garki,')."
+- Sections:
+  - "MEMBERSHIP REGISTRATION FORM";
+  - "Details of Membership", now flagged: the model's own header confidence fell from 0.79 to 0.59. Probably because the watermark word is gone and the model reads the whole page at once; I can't prove that;
+  - "RECOMMENDATION BY LOCAL GOVERNMENT AFAN COORDINATOR" (`caps_line`, flagged).
+
+| Field | Before | After |
+|---|---|---|
+| Letterhead "… Head Office" | field (flagged) | **not a field**, in `notes` |
+| 1–5, 7–9, 13–15, 18, 11(a)(b)(c) | right | right; numbers gone from labels and ids ("Other Commodity Association", "How Long") |
+| 6. E-mail | 1/3 of the line (flagged) | **whole line** (`underline`, not flagged) |
+| 12 + "Other (Specify)" | 2 fields, one with half the question | **1 field**: "Are you a service provider (Agric input, Dealer, Processor, Marketer, Other (Specify)", answer on the "Other (Specify)" line, type `text` |
+| 16. Input Uses | first line only | **both lines** (`answer_lines`: 2) |
+| 17. Insurance | `unknown`, margin box (flagged) | `yes_no`, margin box (flagged). The page has no line for it, so a guess is all there is |
+| Applicant's Signature / Thumb Print | asked | kept, `ask_user: false` (signature) |
+| Coordinator's Signature, Date | boxes to the right (flagged) | **on their lines** (`line_above`); `ask_user: false` (office use, plus signature for Signature) |
+| Approval by State AFAN Chairman | asked (flagged) | `ask_user: false` (office use), flagged |
+
+**On the boxes image:**
+- no box on any letterhead text;
+- every blue box sits on its line;
+- item 12's red box covers both lines of the question;
+- Signature and Date have their boxes on the lines above them;
+- the RECOMMENDATION heading is green.
+
+**Left as is:**
+- Item 16's combined box also covers part of its own label on the first row. Filling uses `answer_lines`, so this is only how it looks.
+- 9 fields are still typed `unknown` (e.g. "Local Government Area", "Bank Details"): no type rule fits them.
+- "No." at the top and the passport-photo box are not fields (office number and photo).
+
+**Fill:** not run on AFAN in this round.
+
+---
+
 ## Round 2 (2026-10-28, after the fixes)
 
 ### R2.1 What changed in the code
