@@ -573,6 +573,27 @@ class LabelLinkingTests(Tmp):
                 self.assertEqual(far['label_source'], 'none')
 
 
+class SharedLabelTests(Tmp):
+    def test_fields_with_the_same_label_are_reviewed(self):
+        """Two boxes after one printed label get the same label: each is flagged."""
+        from layout import _flag_shared_labels
+        from make_test_pdfs import make_widget_pdf
+        path = self.tmp / 'shared.pdf'
+        make_widget_pdf(path, [(56, 700, 'Phone number:'), (56, 660, 'Email:')], [
+            {'name': 'code', 'kind': 'text', 'rect': [140, 696, 180, 712]},
+            {'name': 'number', 'kind': 'text', 'rect': [190, 696, 320, 712]},
+            {'name': 'email', 'kind': 'text', 'rect': [140, 656, 320, 672]},
+        ])
+        fields = _link(path, tag_all_as_questions=True)
+        self.assertEqual(fields['code']['label'], 'Phone number')
+        self.assertEqual(fields['number']['label'], 'Phone number')
+        self.assertEqual([fields[n]['needs_review'] for n in ('code', 'number', 'email')],
+                         [False, False, False])  # confident labels: not flagged for anything else
+        _flag_shared_labels(list(fields.values()))
+        self.assertEqual([fields[n]['needs_review'] for n in ('code', 'number', 'email')],
+                         [True, True, False])
+
+
 class NotAskedFieldTests(Tmp):
     def test_read_only_calculated_and_hidden_fields(self):
         """Kept in fields, marked ask_user: false with a reason; hidden ones also flagged;

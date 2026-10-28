@@ -8,6 +8,7 @@ import argparse
 import json
 import re
 import sys
+from collections import Counter
 
 from answer_areas import (detect_regions, find_answer_box, median_text_height, nearby_checkboxes,
                           next_to_checkbox)
@@ -385,6 +386,17 @@ def _add_keys(fields):
         field['key'] = key
 
 
+def _flag_shared_labels(fields):
+    """Fields with the same label (e.g. several boxes under one printed label) cannot be told
+    apart by a user who only hears the label: each one is reviewed."""
+    def norm(label):
+        return re.sub(r'[^a-z0-9]+', ' ', label.lower()).strip()
+    counts = Counter(norm(f['label']) for f in fields if f.get('label'))
+    for field in fields:
+        if field.get('label') and counts[norm(field['label'])] > 1:
+            field['needs_review'] = True
+
+
 def analyse_form(path, ocr_items=None, method='auto', clean=True):
     """Whole pipeline for one form -> one JSON-ready object:
     {'form': {source_file, pdf_kind, pages: [{page, width_px, height_px, dpi, ...}], method, notes},
@@ -467,6 +479,7 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
         field.setdefault('ask_user', True)
         field.setdefault('skip_reason', None)
         field.setdefault('hidden', False)
+    _flag_shared_labels(fields)
     fields.sort(key=_anchor)
     sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))
     _assign_sections(fields, sections)
