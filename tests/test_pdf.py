@@ -539,6 +539,39 @@ class LabelLinkingTests(Tmp):
                     self.assertEqual(surname['label_source'], 'layoutlm_above')
                     self.assertFalse(surname['needs_review'])
 
+    def test_prompt_above_left_of_the_input(self):
+        """A prompt above the input that ends before the input starts is its label (flagged),
+        but only when nothing matches on the left or above."""
+        from make_test_pdfs import make_widget_pdf
+        path = self.tmp / 'above_left.pdf'
+        make_widget_pdf(path, [
+            (56, 700, 'Please enter your full name:'),
+            (56, 600, 'Your occupation:'),
+            (56, 500, 'Notes about you:'), (56, 480, 'Town:'),
+            (56, 400, 'Mother maiden name:'),
+        ], [
+            {'name': 'Name', 'kind': 'text', 'rect': [200, 674, 450, 690]},
+            {'name': 'Job', 'kind': 'text', 'rect': [145, 574, 450, 590]},
+            {'name': 'Town', 'kind': 'text', 'rect': [145, 476, 450, 492]},
+            {'name': 'Far', 'kind': 'text', 'rect': [420, 374, 560, 390]},  # far right of its prompt
+        ])
+        for tagged in (True, False):
+            with self.subTest(layoutlm_questions=tagged):
+                fields = _link(path, tagged)
+                name, job, town, far = (fields[n] for n in ('Name', 'Job', 'Town', 'Far'))
+                self.assertEqual(name['label'], 'Please enter your full name')
+                # 'Please ...' lines are not LayoutLM label candidates (instructions), so plain text.
+                self.assertEqual(name['label_source'], 'nearby_text_above_left')
+                self.assertTrue(name['needs_review'])
+                self.assertEqual(job['label'], 'Your occupation')
+                self.assertEqual(job['label_source'],
+                                 'layoutlm_above_left' if tagged else 'nearby_text_above_left')
+                self.assertTrue(job['needs_review'])
+                self.assertEqual(town['label'], 'Town')  # same row on the left still wins
+                self.assertEqual(town['label_source'], 'layoutlm_left' if tagged else 'nearby_text_left')
+                self.assertIsNone(far['label'])
+                self.assertEqual(far['label_source'], 'none')
+
 
 def check_groups(test, form, truth):
     """Fields of make_checkbox_group_pdf: one flagged 'choice' per group, a 'yes_no' lone box."""
