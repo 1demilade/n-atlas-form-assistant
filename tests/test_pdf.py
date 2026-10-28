@@ -657,6 +657,33 @@ class FlatLabelTests(Tmp):
                     self.assertIn(label, fields)
 
 
+    def test_label_printed_under_its_line(self):
+        """'Signature' and 'Date' printed under their lines get those lines; a question with no
+        line of its own does not take the underline of the row above."""
+        from make_test_pdfs import make_widget_pdf
+        path = self.tmp / 'under.pdf'
+        texts, lines = _underlined([('Full name:', 700), ('Bank details:', 670)])
+        texts += [(56, 750, 'Registration form for the members of our farmers club'),
+                  (56, 650, 'Have you ever been abroad?'),
+                  (100, 590, 'Signature'), (410, 590, 'Date')]
+        lines += [(56, 600, 220), (350, 600, 500)]
+        make_widget_pdf(path, texts, [], lines=lines)
+        scale = 200 / 72
+        for tagged in (True, False):
+            with self.subTest(layoutlm_questions=tagged):
+                fields = {f['label']: f for f in _flat_form(path, tagged)[0]}
+                for label, (x0, x1) in (('Signature', (56, 220)), ('Date', (350, 500))):
+                    field = fields[label]
+                    self.assertEqual(field['answer_method'], 'line_above', field)
+                    box = field['answer_box']
+                    self.assertAlmostEqual(box[0], x0 * scale, delta=6)
+                    self.assertAlmostEqual(box[2], x1 * scale, delta=6)
+                    self.assertAlmostEqual(box[3], (792 - 600) * scale, delta=6)
+                    self.assertFalse(field['needs_review'] and field['answer_method'] != 'line_above')
+                self.assertNotEqual(fields['Have you ever been abroad?']['answer_method'], 'line_above')
+                self.assertEqual(fields['Bank details']['answer_method'], 'underline')
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""

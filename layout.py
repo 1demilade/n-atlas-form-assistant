@@ -21,7 +21,7 @@ REVIEW_BELOW_CONFIDENCE = 0.6
 GUESSED_METHODS = {'own_cell', 'empty_right', 'empty_below', 'none'}
 # Answer areas drawn on the form itself: text tagged as a heading that has one is a field.
 DRAWN_METHODS = {'table_cell', 'box', 'underline', 'checkboxes', 'layoutlm_answer',
-                 'box_below', 'underline_below'}
+                 'box_below', 'underline_below', 'line_above'}
 # A label alone in a table row at least this wide (share of the page's text width) is a heading.
 SECTION_ROW_SHARE = 0.6
 # A label with only a guessed answer area, printed this much taller than the page's median

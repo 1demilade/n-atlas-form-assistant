@@ -3,6 +3,8 @@ checkboxes, or empty space. All sizes are relative to the page or to the text he
 import cv2
 import numpy as np
 
+LINE_ABOVE_GAP = 0.6   # a label printed under its line sits at most this far below it (text heights)
+
 
 def median_text_height(items):
     heights = [item['box'][3] - item['box'][1] for item in items]
@@ -212,6 +214,23 @@ def find_answer_box(label_box, page_items, regions, page_size, text_height,
     if boxes:
         return [min(b[0] for b in boxes), min(b[1] for b in boxes),
                 max(b[2] for b in boxes), max(b[3] for b in boxes)], 'checkboxes'
+
+    # 4b. Label printed under its line ('Signature', 'Date' below a signing line): a line right
+    #     above the label that spans it, with no other text under it and nothing written on it.
+    for line in sorted(regions['lines'], key=lambda l: -l[1]):
+        y = (line[1] + line[3]) / 2
+        if not (0 <= label_box[1] - y <= LINE_ABOVE_GAP * text_height):
+            continue
+        if not (line[0] <= label_box[0] + text_height and line[2] >= label_box[2] - text_height
+                and line[2] - line[0] >= 3 * text_height):
+            continue
+        others_under = [item for item in page_items  # (label items may be copies: compare boxes)
+                        if not _contains_text(label_box, [item], min_share=0.5)
+                        and _same_row(label_box, item['box'], 0.3)
+                        and _overlap(line[0], line[2], item['box'][0], item['box'][2]) > 0]
+        box = [line[0], int(y - 1.2 * text_height), line[2], int(y)]
+        if not others_under and not _contains_text(box, page_items, label_items):
+            return box, 'line_above'
 
     # 5. Empty space to the right on the same row (up to the next text).
     row_text = [item for item in page_items if not any(item is l for l in label_items)
