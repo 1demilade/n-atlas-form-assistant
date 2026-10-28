@@ -73,10 +73,14 @@ def _fill_acroform(reader, fields, answers):
     from pypdf import PdfWriter
     from pypdf.generic import NameObject
 
+    from pdf_fields import read_on_states
     writer = PdfWriter(clone_from=reader)
+    states = read_on_states(reader)  # real checkbox/radio on-state names, from the PDF itself
     report, values = [], {}
     for field in fields:
         fid = field['id']
+        name = field.get('pdf_field_name') or fid
+        real_states = sorted({s for widget in states.get(name, []) for s in widget})
         if fid not in answers:
             report.append({'id': fid, 'status': 'skipped', 'reason': 'no answer'})
             continue
@@ -91,35 +95,47 @@ def _fill_acroform(reader, fields, answers):
                 report.append({'id': fid, 'status': 'skipped',
                                'reason': f"answer longer than max_length {pdf['max_length']}"})
                 continue
-            values[fid] = answer
+            values[name] = answer
         elif kind == 'Btn':
             exports = pdf.get('option_values') or []
+            if not real_states:
+                report.append({'id': fid, 'status': 'skipped',
+                               'reason': 'the PDF has no on-state for this checkbox/radio'})
+                continue
             if len(exports) >= 2:  # radio group or same-name checkboxes: pick one option
                 index = _match_option(answer, field.get('options', []), exports)
                 if index is None:
                     report.append({'id': fid, 'status': 'skipped',
                                    'reason': f'answer {answer!r} matches no option {field.get("options")}'})
                     continue
-                values[fid] = NameObject('/' + exports[index])
+                if exports[index] not in real_states:
+                    report.append({'id': fid, 'status': 'skipped',
+                                   'reason': f'on-state {exports[index]!r} of option '
+                                             f'{field["options"][index]!r} is not in the PDF {real_states}'})
+                    continue
+                values[name] = NameObject('/' + exports[index])
             else:
-                on = next((w['export_value'] for w in pdf['widgets'] if w['export_value']), 'Yes')
+                if len(real_states) > 1:
+                    report.append({'id': fid, 'status': 'skipped',
+                                   'reason': f'single checkbox with several on-states {real_states}'})
+                    continue
                 truth = _truth(answer)
                 if truth is None:
                     report.append({'id': fid, 'status': 'skipped',
                                    'reason': f'answer {answer!r} is not yes/no for a checkbox'})
                     continue
-                values[fid] = NameObject('/' + on if truth else '/Off')
+                values[name] = NameObject('/' + real_states[0] if truth else '/Off')
         elif kind == 'Ch':
             index = _match_option(answer, field.get('options', []), pdf.get('option_values') or [])
             if index is None:
                 report.append({'id': fid, 'status': 'skipped',
                                'reason': f'answer {answer!r} matches no option {field.get("options")}'})
                 continue
-            values[fid] = pdf['option_values'][index]
+            values[name] = pdf['option_values'][index]
         else:
             report.append({'id': fid, 'status': 'skipped', 'reason': f'{kind or "unknown"} field cannot be filled with text'})
             continue
-        report.append({'id': fid, 'status': 'filled', 'value': str(values[fid])})
+        report.append({'id': fid, 'status': 'filled', 'value': str(values[name])})
 
     for page in writer.pages:
         writer.update_page_form_field_values(page, values, auto_regenerate=False)

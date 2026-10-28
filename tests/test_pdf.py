@@ -255,6 +255,55 @@ class FillTests(Tmp):
         self.assertEqual(report['no_such_field']['reason'], 'no field with this id')
         self.assertEqual(len(truth['fields']) + 1, len(report))
 
+    def test_on_states_come_from_the_pdf(self):
+        from pypdf import PdfReader, PdfWriter
+        from pypdf.generic import (ArrayObject, DecodedStreamObject, DictionaryObject, FloatObject,
+                                   NameObject, NumberObject, TextStringObject)
+        path, out = self.tmp / 'box.pdf', self.tmp / 'o.pdf'
+        writer = PdfWriter()
+        page = writer.add_blank_page(300, 200)
+        streams = {}
+        for state in ('/Agreed', '/Off'):
+            stream = DecodedStreamObject()
+            stream.set_data(b'0 0 m 12 12 l S' if state != '/Off' else b'')
+            stream.update({NameObject('/Type'): NameObject('/XObject'),
+                           NameObject('/Subtype'): NameObject('/Form'),
+                           NameObject('/BBox'): ArrayObject([FloatObject(v) for v in (0, 0, 12, 12)])})
+            streams[NameObject(state)] = writer._add_object(stream)
+        widget = DictionaryObject({
+            NameObject('/Type'): NameObject('/Annot'), NameObject('/Subtype'): NameObject('/Widget'),
+            NameObject('/FT'): NameObject('/Btn'), NameObject('/T'): TextStringObject('agree'),
+            NameObject('/Rect'): ArrayObject([FloatObject(v) for v in (50, 100, 62, 112)]),
+            NameObject('/F'): NumberObject(4), NameObject('/AS'): NameObject('/Off'),
+            NameObject('/AP'): DictionaryObject({NameObject('/N'): DictionaryObject(streams)})})
+        ref = writer._add_object(widget)
+        page[NameObject('/Annots')] = ArrayObject([ref])
+        label = DecodedStreamObject()  # printed label, so the page has a text layer (no OCR)
+        label.set_data(b'BT /F1 10 Tf 70 102 Td (I agree to the terms) Tj ET')
+        page[NameObject('/Contents')] = writer._add_object(label)
+        page[NameObject('/Resources')] = DictionaryObject({NameObject('/Font'): DictionaryObject({
+            NameObject('/F1'): DictionaryObject({
+                NameObject('/Type'): NameObject('/Font'), NameObject('/Subtype'): NameObject('/Type1'),
+                NameObject('/BaseFont'): NameObject('/Helvetica')})})})
+        writer._root_object[NameObject('/AcroForm')] = DictionaryObject(
+            {NameObject('/Fields'): ArrayObject([ref])})
+        writer.write(str(path))
+        form = _fillable_form(path)
+        field = form['fields'][0]
+        field['pdf']['widgets'][0]['export_value'] = 'Yes'  # a wrong JSON must not matter
+        report = fill_form(path, form, {field['id']: 'yes'}, out)
+        self.assertEqual(report[0]['status'], 'filled', report)
+        self.assertEqual(str(PdfReader(str(out)).get_fields()['agree']['/V']), '/Agreed')
+
+        radio_path = self.tmp / 'r.pdf'
+        truth = make_fillable_pdf(radio_path, 1, 9)
+        form = _fillable_form(radio_path)
+        radio = next(f for f in form['fields'] if f['pdf']['field_type'] == 'Btn')
+        radio['pdf']['option_values'][0] = 'NotInThePdf'
+        report = {r['id']: r for r in fill_form(radio_path, form, {radio['id']: radio['options'][0]}, out)}
+        self.assertIn('is not in the PDF', report[radio['id']]['reason'])
+        self.assertEqual(len(report), len(truth['fields']))
+
     def test_flat_text_and_crosses_land_in_place(self):
         import numpy as np
         import pdfplumber

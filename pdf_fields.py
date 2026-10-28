@@ -108,6 +108,26 @@ def _export_value(widget):
     return states[0] if states else None
 
 
+def read_on_states(reader):
+    """{full field name: [on-state names of each widget, in page order]} read from the PDF itself
+    (the /AP /N and /D keys that are not /Off). Used when filling, so the JSON is not trusted."""
+    states = {}
+    for page in reader.pages:
+        for ref in page.get('/Annots') or []:
+            widget = ref.get_object()
+            if widget.get('/Subtype') != '/Widget' or not _full_name(widget):
+                continue
+            names = []
+            appearance = widget.get('/AP')
+            for key in ('/N', '/D'):
+                group = appearance.get_object().get(key) if appearance is not None else None
+                if group is not None and hasattr(group.get_object(), 'keys'):
+                    names += [str(k).lstrip('/') for k in group.get_object().keys()
+                              if str(k) != '/Off' and str(k).lstrip('/') not in names]
+            states.setdefault(_full_name(widget), []).append(names)
+    return states
+
+
 def _to_pixels(rect, page, size_px):
     """PDF rect (points, bottom-left origin, unrotated) -> render pixels (top-left, rotated)."""
     crop = page.cropbox
