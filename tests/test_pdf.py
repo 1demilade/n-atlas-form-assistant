@@ -341,6 +341,20 @@ class FillTests(Tmp):
         self.assertIn('is not in the PDF', report[radio['id']]['reason'])
         self.assertEqual(len(report), len(truth['fields']))
 
+    def test_filled_flagged_fields_are_listed(self):
+        path, out = self.tmp / 'f.pdf', self.tmp / 'o.pdf'
+        make_fillable_pdf(path, 3, 10)
+        form = _fillable_form(path)  # no LayoutLM here: every label is a flagged fallback
+        texts = [f for f in form['fields'] if f['pdf']['field_type'] == 'Tx' and f['type'] == 'text']
+        texts[1]['needs_review'] = False
+        report = {r['id']: r for r in fill_form(path, form, {texts[0]['id']: 'A', texts[1]['id']: 'B'}, out)}
+        self.assertTrue(report[texts[0]['id']]['needs_review'])
+        self.assertEqual(report[texts[0]['id']]['label'], texts[0]['label'])
+        self.assertNotIn('needs_review', report[texts[1]['id']])
+        flagged_unanswered = next(f for f in form['fields'] if f['needs_review'] and f is not texts[0])
+        self.assertEqual(report[flagged_unanswered['id']]['status'], 'skipped')  # no answer, not filled
+        self.assertNotIn('needs_review', report[flagged_unanswered['id']])
+
     def test_verification_catches_missing_ink(self):
         from fill_form import _verify
         path = self.tmp / 'b.pdf'

@@ -354,11 +354,15 @@ def fill_form(pdf_path, fields, answers, out_path=None):
         writer = PdfWriter(clone_from=reader)
     order = {f['id']: n for n, f in enumerate(form['fields'])}
     report.sort(key=lambda entry: order[entry['id']])
-    keys = {f['id']: f.get('key') for f in form['fields']}
+    by_id = {f['id']: f for f in form['fields']}
     for entry in report:
+        field = by_id[entry['id']]
         entry.update(conflicts.get(entry['id'], {}))
-        if keys.get(entry['id']):
-            entry['key'] = keys[entry['id']]
+        if field.get('key'):
+            entry['key'] = field['key']
+        # Flagged fields are filled only because answers.json has an entry: say so.
+        if entry['status'] == 'filled' and field.get('needs_review'):
+            entry.update(needs_review=True, label=field.get('label'))
     report.extend({'id': fid, 'status': 'skipped', 'reason': 'no field with this id'} for fid in unknown)
     with open(out_path, 'wb') as file:
         writer.write(file)
@@ -418,6 +422,11 @@ def main():
         print('Refused (invalid values, nothing written):')
         for entry in refused:
             print(f"  {entry['id']!r}: {entry['reason']}")
+    flagged = [e for e in report if e.get('needs_review')]
+    if flagged:
+        print(f'Filled fields marked needs_review (check these on the PDF): {len(flagged)}')
+        for entry in flagged:
+            print(f"  {entry['id']!r} ({entry['label']!r}): {entry['value']}")
     checked = sum(1 for e in report if e['status'] == 'filled' and e['verified'])
     print(f'Verified on the written file: {checked - len(unverified)}/{checked} ok'
           + (f"; FAILED: {', '.join(repr(e['id']) for e in unverified)}" if unverified else ''))
