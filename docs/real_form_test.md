@@ -1,0 +1,248 @@
+# Real fillable PDFs: read-only accuracy test
+
+Date: 2026-10-28. Code at commit `ceec012`, not changed. Nothing was filled and `answers.json` was not used.
+Python: `.venv\Scripts\python.exe`, CPU only.
+
+**Short answer:** on these two real forms the pipeline found every fillable widget and put every answer box on the right widget (17/17). The kind (`fillable`) and all section headings are right. Labels are the weak point: **13 of 17 are right, 1 is only partly useful, 3 are wrong or missing**. Two of the bad labels are flagged; one wrong label is not flagged (confidence 0.998). Two more problems are not label problems: a hidden field and a read-only calculated field are reported as normal fields to answer.
+
+---
+
+## 1. The PDFs (step 1)
+
+| File | Pages | Page size | Producer | Widgets |
+|---|---|---|---|---|
+| `samples/real/sample_form_1.pdf` | 1 | 612 × 792 pt (US Letter), no rotation, crop box = media box | Acrobat PDFMaker 15 for Word | 7 |
+| `samples/real/sample_form_2.pdf` | 3 | 612 × 792 pt (US Letter) each, no rotation, crop box = media box | Microsoft Word 2013 (Apryse sample, watermarked) | 25 |
+
+## 2. Ground truth with pypdf only (step 2)
+
+I wrote a separate script that reads `/Annots` → `/Widget` with pypdf and follows `/Parent` for inherited keys. It uses no project code and lives in my scratchpad, not in the repo. It finds the same widget counts as the pipeline's page records (7; 21 + 3 + 1).
+
+**Form-level facts**
+
+| | Form 1 | Form 2 |
+|---|---|---|
+| Encrypted | no | no |
+| XFA | no | no |
+| `/NeedAppearances` | not set | not set |
+| Total widgets | 7 | 25 |
+| Distinct field names | 7 | 22 |
+| Hierarchical names (with `.`) | none | none |
+| Names with more than one widget | none | `radio` (3 kids), `reset` (2 kids) |
+| Read-only fields | 0 | 1 (`calcsum`) |
+| Hidden widgets (annotation flag Hidden) | 0 | 1 (`hidden`, `/F 6` = Print + Hidden) |
+| Push buttons | 0 | 9 widgets / 8 fields |
+| Scripts | none | `email`: validate (`/AA /V`) regex script; `calc1`, `calc2`: `AFNumber_Format/Keystroke`; `calcsum`: `AFSimple_Calculate("SUM", calc1, calc2)`, in `/CO`; `hide`/`show`: Hide actions; `reset`: ResetForm; `submit`: SubmitForm to a URL; page-2/3 buttons: GoTo/URI |
+
+**Form 1 widgets** (rect in PDF points, origin bottom-left)
+
+| # | Name | Type | Page | Rect | Tooltip | Flags | Options / on-state |
+|---|---|---|---|---|---|---|---|
+| 1 | `Name` | text | 1 | 202.5, 587.9, 412.3, 609.9 | — | — | — |
+| 2 | `Dropdown2` | combo, **editable** (Ff 393216) | 1 | 71.7, 524.8, 143.7, 544.8 | — | — | Choice 1–4; value `Choice 1` |
+| 3 | `Option 1` | checkbox | 1 | 73.2, 479.3, 86.2, 492.2 | `Option 1` | — | `/On` |
+| 4 | `Option 2` | checkbox | 1 | 73.2, 464.6, 86.2, 477.6 | `Option 2` | — | `/On` |
+| 5 | `Option 3` | checkbox | 1 | 73.2, 450.0, 86.2, 463.0 | `Option 3` | — | `/On` |
+| 6 | `Name of Dependent` | text | 1 | 183.6, 401.3, 416.0, 415.3 | `Name of Dependent` | — | — |
+| 7 | `Age\t of Dependent` (a tab in the name) | text | 1 | 183.6, 386.2, 416.0, 400.2 | same | — | — |
+
+**Form 2 widgets**
+
+| # | Name | Type | Page | Rect | Tooltip | Flags | Options / on-state / value |
+|---|---|---|---|---|---|---|---|
+| 1 | `required` | text | 1 | 89.5, 634.8, 292.6, 656.8 | — | Required | — |
+| 2 | `email` | text | 1 | 318.3, 634.8, 521.3, 656.8 | — | — | validate script |
+| 3–5 | `radio` (3 kids) | radio | 1 | x 90.7–108.7; y 568.7 / 548.1 / 527.6 | — | NoToggleToOff, Radio | `/Yes`, `/No`, `/Maybe`; value `/Off` |
+| 6 | `checkbox1` | checkbox | 1 | 318.3, 568.1, 336.3, 586.1 | — | — | `/Red` |
+| 7 | `checkbox2` | checkbox | 1 | 318.3, 547.6, 336.3, 565.6 | — | — | `/Yellow` |
+| 8 | `checkbox3` | checkbox | 1 | 318.3, 527.0, 336.3, 545.0 | — | — | `/Blue` |
+| 9 | `calc1` | text | 1 | 89.5, 456.9, 137.5, 478.9 | — | — | AFNumber format |
+| 10 | `calc2` | text | 1 | 153.4, 456.9, 207.0, 478.9 | — | — | AFNumber format |
+| 11 | `calcsum` | text | 1 | 224.2, 456.9, 289.7, 478.9 | — | **ReadOnly** | calculated sum; value `0` |
+| 12 | `hidden` | text | 1 | 318.8, 457.4, 468.8, 479.4 | — | **widget Hidden** | value `This is the hidden field` |
+| 13 | `listbox` | list (single select) | 1 | 91.3, 340.1, 292.2, 407.0 | — | — | January … December; value `December` |
+| 14 | `field-specific` | text | 1 | 318.8, 383.9, 520.2, 405.9 | — | — | value `Change this text` |
+| 15–17 | `hide`, `show`, `reset` | push button | 1 | y 351.6–371.6 | — | Pushbutton | — |
+| 18 | `reset` (2nd kid) | push button | 1 | 230.4, 86.4, 302.4, 106.4 | — | Pushbutton | — |
+| 19 | `dropdown` | combo | 1 | 90.1, 270.6, 289.9, 290.6 | — | — | Airplane, Bicycle, Boat, Bus, Car, Truck, Motorcycle; value `Airplane` |
+| 20 | `multiline` | text | 1 | 90.7, 149.4, 520.2, 217.6 | — | Multiline | — |
+| 21 | `submit` | push button | 1 | 314.8, 87.0, 386.8, 107.0 | — | Pushbutton | — |
+| 22–24 | `prevpage2`, `nextpage2`, `google` | push button | 2 | y ≈ 628–649 | — | Pushbutton | — |
+| 25 | `firstpage` | push button | 3 | 240.0, 625.0, 390.1, 645.0 | — | Pushbutton | — |
+
+No tooltips on form 2, so every label there had to come from the printed page.
+
+## 3. Pipeline runs (step 3)
+
+Command from REPORT.md section 9, timed with `date` in Git Bash, stdout and stderr captured separately:
+```
+.venv/Scripts/python.exe layout.py samples/real/sample_form_1.pdf --fields samples/real/sample_form_1_fields.json --boxes samples/real/sample_form_1_boxes.png --ocr-out samples/real/sample_form_1_words.json
+exit=0   wall seconds: 12.15
+pdf_kind=fillable method=acroform+layoutlm pages: p1=fillable/pdf_text
+p1 SECTION 'Sample Fillable PDF' [layoutlm_header]
+p1 field                        None                                          text     acroform/none (review)
+p1 first_choice                 'First Choice'                                choice   acroform/layoutlm_above
+p1 check_all_that_apply         'Check all that apply'                        choice   acroform/layoutlm_above (review)
+p1 name_of_dependent            'Name of Dependent'                           text     acroform/layoutlm_left
+p1 age_of_dependent             'Age of Dependent'                            number   acroform/layoutlm_left
+5 fields, 1 sections.
+
+.venv/Scripts/python.exe layout.py samples/real/sample_form_2.pdf --fields samples/real/sample_form_2_fields.json --boxes samples/real/sample_form_2_boxes.png --ocr-out samples/real/sample_form_2_words.json
+exit=0   wall seconds: 10.74
+pdf_kind=fillable method=acroform+layoutlm pages: p1=fillable/pdf_text, p2=fillable/pdf_text, p3=fillable/pdf_text
+p1 SECTION 'Sample PDF Form' [layoutlm_header]
+p2 SECTION 'Sample Links' [layoutlm_header]
+p3 SECTION 'Sample Links' [layoutlm_header]
+p1 text_field_required          'Text field (required)'                       text     acroform/layoutlm_above
+p1 email_format_validation      'Email (format validation)'                   email    acroform/layoutlm_above
+p1 radio_buttons                'Radio buttons'                               choice   acroform/layoutlm_above
+p1 checkboxes                   'Checkboxes'                                  choice   acroform/layoutlm_above (review)
+p1 auto_calculation             'Auto-calculation'                            number   acroform/layoutlm_above
+p1 auto_calculation_2           'Auto-calculation'                            number   acroform/layoutlm_above
+p1 hidden_field                 'Hidden field'                                text     acroform/layoutlm_above
+p1 field                        '='                                           text     acroform/nearby_text_left (review)
+p1 list_box                     'List Box'                                    choice   acroform/layoutlm_above
+p1 field_specific_buttons       'Field-specific buttons'                      text     acroform/layoutlm_above
+p1 dropdown                     'Dropdown'                                    choice   acroform/layoutlm_above
+p1 multiline_text_field         'Multiline text field'                        text     acroform/layoutlm_above
+12 fields, 3 sections.
+```
+- **stderr:** one line per run, the model's "Loading weights … 205/205" progress bar. No warnings, no errors.
+- **Speed:** both pages have a real text layer and no embedded images, so no OCR ran. The times include Python start-up and the LayoutLM load.
+- **Outputs** (next to each PDF): `sample_form_N_fields.json`, `sample_form_N_boxes.png`, `sample_form_N_words.json`.
+
+## 4. Comparison (step 4)
+
+How I judged: I rendered every page myself with pypdfium2 at 200 DPI (separately from the pipeline) and read the printed text around each widget. Then I opened `*_boxes.png` (page 1 of form 2 cropped at full resolution) and checked each red label box and blue answer box. For the two label failures I also read the word boxes in `*_words.json` and checked them against the label search rule in `pdf_fields._nearest`.
+
+### 4.1 `pdf_kind`
+Both are `fillable`, and that is **correct**: AcroForm, no XFA, a text layer on every page.
+Form 2's pages 2 and 3 are also typed `fillable`, but their only widgets are navigation buttons, so they have 0 fields. This is harmless here, but such a page is not really "fillable" (see question 4).
+
+### 4.2 Widget count vs fields found
+- **Form 1:** 7 widgets → 5 fields. The 3 lone checkboxes `Option 1–3` were merged into one independent-checkbox group (−2). This is correct: the page says "Check all that apply".
+- **Form 2:** 25 widgets → 12 fields:
+  - −9 push-button widgets skipped (`hide`, `show`, 2× `reset`, `submit`, `prevpage2`, `nextpage2`, `google`, `firstpage`). Correct.
+  - −2: the 3 radio kids are one field `radio`. Correct.
+  - −2: `checkbox1–3` merged into one independent-checkbox group. Correct: "Checkboxes" with Red/Yellow/Blue.
+  - Total: 25 − 9 − 2 − 2 = 12. **No widget was lost and nothing was invented.**
+
+### 4.3 Form 1, field by field
+
+What the page prints (from my render): the title "Sample Fillable PDF", then an intro paragraph, then:
+- "Please enter your name:" with the name box below it and to the right;
+- "Please select an item from the combo/dropdown list:", then the static text "First Choice", then the dropdown;
+- "Check all that apply:" over Option 1–3;
+- "You can add fields within tables as well:" over a 2-row table: Name of Dependent | box, Age of Dependent | box.
+
+| Field name | Label found (`label_source`) | Label correct? | Type | Type correct? | Answer box correct? | needs_review | Notes |
+|---|---|---|---|---|---|---|---|
+| `Name` | `null` (`none`), key `field` | **No.** It should be "Please enter your name" | text | yes | yes | true (sensible) | The prompt is above-left of the box and does not overlap it horizontally (label x 201–554 px, widget x 562–1145 px; left edges 361 px apart, the rule allows 68). So no rule matches it. No tooltip. |
+| `Dropdown2` | "First Choice" (`layoutlm_above`, conf 0.998) | **No (probably)**. The question is "Please select an item from the combo/dropdown list" | choice, options Choice 1–4 | yes | yes | **false: a silent error** | "First Choice" is static text 1 px above the widget, so it beats the real prompt one line higher. The combo is **editable** (free text allowed); the output marks this only inside `pdf.flags`, and `choice` validation would refuse a typed value. |
+| `Option 1+Option 2+Option 3` | "Check all that apply" (`layoutlm_above`) | yes | choice, `multiple: true`, options Option 1–3 | yes | yes (3 boxes on the 3 squares) | true (always set for these groups) | `pdf_field_name` is the list of 3 names, as designed. |
+| `Name of Dependent` | "Name of Dependent" (`layoutlm_left`) | yes | text | yes | yes (right cell) | false | — |
+| `Age\t of Dependent` | "Age of Dependent" (`layoutlm_left`) | yes | number (`label_words`) | yes (from the word "Age"; the PDF has no number format) | yes | false | The id keeps the tab from the PDF name; the label and key are clean. |
+
+**Sections:** "Sample Fillable PDF" is correct, and there are no false sections. The blue prompts ("Please enter your name:", …) are not sections, and that is right: they are question text. "You can add fields within tables as well:" is not reported as anything. That is acceptable: it is an explanatory line, not a field.
+
+**Boxes image:**
+- Green box: on the title.
+- Blue boxes: exactly on all 5 widget areas (name box, dropdown, 3 checkbox squares, 2 table cells).
+- Red boxes: on "First Choice" (the wrong word), "Check all that apply:", "Name of Dependent" and "Age of Dependent".
+- No red box on "Please enter your name:" or on "Please select an item…", the two missed prompts.
+
+### 4.4 Form 2, field by field
+
+What the page prints: "Sample PDF Form", then panels each titled with a bold label: "Text field (required)", "Email (format validation):", "Radio buttons:" (Yes/No/Maybe), "Checkboxes:" (Red/Yellow/Blue), "Auto-calculation:" (box + box = box), "Hidden field:", "List Box:", "Field-specific buttons:" (a text box and Hide/Show/Reset buttons), "Dropdown:", "Multiline text field:", then the RESET/SUBMIT buttons. Pages 2 and 3: the banner "Sample Links" and link buttons only.
+
+| Field name | Label found (`label_source`) | Label correct? | Type | Type correct? | Answer box correct? | needs_review | Notes |
+|---|---|---|---|---|---|---|---|
+| `required` | "Text field (required)" (`layoutlm_above`) | yes | text | yes | yes | false | `required: true` taken from the PDF. Correct. |
+| `email` | "Email (format validation)" (`layoutlm_above`) | yes | email (`label_words`) | yes | yes | false | The PDF's own email validation script (`/AA /V`) is not read; the type comes from the word "Email". Here the result is right either way. |
+| `radio` | "Radio buttons" (`layoutlm_above`) | yes | choice, Yes/No/Maybe | yes | yes (3 boxes on the 3 circles) | false | — |
+| `checkbox1+checkbox2+checkbox3` | "Checkboxes" (`layoutlm_above`) | yes | choice, `multiple: true`, Red/Yellow/Blue | yes | yes | true (by design) | Options come from the on-state names, which match the printed words. |
+| `calc1` | "Auto-calculation" (`layoutlm_above`) | yes | number (`format_action`) | yes | yes | false | — |
+| `calc2` | "Auto-calculation" (`layoutlm_above`) | yes, but the same label as `calc1` | number (`format_action`) | yes | yes | false | Correct but ambiguous: a user would be asked "Auto-calculation" twice. The key `auto_calculation_2` tells them apart only by number. |
+| `calcsum` | "=" (`nearby_text_left`, conf 0.4) | **No.** It is the computed sum, not something the user should answer | text | **no**: it holds a number sum (the PDF gives it no number format, so `text` follows the stated rule) | yes | true (because of the weak label) | **Read-only and calculated** (`/C AFSimple_Calculate`). It is listed as a normal field; `read_only: true` exists only inside the `pdf` block. Per REPORT.md section 12, the fill step skips read-only fields, but the analysis does not say "don't ask". |
+| `hidden` | "Hidden field" (`layoutlm_above`) | yes (that is the printed text) | text | yes | yes (on the widget's rectangle) | **false** | **The widget is hidden** (`/F 6`). In a viewer it is invisible until "Show field" is pressed. The pipeline reads the Hidden bit (`pdf_fields.py:198`) but uses it only to choose which widget to search a label for (`pdf_fields.py:381`); it is not in the output. |
+| `listbox` | "List Box" (`layoutlm_above`) | yes | choice, January…December | yes | yes | false | Single-select (Ff 0). |
+| `field-specific` | "Field-specific buttons" (`layoutlm_above`) | **partly**: it is the only printed text, but it names the buttons, not a question | text | yes | yes | false | Prefilled "Change this text". A user would be asked "Field-specific buttons?". |
+| `dropdown` | "Dropdown" (`layoutlm_above`) | yes | choice, 7 vehicles | yes | yes | false | Not editable. Correct. |
+| `multiline` | "Multiline text field" (`layoutlm_above`) | yes | text | yes | yes (the full tall box) | false | The Multiline flag is only inside `pdf.flags`. |
+
+**Sections:**
+- p1 "Sample PDF Form", p2 "Sample Links", p3 "Sample Links": all three are the real page titles. **No false sections.**
+- "Page 1/2/3" in the corner is correctly not a section.
+- The bold panel titles are used as labels, not sections, which is right.
+
+**Boxes image:**
+- Green boxes: on the three titles.
+- Red boxes: on every panel title, plus a small red box on the "=" sign (the wrong label of `calcsum`).
+- Blue boxes:
+  - on every text box, the 3 radio circles and the 3 checkbox squares;
+  - on the list box, the dropdown and the multiline box;
+  - on the three auto-calculation boxes (including the read-only sum showing "0");
+  - on the hidden field's rectangle under "Hidden field:".
+- The yellow/blue buttons (Hide, Show, Reset field, RESET, SUBMIT, the page-2/3 link buttons) have no boxes, which is correct.
+- Nothing is missing.
+
+## 5. Totals
+
+| | Form 1 | Form 2 | Both |
+|---|---|---|---|
+| Widgets (all) | 7 | 25 | 32 |
+| Widgets that can hold an answer (no push buttons) | 7 | 16 | 23 |
+| Fields found | 5 | 12 | 17 |
+| Expected fields (after radio and checkbox grouping) | 5 | 12 | 17 |
+| Labels correct | 3 | 10 (+1 partly: `field-specific`) | 13 (+1 partly) |
+| Labels wrong / missing | 2 (`Name` null, `Dropdown2` "First Choice") | 1 (`calcsum` "=") | 3 |
+| Types correct | 5 | 11 (`calcsum` text vs number) | 16 |
+| Answer boxes correct | 5 | 12 | 17 |
+| Flagged `needs_review` | 2 (`Name`, checkbox group) | 2 (checkbox group, `calcsum`) | 4 |
+| Null labels | 1 | 0 | 1 |
+| Wrong but **not** flagged | 1 (`Dropdown2`) | 1 hidden field + 1 partly useful label, all unflagged | — |
+| Sections: real found / false | 1 / 0 | 3 / 0 | 4 / 0 |
+
+## 6. Every failure, classified
+
+| # | Failure | Class | Best explanation | Not sure about |
+|---|---|---|---|---|
+| F1 | Form 1 `Name`: no label (prompt "Please enter your name:" missed) | **Generic** | The label rule accepts "left" only on the same row, and "above" only with horizontal overlap or left edges within 2 text heights. Word forms often put the input box below a prompt but indented to the right. That layout matches neither rule. Seen in the word boxes: label ends at x 554, widget starts at x 562, left edges 361 px apart. | How common this layout is on your target forms. |
+| F2 | Form 1 `Dropdown2`: label "First Choice" instead of the prompt one line up; **not flagged** | **Generic** (the cause), the trigger is form-specific | The nearest text above wins. Any static text between a prompt and its input (an example, a hint, a printed default) will be taken as the label. LayoutLM tagged "First Choice" as a question with 0.998 confidence, so nothing flags it. | What "First Choice" is meant to be. It may be a printed caption the author intended as a sub-label. I judged it wrong because the question the user must answer is the prompt above it. |
+| F3 | Form 2 `calcsum` (read-only, calculated) listed as a field to answer, label "=" | **Generic** | The analysis keeps read-only fields as normal fields. Read-only (and calculated `/C` / `/CO`) status is only inside `pdf`; the fill step skips them later. A voice assistant using `fields` would ask the user for it. | Whether you want read-only fields kept in `fields` (marked) or left out. |
+| F4 | Form 2 `hidden` (widget Hidden flag) listed as a normal, unflagged field | **Generic** | The Hidden bit is read but not exported or used for flagging. Forms that show fields only after a tick (common in government forms) will have these. | Whether the user should be asked hidden fields at all. It depends on the logic that would show them, which we do not run. |
+| F5 | Form 2 `field-specific`: label "Field-specific buttons" names buttons, not a question | Specific to this demo form | It is the only printed text near the box, so the output is the best available. A real form would rarely do this. | — |
+| F6 | Form 2 `calcsum` typed `text` | Generic but minor | The type comes from the field's format action or label words; a calculate script (`AFSimple_Calculate`) is not used as a hint. Becomes irrelevant if F3 is handled. | — |
+| F7 | Form 1 `Dropdown2` is an **editable** combo, but typed plain `choice` | Generic, minor | `choice` validation will refuse a typed value the PDF itself accepts. Only visible in `pdf.flags.edit`. | Whether you want free text allowed for editable combos. |
+| F8 | Form 2 `calc1` and `calc2` share one label | Generic, minor | One printed label for several inputs on a row (also common for date parts, phone parts). Not wrong, but the user can't tell the boxes apart. | — |
+| F9 | Form 2 `email` validation script not read | Generic, no effect here | Only `/F` and `/K` (format, keystroke) scripts are read, not `/V` (validate). The type was right anyway from the label. | — |
+
+Not failures, but worth knowing:
+- Form 2's pages 2–3 count as `fillable` pages with 0 fields (buttons only).
+- The id `Age\t of Dependent` contains a tab character (it is the real PDF name, so it is right as an id).
+
+## 7. Verdict
+
+**For a demo on forms like these: yes, with care.**
+- Every real input was found, and no widget was lost or invented.
+- Every answer box is on the right widget.
+- Types and options are right, apart from the read-only sum.
+- Section titles are right.
+
+What a user would see go wrong:
+1. **A question with no text** (form 1 name box): the assistant has nothing to ask, only the key `field`. This one is flagged.
+2. **A wrong question with full confidence** (form 1 dropdown asked as "First Choice"). It is not flagged, so nothing warns the user. This is the most worrying result, because the same thing will happen whenever a hint or example line sits between a prompt and its box.
+3. **Being asked for something they can't or shouldn't fill:** the calculated total ("="), and a field that is invisible in the PDF viewer ("Hidden field").
+4. A slightly odd question ("Field-specific buttons") and a repeated question ("Auto-calculation" twice).
+
+Two small demo forms are not a measure of accuracy in general. 3 bad labels out of 17 is about 18%; on long government forms the rate could be higher or lower. Neither form has hierarchical names, XFA, `/D`-only states, rotated pages or scanned pages, so those risks (REPORT.md section 13) are still untested.
+
+## 8. Questions for you
+
+1. **Read-only and calculated fields** (F3): keep them in `fields` with a top-level `read_only: true` / "don't ask" marker, or leave them out of `fields`?
+2. **Hidden widgets** (F4): flag them (`needs_review`, `hidden: true`), leave them out, or keep them as they are?
+3. **Label search** (F1, F2): should a prompt that is above-left of a box (no horizontal overlap) count as "above"? And should a short text directly above a box lose to a LayoutLM question one line higher, or at least make the field `needs_review`? I have not changed anything; these are only proposals.
+4. Pages whose only widgets are buttons: keep `kind: 'fillable'`, or give them another kind?
+5. Editable combo boxes (F7): accept free text, or only the listed options?
+6. The two PDFs in `samples/real/` are **not committed** (you asked for JSON and PNG only). Should they be committed, given the second one carries the Apryse watermark?
+7. Do you want the pypdf ground-truth script added to the repo (for example `tools/pdf_widgets.py`) so this check can be repeated on the next real forms?

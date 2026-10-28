@@ -1,0 +1,1010 @@
+{
+  "form": {
+    "source_file": "samples/real/sample_form_2.pdf",
+    "pdf_kind": "fillable",
+    "pages": [
+      {
+        "page": 1,
+        "dpi": 200,
+        "width_px": 1700,
+        "height_px": 2200,
+        "width_pt": 612.0,
+        "height_pt": 792.0,
+        "rotation": 0,
+        "widgets": 21,
+        "word_source": "pdf_text",
+        "kind": "fillable"
+      },
+      {
+        "page": 2,
+        "dpi": 200,
+        "width_px": 1700,
+        "height_px": 2200,
+        "width_pt": 612.0,
+        "height_pt": 792.0,
+        "rotation": 0,
+        "widgets": 3,
+        "word_source": "pdf_text",
+        "kind": "fillable"
+      },
+      {
+        "page": 3,
+        "dpi": 200,
+        "width_px": 1700,
+        "height_px": 2200,
+        "width_pt": 612.0,
+        "height_pt": 792.0,
+        "rotation": 0,
+        "widgets": 1,
+        "word_source": "pdf_text",
+        "kind": "fillable"
+      }
+    ],
+    "method": "acroform+layoutlm",
+    "notes": []
+  },
+  "sections": [
+    {
+      "id": "section_sample_pdf_form",
+      "title": "Sample PDF Form",
+      "box": [
+        687,
+        219,
+        1011,
+        263
+      ],
+      "page": 1,
+      "source": "layoutlm",
+      "reason": "layoutlm_header",
+      "confidence": 0.989,
+      "needs_review": false
+    },
+    {
+      "id": "section_sample_links",
+      "title": "Sample Links",
+      "box": [
+        730,
+        219,
+        968,
+        263
+      ],
+      "page": 2,
+      "source": "layoutlm",
+      "reason": "layoutlm_header",
+      "confidence": 0.673,
+      "needs_review": false
+    },
+    {
+      "id": "section_sample_links_2",
+      "title": "Sample Links",
+      "box": [
+        730,
+        219,
+        968,
+        263
+      ],
+      "page": 3,
+      "source": "layoutlm",
+      "reason": "layoutlm_header",
+      "confidence": 0.677,
+      "needs_review": false
+    }
+  ],
+  "fields": [
+    {
+      "id": "required",
+      "label": "Text field (required)",
+      "label_box": [
+        249,
+        308,
+        503,
+        338
+      ],
+      "answer_box": [
+        249,
+        375,
+        813,
+        437
+      ],
+      "type": "text",
+      "source": "acroform",
+      "confidence": 0.963,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "required",
+      "required": true,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "required",
+        "field_type": "Tx",
+        "flags": {
+          "required": true
+        },
+        "required": true,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              249,
+              375,
+              813,
+              437
+            ],
+            "rect_pt": [
+              89.55,
+              634.82,
+              292.59,
+              656.82
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "text_field_required"
+    },
+    {
+      "id": "email",
+      "label": "Email (format validation)",
+      "label_box": [
+        884,
+        308,
+        1210,
+        338
+      ],
+      "answer_box": [
+        884,
+        375,
+        1448,
+        437
+      ],
+      "type": "email",
+      "source": "acroform",
+      "confidence": 0.984,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "email",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_above",
+      "type_source": "label_words",
+      "pdf": {
+        "name": "email",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              884,
+              375,
+              1448,
+              437
+            ],
+            "rect_pt": [
+              318.27,
+              634.82,
+              521.31,
+              656.82
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "email_format_validation"
+    },
+    {
+      "id": "radio",
+      "label": "Radio buttons",
+      "label_box": [
+        249,
+        511,
+        436,
+        542
+      ],
+      "answer_box": [
+        252,
+        570,
+        302,
+        734
+      ],
+      "type": "choice",
+      "source": "acroform",
+      "confidence": 0.972,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "radio",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [
+        "Yes",
+        "No",
+        "Maybe"
+      ],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "radio",
+        "field_type": "Btn",
+        "flags": {
+          "no_toggle_to_off": true,
+          "radio": true
+        },
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": "/Off",
+        "option_values": [
+          "Yes",
+          "No",
+          "Maybe"
+        ],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              252,
+              570,
+              302,
+              620
+            ],
+            "rect_pt": [
+              90.69,
+              568.67,
+              108.69,
+              586.67
+            ],
+            "export_value": "Yes",
+            "hidden": false
+          },
+          {
+            "page": 1,
+            "box": [
+              252,
+              627,
+              302,
+              677
+            ],
+            "rect_pt": [
+              90.69,
+              548.13,
+              108.69,
+              566.13
+            ],
+            "export_value": "No",
+            "hidden": false
+          },
+          {
+            "page": 1,
+            "box": [
+              252,
+              684,
+              302,
+              734
+            ],
+            "rect_pt": [
+              90.69,
+              527.6,
+              108.69,
+              545.6
+            ],
+            "export_value": "Maybe",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "radio_buttons"
+    },
+    {
+      "id": "checkbox1+checkbox2+checkbox3",
+      "label": "Checkboxes",
+      "label_box": [
+        884,
+        511,
+        1042,
+        542
+      ],
+      "answer_box": [
+        884,
+        572,
+        934,
+        736
+      ],
+      "type": "choice",
+      "source": "acroform",
+      "confidence": 0.996,
+      "needs_review": true,
+      "page": 1,
+      "pdf_field_name": [
+        "checkbox1",
+        "checkbox2",
+        "checkbox3"
+      ],
+      "required": false,
+      "answer_method": "acroform_checkbox_group",
+      "options": [
+        "Red",
+        "Yellow",
+        "Blue"
+      ],
+      "multiple": true,
+      "label_source": "layoutlm_above",
+      "type_source": "independent_checkboxes",
+      "pdf": {
+        "name": null,
+        "field_type": "Btn",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [
+          "Red",
+          "Yellow",
+          "Blue"
+        ],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              884,
+              572,
+              934,
+              622
+            ],
+            "rect_pt": [
+              318.27,
+              568.1,
+              336.27,
+              586.1
+            ],
+            "export_value": "Red",
+            "hidden": false
+          },
+          {
+            "page": 1,
+            "box": [
+              884,
+              629,
+              934,
+              679
+            ],
+            "rect_pt": [
+              318.27,
+              547.56,
+              336.27,
+              565.56
+            ],
+            "export_value": "Yellow",
+            "hidden": false
+          },
+          {
+            "page": 1,
+            "box": [
+              884,
+              686,
+              934,
+              736
+            ],
+            "rect_pt": [
+              318.27,
+              527.03,
+              336.27,
+              545.03
+            ],
+            "export_value": "Blue",
+            "hidden": false
+          }
+        ],
+        "members": [
+          {
+            "name": "checkbox1",
+            "option": "Red",
+            "export_value": "Red",
+            "box": [
+              884,
+              572,
+              934,
+              622
+            ],
+            "read_only": false,
+            "required": false
+          },
+          {
+            "name": "checkbox2",
+            "option": "Yellow",
+            "export_value": "Yellow",
+            "box": [
+              884,
+              629,
+              934,
+              679
+            ],
+            "read_only": false,
+            "required": false
+          },
+          {
+            "name": "checkbox3",
+            "option": "Blue",
+            "export_value": "Blue",
+            "box": [
+              884,
+              686,
+              934,
+              736
+            ],
+            "read_only": false,
+            "required": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "checkboxes"
+    },
+    {
+      "id": "calc1",
+      "label": "Auto-calculation",
+      "label_box": [
+        249,
+        811,
+        467,
+        842
+      ],
+      "answer_box": [
+        249,
+        870,
+        382,
+        931
+      ],
+      "type": "number",
+      "source": "acroform",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "calc1",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_above",
+      "type_source": "format_action",
+      "pdf": {
+        "name": "calc1",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": "AFNumber_Format(2, 0, 0, 0, \"\", true); AFNumber_Keystroke(2, 0, 0, 0, \"\", true);",
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              249,
+              870,
+              382,
+              931
+            ],
+            "rect_pt": [
+              89.55,
+              456.87,
+              137.45,
+              478.87
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "auto_calculation"
+    },
+    {
+      "id": "calc2",
+      "label": "Auto-calculation",
+      "label_box": [
+        249,
+        811,
+        467,
+        842
+      ],
+      "answer_box": [
+        426,
+        870,
+        575,
+        931
+      ],
+      "type": "number",
+      "source": "acroform",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "calc2",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_above",
+      "type_source": "format_action",
+      "pdf": {
+        "name": "calc2",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": "AFNumber_Format(2, 0, 0, 0, \"\", true); AFNumber_Keystroke(2, 0, 0, 0, \"\", true);",
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              426,
+              870,
+              575,
+              931
+            ],
+            "rect_pt": [
+              153.43,
+              456.87,
+              207.04,
+              478.87
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "auto_calculation_2"
+    },
+    {
+      "id": "hidden",
+      "label": "Hidden field",
+      "label_box": [
+        884,
+        811,
+        1047,
+        842
+      ],
+      "answer_box": [
+        886,
+        868,
+        1302,
+        929
+      ],
+      "type": "text",
+      "source": "acroform",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "hidden",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "hidden",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": "This is the hidden field",
+        "value": "This is the hidden field",
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              886,
+              868,
+              1302,
+              929
+            ],
+            "rect_pt": [
+              318.84,
+              457.44,
+              468.84,
+              479.44
+            ],
+            "export_value": "BBox",
+            "hidden": true
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "hidden_field"
+    },
+    {
+      "id": "calcsum",
+      "label": "=",
+      "label_box": [
+        594,
+        886,
+        609,
+        916
+      ],
+      "answer_box": [
+        623,
+        870,
+        805,
+        931
+      ],
+      "type": "text",
+      "source": "acroform",
+      "confidence": 0.4,
+      "needs_review": true,
+      "page": 1,
+      "pdf_field_name": "calcsum",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "nearby_text_left",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "calcsum",
+        "field_type": "Tx",
+        "flags": {
+          "read_only": true
+        },
+        "required": false,
+        "read_only": true,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": "0",
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              623,
+              870,
+              805,
+              931
+            ],
+            "rect_pt": [
+              224.16,
+              456.87,
+              289.74,
+              478.87
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "field"
+    },
+    {
+      "id": "listbox",
+      "label": "List Box",
+      "label_box": [
+        249,
+        1018,
+        356,
+        1049
+      ],
+      "answer_box": [
+        253,
+        1069,
+        812,
+        1255
+      ],
+      "type": "choice",
+      "source": "acroform",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "listbox",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "listbox",
+        "field_type": "Ch",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": "December",
+        "value": "December",
+        "option_values": [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
+        ],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              253,
+              1069,
+              812,
+              1255
+            ],
+            "rect_pt": [
+              91.26,
+              340.13,
+              292.21,
+              407.0
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "list_box"
+    },
+    {
+      "id": "field-specific",
+      "label": "Field-specific buttons",
+      "label_box": [
+        884,
+        1018,
+        1163,
+        1049
+      ],
+      "answer_box": [
+        886,
+        1073,
+        1445,
+        1134
+      ],
+      "type": "text",
+      "source": "acroform",
+      "confidence": 0.997,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "field-specific",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "field-specific",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": "Change this text",
+        "value": "Change this text",
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              886,
+              1073,
+              1445,
+              1134
+            ],
+            "rect_pt": [
+              318.84,
+              383.86,
+              520.17,
+              405.86
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "field_specific_buttons"
+    },
+    {
+      "id": "dropdown",
+      "label": "Dropdown",
+      "label_box": [
+        249,
+        1337,
+        393,
+        1368
+      ],
+      "answer_box": [
+        250,
+        1393,
+        805,
+        1448
+      ],
+      "type": "choice",
+      "source": "acroform",
+      "confidence": 0.996,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "dropdown",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [
+        "Airplane",
+        "Bicycle",
+        "Boat",
+        "Bus",
+        "Car",
+        "Truck",
+        "Motorcycle"
+      ],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "dropdown",
+        "field_type": "Ch",
+        "flags": {
+          "combo": true
+        },
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": "Airplane",
+        "value": "Airplane",
+        "option_values": [
+          "Airplane",
+          "Bicycle",
+          "Boat",
+          "Bus",
+          "Car",
+          "Truck",
+          "Motorcycle"
+        ],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              250,
+              1393,
+              805,
+              1448
+            ],
+            "rect_pt": [
+              90.12,
+              270.64,
+              289.88,
+              290.64
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "dropdown"
+    },
+    {
+      "id": "multiline",
+      "label": "Multiline text field",
+      "label_box": [
+        249,
+        1544,
+        494,
+        1575
+      ],
+      "answer_box": [
+        252,
+        1595,
+        1445,
+        1785
+      ],
+      "type": "text",
+      "source": "acroform",
+      "confidence": 0.997,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "multiline",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "multiline",
+        "field_type": "Tx",
+        "flags": {
+          "multiline": true
+        },
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              252,
+              1595,
+              1445,
+              1785
+            ],
+            "rect_pt": [
+              90.69,
+              149.44,
+              520.17,
+              217.64
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_pdf_form",
+      "key": "multiline_text_field"
+    }
+  ]
+}

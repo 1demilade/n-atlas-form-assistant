@@ -1,0 +1,442 @@
+{
+  "form": {
+    "source_file": "samples/real/sample_form_1.pdf",
+    "pdf_kind": "fillable",
+    "pages": [
+      {
+        "page": 1,
+        "dpi": 200,
+        "width_px": 1700,
+        "height_px": 2200,
+        "width_pt": 612.0,
+        "height_pt": 792.0,
+        "rotation": 0,
+        "widgets": 7,
+        "word_source": "pdf_text",
+        "kind": "fillable"
+      }
+    ],
+    "method": "acroform+layoutlm",
+    "notes": []
+  },
+  "sections": [
+    {
+      "id": "section_sample_fillable_pdf",
+      "title": "Sample Fillable PDF",
+      "box": [
+        201,
+        230,
+        547,
+        276
+      ],
+      "page": 1,
+      "source": "layoutlm",
+      "reason": "layoutlm_header",
+      "confidence": 0.809,
+      "needs_review": false
+    }
+  ],
+  "fields": [
+    {
+      "id": "Name",
+      "label": null,
+      "label_box": null,
+      "answer_box": [
+        562,
+        506,
+        1145,
+        567
+      ],
+      "type": "text",
+      "source": "acroform",
+      "confidence": 0.0,
+      "needs_review": true,
+      "page": 1,
+      "pdf_field_name": "Name",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "none",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "Name",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              562,
+              506,
+              1145,
+              567
+            ],
+            "rect_pt": [
+              202.47,
+              587.91,
+              412.29,
+              609.91
+            ],
+            "export_value": null,
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_fillable_pdf",
+      "key": "field"
+    },
+    {
+      "id": "Dropdown2",
+      "label": "First Choice",
+      "label_box": [
+        201,
+        652,
+        359,
+        686
+      ],
+      "answer_box": [
+        199,
+        687,
+        399,
+        742
+      ],
+      "type": "choice",
+      "source": "acroform",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "Dropdown2",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [
+        "Choice 1",
+        "Choice 2",
+        "Choice 3",
+        "Choice 4"
+      ],
+      "label_source": "layoutlm_above",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "Dropdown2",
+        "field_type": "Ch",
+        "flags": {
+          "combo": true,
+          "edit": true
+        },
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": "Choice 1",
+        "value": "Choice 1",
+        "option_values": [
+          "Choice 1",
+          "Choice 2",
+          "Choice 3",
+          "Choice 4"
+        ],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              199,
+              687,
+              399,
+              742
+            ],
+            "rect_pt": [
+              71.65,
+              524.83,
+              143.65,
+              544.83
+            ],
+            "export_value": "Type",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_fillable_pdf",
+      "key": "first_choice"
+    },
+    {
+      "id": "Option 1+Option 2+Option 3",
+      "label": "Check all that apply",
+      "label_box": [
+        201,
+        764,
+        493,
+        800
+      ],
+      "answer_box": [
+        203,
+        833,
+        239,
+        950
+      ],
+      "type": "choice",
+      "source": "acroform",
+      "confidence": 0.995,
+      "needs_review": true,
+      "page": 1,
+      "pdf_field_name": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ],
+      "required": false,
+      "answer_method": "acroform_checkbox_group",
+      "options": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ],
+      "multiple": true,
+      "label_source": "layoutlm_above",
+      "type_source": "independent_checkboxes",
+      "pdf": {
+        "name": null,
+        "field_type": "Btn",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": null,
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [
+          "On",
+          "On",
+          "On"
+        ],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              203,
+              833,
+              239,
+              869
+            ],
+            "rect_pt": [
+              73.2,
+              479.28,
+              86.16,
+              492.24
+            ],
+            "export_value": "On",
+            "hidden": false
+          },
+          {
+            "page": 1,
+            "box": [
+              203,
+              873,
+              239,
+              909
+            ],
+            "rect_pt": [
+              73.2,
+              464.64,
+              86.16,
+              477.6
+            ],
+            "export_value": "On",
+            "hidden": false
+          },
+          {
+            "page": 1,
+            "box": [
+              203,
+              914,
+              239,
+              950
+            ],
+            "rect_pt": [
+              73.2,
+              450.0,
+              86.16,
+              462.96
+            ],
+            "export_value": "On",
+            "hidden": false
+          }
+        ],
+        "members": [
+          {
+            "name": "Option 1",
+            "option": "Option 1",
+            "export_value": "On",
+            "box": [
+              203,
+              833,
+              239,
+              869
+            ],
+            "read_only": false,
+            "required": false
+          },
+          {
+            "name": "Option 2",
+            "option": "Option 2",
+            "export_value": "On",
+            "box": [
+              203,
+              873,
+              239,
+              909
+            ],
+            "read_only": false,
+            "required": false
+          },
+          {
+            "name": "Option 3",
+            "option": "Option 3",
+            "export_value": "On",
+            "box": [
+              203,
+              914,
+              239,
+              950
+            ],
+            "read_only": false,
+            "required": false
+          }
+        ]
+      },
+      "section": "section_sample_fillable_pdf",
+      "key": "check_all_that_apply"
+    },
+    {
+      "id": "Name of Dependent",
+      "label": "Name of Dependent",
+      "label_box": [
+        201,
+        1052,
+        476,
+        1086
+      ],
+      "answer_box": [
+        510,
+        1046,
+        1156,
+        1085
+      ],
+      "type": "text",
+      "source": "acroform",
+      "confidence": 0.997,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "Name of Dependent",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_left",
+      "type_source": "pdf_field",
+      "pdf": {
+        "name": "Name of Dependent",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": "Name of Dependent",
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              510,
+              1046,
+              1156,
+              1085
+            ],
+            "rect_pt": [
+              183.6,
+              401.28,
+              416.04,
+              415.32
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_fillable_pdf",
+      "key": "name_of_dependent"
+    },
+    {
+      "id": "Age\t of Dependent",
+      "label": "Age of Dependent",
+      "label_box": [
+        201,
+        1094,
+        447,
+        1128
+      ],
+      "answer_box": [
+        510,
+        1088,
+        1156,
+        1127
+      ],
+      "type": "number",
+      "source": "acroform",
+      "confidence": 0.998,
+      "needs_review": false,
+      "page": 1,
+      "pdf_field_name": "Age\t of Dependent",
+      "required": false,
+      "answer_method": "acroform_widget",
+      "options": [],
+      "label_source": "layoutlm_left",
+      "type_source": "label_words",
+      "pdf": {
+        "name": "Age\t of Dependent",
+        "field_type": "Tx",
+        "flags": {},
+        "required": false,
+        "read_only": false,
+        "tooltip": "Age\t of Dependent",
+        "max_length": null,
+        "default_value": null,
+        "value": null,
+        "option_values": [],
+        "format_script": null,
+        "widgets": [
+          {
+            "page": 1,
+            "box": [
+              510,
+              1088,
+              1156,
+              1127
+            ],
+            "rect_pt": [
+              183.6,
+              386.16,
+              416.04,
+              400.2
+            ],
+            "export_value": "BBox",
+            "hidden": false
+          }
+        ]
+      },
+      "section": "section_sample_fillable_pdf",
+      "key": "age_of_dependent"
+    }
+  ]
+}

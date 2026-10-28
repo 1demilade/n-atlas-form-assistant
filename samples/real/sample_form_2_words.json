@@ -1,0 +1,707 @@
+[
+  {
+    "text": "Page 1",
+    "box": [
+      1513,
+      104,
+      1595,
+      135
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Page",
+        "box": [
+          1513,
+          104,
+          1573,
+          135
+        ]
+      },
+      {
+        "text": "1",
+        "box": [
+          1580,
+          104,
+          1595,
+          135
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Sample PDF Form",
+    "box": [
+      687,
+      219,
+      1011,
+      263
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Sample",
+        "box": [
+          687,
+          219,
+          823,
+          263
+        ]
+      },
+      {
+        "text": "PDF",
+        "box": [
+          833,
+          219,
+          905,
+          263
+        ]
+      },
+      {
+        "text": "Form",
+        "box": [
+          915,
+          219,
+          1011,
+          263
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Text field (required)",
+    "box": [
+      249,
+      308,
+      503,
+      338
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Text",
+        "box": [
+          249,
+          308,
+          305,
+          338
+        ]
+      },
+      {
+        "text": "field",
+        "box": [
+          312,
+          308,
+          368,
+          338
+        ]
+      },
+      {
+        "text": "(required)",
+        "box": [
+          375,
+          308,
+          503,
+          338
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Email (format validation):",
+    "box": [
+      884,
+      308,
+      1210,
+      338
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Email",
+        "box": [
+          884,
+          308,
+          954,
+          338
+        ]
+      },
+      {
+        "text": "(format",
+        "box": [
+          961,
+          308,
+          1058,
+          338
+        ]
+      },
+      {
+        "text": "validation):",
+        "box": [
+          1065,
+          308,
+          1210,
+          338
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Radio buttons:",
+    "box": [
+      249,
+      511,
+      436,
+      542
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Radio",
+        "box": [
+          249,
+          511,
+          322,
+          542
+        ]
+      },
+      {
+        "text": "buttons:",
+        "box": [
+          329,
+          511,
+          436,
+          542
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Checkboxes:",
+    "box": [
+      884,
+      511,
+      1042,
+      542
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Checkboxes:",
+        "box": [
+          884,
+          511,
+          1042,
+          542
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Yes",
+    "box": [
+      318,
+      586,
+      360,
+      616
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Yes",
+        "box": [
+          318,
+          586,
+          360,
+          616
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Red",
+    "box": [
+      948,
+      586,
+      996,
+      616
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Red",
+        "box": [
+          948,
+          586,
+          996,
+          616
+        ]
+      }
+    ]
+  },
+  {
+    "text": "No",
+    "box": [
+      318,
+      642,
+      354,
+      672
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "No",
+        "box": [
+          318,
+          642,
+          354,
+          672
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Yellow",
+    "box": [
+      948,
+      642,
+      1030,
+      672
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Yellow",
+        "box": [
+          948,
+          642,
+          1030,
+          672
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Maybe",
+    "box": [
+      318,
+      698,
+      404,
+      728
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Maybe",
+        "box": [
+          318,
+          698,
+          404,
+          728
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Blue",
+    "box": [
+      948,
+      698,
+      1003,
+      728
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Blue",
+        "box": [
+          948,
+          698,
+          1003,
+          728
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Auto-calculation:",
+    "box": [
+      249,
+      811,
+      467,
+      842
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Auto-calculation:",
+        "box": [
+          249,
+          811,
+          467,
+          842
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Hidden field:",
+    "box": [
+      884,
+      811,
+      1047,
+      842
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Hidden",
+        "box": [
+          884,
+          811,
+          975,
+          842
+        ]
+      },
+      {
+        "text": "field:",
+        "box": [
+          982,
+          811,
+          1047,
+          842
+        ]
+      }
+    ]
+  },
+  {
+    "text": "+",
+    "box": [
+      397,
+      886,
+      412,
+      916
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "+",
+        "box": [
+          397,
+          886,
+          412,
+          916
+        ]
+      }
+    ]
+  },
+  {
+    "text": "=",
+    "box": [
+      594,
+      886,
+      609,
+      916
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "=",
+        "box": [
+          594,
+          886,
+          609,
+          916
+        ]
+      }
+    ]
+  },
+  {
+    "text": "List Box:",
+    "box": [
+      249,
+      1018,
+      356,
+      1049
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "List",
+        "box": [
+          249,
+          1018,
+          293,
+          1049
+        ]
+      },
+      {
+        "text": "Box:",
+        "box": [
+          300,
+          1018,
+          356,
+          1049
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Field-specific buttons:",
+    "box": [
+      884,
+      1018,
+      1163,
+      1049
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Field-specific",
+        "box": [
+          884,
+          1018,
+          1048,
+          1049
+        ]
+      },
+      {
+        "text": "buttons:",
+        "box": [
+          1055,
+          1018,
+          1163,
+          1049
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Dropdown:",
+    "box": [
+      249,
+      1337,
+      393,
+      1368
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Dropdown:",
+        "box": [
+          249,
+          1337,
+          393,
+          1368
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Multiline text field:",
+    "box": [
+      249,
+      1544,
+      494,
+      1575
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Multiline",
+        "box": [
+          249,
+          1544,
+          365,
+          1575
+        ]
+      },
+      {
+        "text": "text",
+        "box": [
+          372,
+          1544,
+          423,
+          1575
+        ]
+      },
+      {
+        "text": "field:",
+        "box": [
+          430,
+          1544,
+          494,
+          1575
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Page 2",
+    "box": [
+      1513,
+      104,
+      1595,
+      135
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Page",
+        "box": [
+          1513,
+          104,
+          1573,
+          135
+        ]
+      },
+      {
+        "text": "2",
+        "box": [
+          1580,
+          104,
+          1595,
+          135
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Sample Links",
+    "box": [
+      730,
+      219,
+      968,
+      263
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Sample",
+        "box": [
+          730,
+          219,
+          866,
+          263
+        ]
+      },
+      {
+        "text": "Links",
+        "box": [
+          876,
+          219,
+          968,
+          263
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Page 3",
+    "box": [
+      1513,
+      104,
+      1595,
+      135
+    ],
+    "score": 1.0,
+    "page": 3,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Page",
+        "box": [
+          1513,
+          104,
+          1573,
+          135
+        ]
+      },
+      {
+        "text": "3",
+        "box": [
+          1580,
+          104,
+          1595,
+          135
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Sample Links",
+    "box": [
+      730,
+      219,
+      968,
+      263
+    ],
+    "score": 1.0,
+    "page": 3,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Sample",
+        "box": [
+          730,
+          219,
+          866,
+          263
+        ]
+      },
+      {
+        "text": "Links",
+        "box": [
+          876,
+          219,
+          968,
+          263
+        ]
+      }
+    ]
+  }
+]
