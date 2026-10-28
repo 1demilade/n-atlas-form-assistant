@@ -1,4 +1,4 @@
-# Real fillable PDFs (not in git)
+# Real PDF forms (not in git)
 
 The PDFs in this folder are not committed (`samples/real/*.pdf` is in `.gitignore`). Only the outputs are.
 
