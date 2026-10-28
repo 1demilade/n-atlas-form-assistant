@@ -112,10 +112,29 @@ def _slug(label, used):
     return slug
 
 
-def _finish(candidates, items, pages, entities=(), checkbox_rule=False):
+def _printed_answer(answer_box, regions, text_height):
+    """True if an answer area is only printed text: no line, write-in box or cell is drawn there."""
+    for line in regions['lines']:
+        y = (line[1] + line[3]) / 2
+        if (answer_box[1] - text_height <= y <= answer_box[3] + text_height
+                and min(line[2], answer_box[2]) > max(line[0], answer_box[0])):
+            return False
+    # An option word next to a checkbox ('No' beside its box) belongs to drawn input too.
+    if any(_same_row(c, answer_box, 0.3) and c[0] - 2 * text_height <= answer_box[0] <= c[2] + 2 * text_height
+           for c in regions['checkboxes']):
+        return False
+    cx, cy = (answer_box[0] + answer_box[2]) / 2, (answer_box[1] + answer_box[3]) / 2
+    return not any(b[0] <= cx <= b[2] and b[1] <= cy <= b[3]
+                   for b in regions.get('boxes', []) + regions['cells'])
+
+
+def _finish(candidates, items, pages, entities=(), checkbox_rule=False, blank_form=False, notes=None):
     """Add answer_box, type, id and needs_review to each label candidate.
     entities = non-question LayoutLM entities (answers are used; other text blocks empty space).
-    checkbox_rule (PDFs): a checkbox group is 'choice', a lone checkbox is 'yes_no'."""
+    checkbox_rule (PDFs): a checkbox group is 'choice', a lone checkbox is 'yes_no'.
+    blank_form (PDFs): nothing is filled in yet, so text the model tags as an answer is printed
+    information (an address in a letterhead); a label whose only answer area is such text, with
+    nothing drawn there, is not a field. It is listed in `notes` instead."""
     answers = [e for e in entities if e['kind'] == 'answer']
     header_boxes = [c['label_box'] for c in candidates if c.get('from_header')]
     blockers = [{'text': e['text'], 'box': e['box'], 'page': e['page']}
@@ -152,6 +171,11 @@ def _finish(candidates, items, pages, entities=(), checkbox_rule=False):
             anchor, blocking, regions[page], (image.shape[1], image.shape[0]), text_height,
             page_answers, candidate['label_items'], right_limit)
 
+        if blank_form and method == 'layoutlm_answer' and _printed_answer(answer_box, regions[page], text_height):
+            if notes is not None:
+                notes.append(f"p{page} {candidate['label']!r} is not a field: its answer is printed text "
+                             f"({next((a['text'] for a in page_answers if a['box'] == answer_box), '')!r}).")
+            continue
         answer_lines = []
         if method in ('underline', 'underline_below', 'line_above'):
             more = continuation_lines(answer_box, regions[page]['lines'], page_items, text_height)
@@ -308,12 +332,13 @@ def _caps_heading_candidates(items, candidates):
 
 
 def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, entities=None,
-                             checkbox_rule=False):
+                             checkbox_rule=False, blank_form=False, notes=None):
     """Flat forms: words (Shape 1) + the form file -> (fields (Shape 2), section headings).
 
     method: 'auto' (LayoutLM, falling back to rules), 'layoutlm', or 'rules'.
     entities: reuse an earlier layout_lm.extract_entities() result.
-    checkbox_rule: see _finish (on for PDFs; the photo path keeps guess_type's types).
+    checkbox_rule, blank_form: see _finish (both on for PDFs; the photo path keeps the old
+    behaviour). notes: a list that receives what was left out and why.
     """
     from ocr import prepare_pages
     pages = prepare_pages(image_path, clean)
@@ -338,7 +363,7 @@ def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, e
     if candidates is None:
         candidates = extract_fields(items)
     candidates += _caps_heading_candidates(items, candidates)
-    return _split_sections(_finish(candidates, items, pages, others, checkbox_rule))
+    return _split_sections(_finish(candidates, items, pages, others, checkbox_rule, blank_form, notes))
 
 
 def find_fields(ocr_items, image_path, method='auto', clean=True):
@@ -482,7 +507,7 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
             e for e in entities if e['page'] not in widget_pages]
         flat, flat_sections = find_fields_and_sections(
             flat_items, path, 'rules' if entities is None else method, clean, flat_entities,
-            checkbox_rule=is_pdf)
+            checkbox_rule=is_pdf, blank_form=is_pdf, notes=notes)
         if widget_pages:
             # A fillable PDF: pages without widgets are usually instructions. Only confident flat
             # fields count as real ones there; flagged ones (low confidence, guessed answer area,

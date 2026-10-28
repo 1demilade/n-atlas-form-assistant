@@ -751,6 +751,36 @@ class FlatLabelTests(Tmp):
                 self.assertNotIn('PERSONAL DETAILS', by_label)
 
 
+    def test_printed_answer_is_not_a_field_on_a_blank_form(self):
+        """On a blank PDF form, a label whose only 'answer' is printed text with nothing drawn
+        there (a letterhead address) is not a field; a placeholder printed on a line is."""
+        from layout import find_fields_and_sections
+        from make_test_pdfs import make_widget_pdf, _text_width
+        path = self.tmp / 'letterhead.pdf'
+        texts = [(56, 760, 'SUNRISE FARMERS COOPERATIVE SOCIETY'),
+                 (120, 740, 'Head Office:'), (190, 740, '12 Market Road, Ibadan, Oyo State'),
+                 (56, 700, 'Date of birth:'), (150, 700, 'DD/MM/YYYY'), (56, 670, 'Full name:')]
+        lines = [(56 + _text_width('Date of birth:', 10) + 6, 698, 540),
+                 (56 + _text_width('Full name:', 10) + 6, 668, 540)]
+        make_widget_pdf(path, texts, [], lines=lines)
+        items = read_pdf_words(path, ocr_images=False)
+        kinds = {'SUNRISE FARMERS COOPERATIVE SOCIETY': 'header', '12 Market Road, Ibadan, Oyo State': 'answer',
+                 'DD/MM/YYYY': 'answer'}
+        entities = [{'kind': kinds.get(i['text'], 'question'), 'text': i['text'], 'box': i['box'],
+                     'page': 1, 'confidence': 0.99} for i in items]
+        notes = []
+        fields, _ = find_fields_and_sections(items, path, 'layoutlm', clean=False, entities=entities,
+                                             checkbox_rule=True, blank_form=True, notes=notes)
+        labels = [f['label'] for f in fields]
+        self.assertNotIn('Head Office', labels)
+        self.assertIn('Date of birth', labels)  # its 'answer' is a placeholder printed on a line
+        self.assertIn('Full name', labels)
+        self.assertTrue(any('Head Office' in n and 'printed' in n for n in notes), notes)
+        # Photos of filled-in forms keep LayoutLM answers as answers.
+        fields, _ = find_fields_and_sections(items, path, 'layoutlm', clean=False, entities=entities)
+        self.assertIn('Head Office', [f['label'] for f in fields])
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""
