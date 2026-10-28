@@ -724,6 +724,33 @@ class FlatLabelTests(Tmp):
         self.assertTrue(any(abs(r - 638) <= 4 for r in rows) and any(abs(r - 620) <= 4 for r in rows), rows)
 
 
+    def test_capital_headings_are_sections(self):
+        """A heading printed in capitals that the model leaves untagged ('other') is a section,
+        so the fields under it are assigned to it, not to the heading before."""
+        from layout import find_fields_and_sections
+        from make_test_pdfs import make_widget_pdf
+        path = self.tmp / 'caps.pdf'
+        texts, lines = _underlined([('Full name:', 700), ('Home town:', 680), ('Remarks:', 610)])
+        texts += [(56, 750, 'Registration form for the members of our farmers club'),
+                  (56, 720, 'PERSONAL DETAILS'), (100, 640, 'RECOMMENDATION BY THE LOCAL COORDINATOR')]
+        make_widget_pdf(path, texts, [], lines=lines)
+        items = read_pdf_words(path, ocr_images=False)
+        model_like = [{'kind': 'other' if i['text'].isupper() or i['text'].startswith('Registration')
+                       else 'question', 'text': i['text'], 'box': i['box'], 'page': 1, 'confidence': 0.99}
+                      for i in items]
+        for mode, entities in (('layoutlm', model_like), ('rules', None)):
+            with self.subTest(mode=mode):
+                fields, sections = find_fields_and_sections(items, path, mode, clean=False,
+                                                            entities=entities, checkbox_rule=True)
+                titles = {s['id']: s['title'] for s in sections}
+                self.assertIn('PERSONAL DETAILS', titles.values())
+                self.assertIn('RECOMMENDATION BY THE LOCAL COORDINATOR', titles.values())
+                by_label = {f['label']: f for f in fields}
+                self.assertEqual(titles[by_label['Full name']['section']], 'PERSONAL DETAILS')
+                self.assertEqual(titles[by_label['Remarks']['section']], 'RECOMMENDATION BY THE LOCAL COORDINATOR')
+                self.assertNotIn('PERSONAL DETAILS', by_label)
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""

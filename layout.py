@@ -208,7 +208,7 @@ def _section_reason(candidate, method, label_box, regions, page_items, text_heig
     never the wording."""
     from answer_areas import _cell_of
     if candidate.get('from_header'):
-        return None if method in DRAWN_METHODS else 'layoutlm_header'
+        return None if method in DRAWN_METHODS else candidate.get('heading_reason', 'layoutlm_header')
     if method == 'none':
         return 'no_answer_area'
     line_heights = [item['box'][3] - item['box'][1] for item in candidate.get('label_items', [])]
@@ -285,6 +285,28 @@ def _header_candidates(entities, items):
     return candidates
 
 
+def _caps_heading_candidates(items, candidates):
+    """Lines printed in capitals (2+ words, alone on their row, no ':' and no final '.') that no
+    label candidate covers: headings the model left untagged ('other'). Checked for an answer
+    area like the model's own headers."""
+    found = []
+    for item in items:
+        text = item['text'].strip()
+        words = re.findall(r'[A-Za-z]{2,}', text)
+        if (len(words) < 2 or not ''.join(words).isupper() or ':' in text or text.endswith('.')
+                or _is_instruction(text)):
+            continue
+        if any(c['page'] == item['page'] and _inside(item['box'], c['label_box'], 0.5) for c in candidates):
+            continue
+        if any(other is not item and other['page'] == item['page'] and _same_row(other['box'], item['box'])
+               for other in items):
+            continue
+        found.append({'label': clean_label(text), 'label_box': list(item['box']), 'page': item['page'],
+                      'confidence': 0.5, 'source': 'rules', 'label_items': [item],
+                      'from_header': True, 'heading_reason': 'caps_line'})
+    return found
+
+
 def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, entities=None,
                              checkbox_rule=False):
     """Flat forms: words (Shape 1) + the form file -> (fields (Shape 2), section headings).
@@ -315,6 +337,7 @@ def find_fields_and_sections(ocr_items, image_path, method='auto', clean=True, e
             candidates, others = None, []
     if candidates is None:
         candidates = extract_fields(items)
+    candidates += _caps_heading_candidates(items, candidates)
     return _split_sections(_finish(candidates, items, pages, others, checkbox_rule))
 
 

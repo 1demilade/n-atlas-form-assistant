@@ -239,7 +239,8 @@ def label_from_text(text):
         return clean_label(text), 0.6
     words = text.split()
     letters = re.sub(r'[^A-Za-z]', '', text)
-    looks_like_heading = len(words) >= 3 and letters.isupper()
+    # (a capitals line with a drawn answer area still becomes a field: layout._caps_heading_candidates)
+    looks_like_heading = len(words) >= 2 and letters.isupper()
     if (len(words) <= MAX_PLAIN_LABEL_WORDS and not text.endswith('.')
             and not looks_like_heading):
         return clean_label(text), 0.4
