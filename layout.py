@@ -339,10 +339,52 @@ def _fillable_sections(entities, fields, items):
     return sorted(sections, key=lambda s: (s['page'], s['box'][1], s['box'][0]))
 
 
+PDF_KINDS = ('fillable', 'flat_text', 'flat_scanned', 'mixed')
+
+
+def page_kind(page):
+    """'fillable' (has widgets), 'flat_text' (words from the text layer) or 'flat_scanned'."""
+    if page.get('widgets'):
+        return 'fillable'
+    return 'flat_text' if str(page.get('word_source', '')).startswith('pdf_text') else 'flat_scanned'
+
+
+def pdf_kind(pages):
+    """The pages' common kind, or 'mixed' when pages differ."""
+    kinds = {page_kind(page) for page in pages}
+    return kinds.pop() if len(kinds) == 1 else 'mixed'
+
+
+def _anchor(field):
+    box = field['label_box'] or field['answer_box'] or [0, 0, 0, 0]
+    return field['page'], box[1], box[0]
+
+
+def _add_keys(fields):
+    """Readable key next to each id (answers.json may use either). Flat ids are already made from
+    the label, so key = id; fillable keys come from the label, with a suffix on collisions with
+    another key or another field's id."""
+    ids = {f['id'] for f in fields}
+    used = {f['id'] for f in fields if f.get('pdf_field_name') is None}
+    for field in fields:
+        if field.get('pdf_field_name') is None:
+            field['key'] = field['id']
+            continue
+        taken = used | (ids - {field['id']})
+        base = _slug(field['label'] or '', set())
+        key, number = base, 2
+        while key in taken:
+            key, number = f'{base}_{number}', number + 1
+        used.add(key)
+        field['key'] = key
+
+
 def analyse_form(path, ocr_items=None, method='auto', clean=True):
     """Whole pipeline for one form -> one JSON-ready object:
-    {file, kind ('fillable' | 'flat' | 'image'), dpi, pages, method, fields, sections, notes}.
-    All boxes are pixels of the page images from ocr.prepare_pages (PDFs: the dpi render)."""
+    {'form': {source_file, pdf_kind, pages: [{page, width_px, height_px, dpi, ...}], method, notes},
+     'sections': [...], 'fields': [...]}.
+    Pages with widgets use the AcroForm fields; other pages use the flat path (a 'mixed' PDF uses
+    both). All boxes are pixels of the page images from ocr.prepare_pages (PDFs: the dpi render)."""
     from pathlib import Path
 
     from ocr import PDF_SUFFIXES, prepare_pages, read_form
@@ -351,10 +393,10 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
     if Path(path).suffix.lower() in PDF_SUFFIXES:
         from pdf_input import describe_pdf
         info = describe_pdf(path, items)
-    else:
-        info = {'file': str(path), 'kind': 'image', 'dpi': None,
+    else:  # photo fallback: an image is a scanned flat page
+        info = {'file': str(path), 'dpi': None,
                 'pages': [{'page': n, 'width_px': int(p.shape[1]), 'height_px': int(p.shape[0]),
-                           'word_source': 'ocr'} for n, p in enumerate(pages, start=1)]}
+                           'dpi': None, 'word_source': 'ocr'} for n, p in enumerate(pages, start=1)]}
     notes, entities = [], None
     if method != 'rules':
         try:
@@ -365,20 +407,43 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
                 raise
             notes.append(f'LayoutLM failed ({error!r}); labels come from rules/nearby text.')
 
-    if info['kind'] == 'fillable':
+    for page in info['pages']:
+        page['kind'] = page_kind(page)
+    widget_pages = {p['page'] for p in info['pages'] if p['kind'] == 'fillable'}
+    fields, sections, used = [], [], []
+    if widget_pages:
         from pdf_fields import find_fillable_fields
-        fields, error = find_fillable_fields(path, items, entities is not None, entities)
+        fillable, error = find_fillable_fields(path, items, entities is not None, entities)
         if error:
             notes.append(f'LayoutLM label linking failed ({error}).')
-        sections = _fillable_sections(entities or [], fields, clean_items(items))
-        _assign_sections(fields, sections)
-        used = 'acroform+layoutlm' if entities is not None else 'acroform'
-    else:
-        fields, sections = find_fields_and_sections(
-            items, path, 'rules' if entities is None else method, clean, entities)
-        used = '+'.join(sorted({f['source'] for f in fields})) or 'none'
-    info.update({'method': used, 'fields': fields, 'sections': sections, 'notes': notes})
-    return info
+        on_pages = [e for e in entities or [] if e['page'] in widget_pages]
+        sections += _fillable_sections(on_pages, fillable, clean_items(items))
+        fields += fillable
+        used.append('acroform+layoutlm' if entities is not None else 'acroform')
+    flat_items = [item for item in items if item['page'] not in widget_pages]
+    if flat_items:
+        flat_entities = None if entities is None else [
+            e for e in entities if e['page'] not in widget_pages]
+        flat, flat_sections = find_fields_and_sections(
+            flat_items, path, 'rules' if entities is None else method, clean, flat_entities)
+        taken = {f['id'] for f in fields}
+        for field in flat:
+            if field['id'] in taken:  # mixed PDF: a flat id equal to an AcroForm name
+                field['id'] = _slug(field['id'], taken)
+            field.update(pdf_field_name=None, required=None)  # flat pages print no 'required' flag
+        seen = {s['id'] for s in sections}
+        for section in flat_sections:
+            if section['id'] in seen:
+                section['id'] = _slug(section['id'], seen)
+        sections += flat_sections
+        fields += flat
+        used.append('+'.join(sorted({f['source'] for f in flat})) or 'none')
+    fields.sort(key=_anchor)
+    sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))
+    _assign_sections(fields, sections)
+    form = {'source_file': info['file'], 'pdf_kind': pdf_kind(info['pages']),
+            'pages': info['pages'], 'method': ', '.join(used) or 'none', 'notes': notes}
+    return {'form': form, 'sections': sections, 'fields': fields}
 
 
 def explain_fields_in_language(fields, language):
@@ -413,9 +478,10 @@ def main():
         json.dump(form, file, indent=2, ensure_ascii=False)
     draw_boxes(fields, args.input, args.boxes, clean=clean, sections=sections)
 
-    pages = ', '.join(f"p{p['page']}={p.get('word_source')}" for p in form['pages'])
-    print(f"kind={form['kind']} method={form['method']} words: {pages}")
-    for note in form['notes']:
+    info = form['form']
+    pages = ', '.join(f"p{p['page']}={p['kind']}/{p.get('word_source')}" for p in info['pages'])
+    print(f"pdf_kind={info['pdf_kind']} method={info['method']} pages: {pages}")
+    for note in info['notes']:
         print('NOTE:', note)
     for section in sections:
         flag = ' (review)' if section['needs_review'] else ''

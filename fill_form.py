@@ -208,9 +208,10 @@ def _overlay_reader(page_ops, geometry, mediabox):
     return PdfReader(buffer)
 
 
-def _fill_flat(reader, fields, answers, sizes_px):
+def _fill_flat(reader, fields, answers, sizes_px, writer=None):
+    """writer: continue an existing writer (a mixed PDF's AcroForm values are already in it)."""
     from pypdf import PdfWriter
-    writer = PdfWriter(clone_from=reader)
+    writer = writer or PdfWriter(clone_from=reader)
     ops_by_page, report = {}, []
     geometries = {n: _page_geometry(p, sizes_px[n - 1]) for n, p in enumerate(writer.pages, start=1)}
     for field in fields:
@@ -266,11 +267,19 @@ def fill_form(pdf_path, form, answers, out_path):
     form, answers = _load(form), _load(answers)
     reader = PdfReader(str(pdf_path))
     unknown = sorted(set(answers) - {f['id'] for f in form['fields']})
-    if form['kind'] == 'fillable':
-        writer, report = _fill_acroform(reader, form['fields'], answers)
-    else:
-        sizes = [(p['width_px'], p['height_px']) for p in form['pages']]
-        writer, report = _fill_flat(reader, form['fields'], answers, sizes)
+    # Each field is filled the way it was found: AcroForm widget, or drawn on the page.
+    fillable = [f for f in form['fields'] if f.get('pdf_field_name')]
+    flat = [f for f in form['fields'] if not f.get('pdf_field_name')]
+    writer, report = _fill_acroform(reader, fillable, answers) if fillable else (None, [])
+    if flat:
+        sizes = [(p['width_px'], p['height_px']) for p in form['form']['pages']]
+        writer, flat_report = _fill_flat(reader, flat, answers, sizes, writer)
+        report += flat_report
+    if writer is None:
+        from pypdf import PdfWriter
+        writer = PdfWriter(clone_from=reader)
+    order = {f['id']: n for n, f in enumerate(form['fields'])}
+    report.sort(key=lambda entry: order[entry['id']])
     report.extend({'id': fid, 'status': 'skipped', 'reason': 'no field with this id'} for fid in unknown)
     with open(out_path, 'wb') as file:
         writer.write(file)

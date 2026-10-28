@@ -188,6 +188,8 @@ class AcroFormTests(Tmp):
                 for t in truth['fields']:
                     field = by_id[t['name']]
                     self.assertEqual(norm(field['label']), norm(t['label']), (field['label_source'], t))
+                    self.assertEqual(field['pdf_field_name'], t['name'])
+                    self.assertEqual(field['required'], bool(t.get('required')), t)
                     self.assertEqual(field['type'], expected_type(t, True), t)
                     self.assertIn(field['type'], ALLOWED_TYPES)
                     self.assertTrue(field['needs_review'], 'fallback labels must be flagged')
@@ -215,7 +217,8 @@ class AcroFormTests(Tmp):
 def _fillable_form(path):
     items = read_pdf_words(path, ocr_images=False)
     fields, _ = link_fields(read_acroform(path), items, prepare_pages(path), use_layoutlm=False)
-    return {'kind': 'fillable', 'fields': fields, 'sections': [], 'pages': describe_pdf(path)['pages']}
+    return {'form': {'pdf_kind': 'fillable', 'pages': describe_pdf(path)['pages']},
+            'fields': fields, 'sections': []}
 
 
 class FillTests(Tmp):
@@ -270,8 +273,8 @@ class FillTests(Tmp):
                         field.update(answer_box=boxes[0], answer_method='checkboxes', option_boxes=boxes)
                     fields.append(field)
                     answers[field['id']] = example_answer(t)
-                form = {'kind': 'flat', 'fields': fields, 'sections': [],
-                        'pages': describe_pdf(path)['pages']}
+                form = {'form': {'pdf_kind': 'flat_text', 'pages': describe_pdf(path)['pages']},
+                        'fields': fields, 'sections': []}
                 report = fill_form(path, form, answers, out)
                 self.assertTrue(all(r['status'] == 'filled' for r in report), report)
 
@@ -298,6 +301,54 @@ class FillTests(Tmp):
                               if x0 - 2 <= w['x0'] * sx and w['x1'] * sx <= x1 + 2
                               and y0 - 2 <= w['top'] * sx and w['bottom'] * sx <= y1 + 2]
                     self.assertEqual(' '.join(inside), answers[field['id']], field['label'])
+
+
+class OutputFormatTests(Tmp):
+    def test_pdf_kind(self):
+        from layout import pdf_kind
+        fillable = {'widgets': 3, 'word_source': 'pdf_text'}
+        text = {'widgets': 0, 'word_source': 'pdf_text+ocr_images'}
+        scanned = {'widgets': 0, 'word_source': 'ocr'}
+        self.assertEqual(pdf_kind([fillable, fillable]), 'fillable')
+        self.assertEqual(pdf_kind([text]), 'flat_text')
+        self.assertEqual(pdf_kind([scanned, dict(scanned, word_source='none')]), 'flat_scanned')
+        self.assertEqual(pdf_kind([fillable, text]), 'mixed')
+        self.assertEqual(pdf_kind([text, scanned]), 'mixed')
+
+    def test_mixed_pdf_uses_both_paths(self):
+        """Page 1 has widgets, page 2 is flat: each page goes through its own path and fills."""
+        from pypdf import PdfReader, PdfWriter
+        from layout import analyse_form
+        a, b, mixed, out = (self.tmp / n for n in ('a.pdf', 'b.pdf', 'mixed.pdf', 'out.pdf'))
+        truth = make_fillable_pdf(a, 2, 8)
+        make_flat_pdf(b, 3, 8)
+        writer = PdfWriter(clone_from=PdfReader(str(a)))
+        writer.append(str(b))
+        writer.write(str(mixed))
+        form = analyse_form(str(mixed), read_pdf_words(mixed, ocr_images=False), method='rules')
+        info = form['form']
+        self.assertEqual(info['pdf_kind'], 'mixed')
+        self.assertEqual([p['kind'] for p in info['pages']], ['fillable', 'flat_text'])
+        self.assertEqual(set(info['pages'][0]) >= {'page', 'width_px', 'height_px', 'dpi'}, True)
+        page1 = [f for f in form['fields'] if f['page'] == 1]
+        page2 = [f for f in form['fields'] if f['page'] == 2]
+        self.assertEqual({f['pdf_field_name'] for f in page1}, {t['name'] for t in truth['fields']})
+        self.assertTrue(page2)
+        for field in page2:
+            self.assertIsNone(field['pdf_field_name'])
+            self.assertIsNone(field['required'])
+        for field in form['fields']:
+            self.assertIn(field['type'], ALLOWED_TYPES)
+        json.dumps(form)
+        text = next(f for f in page1 if f['pdf']['field_type'] == 'Tx' and f['type'] == 'text')
+        drawn = next(f for f in page2 if f['answer_box'] and f['answer_method'] != 'checkboxes')
+        report = {r['id']: r for r in fill_form(mixed, form, {text['id']: 'Lagos',
+                                                              drawn['id']: 'Kano'}, out)}
+        self.assertEqual(report[text['id']]['status'], 'filled')
+        self.assertEqual(report[drawn['id']]['status'], 'filled')
+        reader = PdfReader(str(out))
+        self.assertEqual(str(reader.get_fields()[text['pdf_field_name']].get('/V')), 'Lagos')
+        self.assertIn('Kano', reader.pages[1].extract_text())
 
 
 @unittest.skipUnless(SLOW, 'set RUN_SLOW=1 to run PaddleOCR + LayoutLM')
@@ -334,8 +385,8 @@ class FullPipelineOnPdfs(Tmp):
                     path = self.tmp / f'{kind}{seed}.pdf'
                     truth = (make_fillable_pdf if kind == 'fillable' else make_flat_pdf)(path, seed, count)
                     form = analyse_form(str(path))
-                    self.assertEqual(form['kind'], kind)
-                    self.assertEqual(form['pages'][0]['word_source'], 'pdf_text')
+                    self.assertEqual(form['form']['pdf_kind'], 'fillable' if kind == 'fillable' else 'flat_text')
+                    self.assertEqual(form['form']['pages'][0]['word_source'], 'pdf_text')
                     self.check(form, truth, kind == 'fillable')
 
     def test_image_only_pdf(self):
@@ -344,7 +395,8 @@ class FullPipelineOnPdfs(Tmp):
         truth = make_flat_pdf(flat, 2, 8)
         make_image_pdf(flat, image)
         form = analyse_form(str(image))
-        self.assertEqual(form['pages'][0]['word_source'], 'ocr')
+        self.assertEqual(form['form']['pdf_kind'], 'flat_scanned')
+        self.assertEqual(form['form']['pages'][0]['word_source'], 'ocr')
         self.check(form, truth, False)
 
 

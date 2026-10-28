@@ -354,6 +354,8 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             'needs_review': (confidence < REVIEW_BELOW_CONFIDENCE
                              or not label_source.startswith('layoutlm')),
             'page': page,
+            'pdf_field_name': raw['name'],
+            'required': flags['required'],  # the PDF's own Required flag, never guessed
             'answer_method': 'acroform_widget',
             'options': option_texts,
             'label_source': label_source,
