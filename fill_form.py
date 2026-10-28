@@ -343,6 +343,10 @@ def _fill_flat(reader, fields, answers, sizes_px, writer=None):
     geometries = {n: _page_geometry(p, sizes_px[n - 1]) for n, p in enumerate(writer.pages, start=1)}
     for field in fields:
         fid = field['id']
+        if field.get('ask_user') is False:  # e.g. for official use, or signed by hand
+            report.append({'id': fid, 'status': 'skipped',
+                           'reason': f"not asked: {field.get('skip_reason') or 'ask_user is false'}"})
+            continue
         if fid not in answers:
             report.append({'id': fid, 'status': 'skipped', 'reason': 'no answer'})
             continue

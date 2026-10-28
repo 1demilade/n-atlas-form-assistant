@@ -781,6 +781,33 @@ class FlatLabelTests(Tmp):
         self.assertIn('Head Office', [f['label'] for f in fields])
 
 
+    def test_official_use_fields_are_not_asked(self):
+        """Fields under a 'FOR OFFICIAL USE ONLY' heading, or labelled 'Endorsed by ...', are kept
+        but not asked (and not filled); the applicant's own fields are asked."""
+        from layout import analyse_form
+        from make_test_pdfs import make_widget_pdf
+        path, out = self.tmp / 'office.pdf', self.tmp / 'office_out.pdf'
+        texts, lines = _underlined([('Full name:', 700), ('Endorsed by village head:', 680),
+                                    ('Received by:', 620), ('Remarks:', 600)])
+        texts += [(56, 760, 'Registration form for the members of our farmers club'),
+                  (56, 730, 'PERSONAL DETAILS'), (56, 650, 'FOR OFFICIAL USE ONLY')]
+        make_widget_pdf(path, texts, [], lines=lines)
+        form = analyse_form(str(path), read_pdf_words(path, ocr_images=False), method='rules')
+        by_label = {f['label']: f for f in form['fields']}
+        self.assertTrue(by_label['Full name']['ask_user'])
+        for label, why in (('Endorsed by village head', 'Endorsed by village head'),
+                           ('Received by', 'FOR OFFICIAL USE ONLY'), ('Remarks', 'FOR OFFICIAL USE ONLY')):
+            field = by_label[label]
+            self.assertFalse(field['ask_user'], label)
+            self.assertIn(why, field['skip_reason'])
+            self.assertTrue(field['needs_review'])
+        report = {r['id']: r for r in fill_form(path, form, {by_label['Full name']['id']: 'Ada Obi',
+                                                             by_label['Remarks']['id']: 'ok'}, out)}
+        self.assertEqual(report[by_label['Full name']['id']]['status'], 'filled')
+        self.assertEqual(report[by_label['Remarks']['id']]['status'], 'skipped')
+        self.assertIn('official use', report[by_label['Remarks']['id']]['reason'])
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""

@@ -27,6 +27,14 @@ SECTION_ROW_SHARE = 0.6
 # A label with only a guessed answer area, printed this much taller than the page's median
 # text, is a heading (headings are usually set larger).
 SECTION_TEXT_SCALE = 1.15
+# Fields for an official, not the person filling in the form (generic wording, in the label or
+# the section heading above it).
+OFFICIAL_USE = re.compile(
+    r'\b(official|office)\s+use\b|\bofficials?\s+only\b|\bfor\s+office\b'
+    r'|\b(approv(al|ed)|recommend(ation|ed)|endorse(ment|d)|verifi(cation|ed)|certifi(cation|ed)'
+    r'|attest(ation|ed)|countersign(ed)?)\s+by\b'
+    r'|\bto\s+be\s+(completed|filled|signed)\s+by\s+(the\s+)?'
+    r'(officer|office|official|bank|staff|secretary|chairman|coordinator|agent)', re.IGNORECASE)
 
 
 def _same_row(a, b, share=0.5):
@@ -447,6 +455,24 @@ def _add_keys(fields):
         field['key'] = key
 
 
+def _not_asked(field, reason):
+    """Keep the field, but do not ask the user for it (fill_form skips it too)."""
+    field['ask_user'] = False
+    field['skip_reason'] = '; '.join(filter(None, [field.get('skip_reason'), reason]))
+
+
+def _mark_official_use(fields, sections):
+    """Fields whose label or section heading says an official fills them ('For official use',
+    'Approval by ...', 'Recommendation by ...') are not asked; flagged, as wording can mislead."""
+    titles = {s['id']: s['title'] for s in sections}
+    for field in fields:
+        for text in (field.get('label'), titles.get(field.get('section'))):
+            if text and OFFICIAL_USE.search(text):
+                _not_asked(field, f'for official use ({text!r})')
+                field['needs_review'] = True
+                break
+
+
 def _flag_shared_labels(fields):
     """Fields with the same label (e.g. several boxes under one printed label) cannot be told
     apart by a user who only hears the label: each one is reviewed."""
@@ -545,6 +571,7 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
     fields.sort(key=_anchor)
     sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))
     _assign_sections(fields, sections)
+    _mark_official_use(fields, sections)
     _add_keys(fields)
     form = {'source_file': info['file'], 'pdf_kind': pdf_kind(info['pages']),
             'pages': info['pages'], 'method': ', '.join(used) or 'none', 'notes': notes}
