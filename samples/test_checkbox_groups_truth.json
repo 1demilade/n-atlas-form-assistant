@@ -1,0 +1,94 @@
+{
+  "page_size_pt": [
+    595.28,
+    841.89
+  ],
+  "groups": [
+    {
+      "label": "Languages spoken",
+      "names": [
+        "Check Box1",
+        "Check Box2",
+        "Check Box3"
+      ],
+      "options": [
+        "English",
+        "Hausa",
+        "Yoruba"
+      ],
+      "rects": [
+        [
+          180,
+          751.89,
+          192.0,
+          763.89
+        ],
+        [
+          263.4,
+          751.89,
+          275.4,
+          763.89
+        ],
+        [
+          336.4,
+          751.89,
+          348.4,
+          763.89
+        ]
+      ]
+    },
+    {
+      "label": "Services needed",
+      "names": [
+        "Check Box4",
+        "Check Box5",
+        "Check Box6"
+      ],
+      "options": [
+        "Vaccination",
+        "Check-up",
+        "Lab test"
+      ],
+      "rects": [
+        [
+          70,
+          689.89,
+          82.0,
+          701.89
+        ],
+        [
+          70,
+          667.89,
+          82.0,
+          679.89
+        ],
+        [
+          70,
+          645.89,
+          82.0,
+          657.89
+        ]
+      ]
+    }
+  ],
+  "lone": {
+    "name": "Check Box99",
+    "label": "I agree to the terms of service",
+    "rect": [
+      56,
+      595.89,
+      68.0,
+      607.89
+    ]
+  },
+  "text": {
+    "name": "Text1",
+    "label": "Full name",
+    "rect": [
+      130,
+      545.89,
+      400,
+      563.89
+    ]
+  }
+}

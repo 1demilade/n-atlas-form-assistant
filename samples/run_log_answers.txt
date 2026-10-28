@@ -1,0 +1,243 @@
+﻿# Runs after your answers of 2026-10-28, 2026-10-28 03:02
+
+> .venv\Scripts\python.exe layout.py samples\test_fillable_with_notes.pdf --ocr-json samples\test_fillable_with_notes_words.json --fields samples\test_fillable_with_notes_fields.json --boxes samples\test_fillable_with_notes_boxes.png
+pdf_kind=fillable method=acroform+layoutlm pages: p1=fillable/pdf_text, p2=instructions/pdf_text
+NOTE: 2 low-confidence field(s) dropped on pages without widgets: p2 'Notes for applicants', p2 'Note'
+p1 SECTION 'CLINIC REGISTRATION' [layoutlm_header]
+p1 SECTION 'Personal details' [layoutlm_header]
+p1 SECTION 'Contact information' [layoutlm_header]
+p1 SECTION 'Other information' [layoutlm_header]
+p1 date_of_visit                'Date of visit'                               date     acroform/layoutlm_left
+p1 number_of_children           'Number of children'                          number   acroform/layoutlm_left
+p1 email_address                'Email address'                               email    acroform/layoutlm_left
+p1 home_address                 'Home address'                                text     acroform/layoutlm_above
+p1 marital_status               'Marital status'                              choice   acroform/layoutlm_left
+p1 age                          'Age'                                         number   acroform/layoutlm_left
+p1 preferred_contact            'Preferred contact'                           choice   acroform/layoutlm_left
+p1 mobile_phone                 'Mobile phone'                                phone    acroform/layoutlm_left
+p1 next_of_kin                  'Next of kin'                                 text     acroform/layoutlm_left
+9 fields, 4 sections. Saved samples\test_fillable_with_notes_fields.json and samples\test_fillable_with_notes_boxes.png (red = label, blue = answer area, green = section).
+
+> .venv\Scripts\python.exe layout.py samples\test_checkbox_groups.pdf --ocr-json samples\test_checkbox_groups_words.json --fields samples\test_checkbox_groups_fields.json --boxes samples\test_checkbox_groups_boxes.png
+pdf_kind=fillable method=acroform+layoutlm pages: p1=fillable/pdf_text
+p1 languages_spoken             'Languages spoken'                            choice   acroform/layoutlm_left (review)
+p1 services_needed              'Services needed'                             choice   acroform/layoutlm_above (review)
+p1 i_agree_to_the_terms_of_service 'I agree to the terms of service'             yes_no   acroform/layoutlm_right
+p1 full_name                    'Full name'                                   text     acroform/layoutlm_left
+4 fields, 0 sections. Saved samples\test_checkbox_groups_fields.json and samples\test_checkbox_groups_boxes.png (red = label, blue = answer area, green = section).
+
+> .venv\Scripts\python.exe fill_form.py samples\test_checkbox_groups.pdf --form samples\test_checkbox_groups_fields.json --answers samples\test_checkbox_groups_answers.json --report samples\test_checkbox_groups_fill_report.json
+filled   'Check Box1+Check Box2+Check Box3'       English, Yoruba
+filled   'Check Box4+Check Box5+Check Box6'       Lab test
+filled   'Check Box99'                            /Yes
+filled   'Text1'                                  Ada Obi
+4 filled, 0 refused, 0 skipped. Saved samples\test_checkbox_groups_filled.pdf
+Filled fields marked needs_review (check these on the PDF): 2
+  'Check Box1+Check Box2+Check Box3' ('Languages spoken'): English, Yoruba
+  'Check Box4+Check Box5+Check Box6' ('Services needed'): Lab test
+Verified on the written file: 4/4 ok
+
+> .venv\Scripts\python.exe fill_form.py samples\test_checkbox_groups.pdf --form samples\test_checkbox_groups_fields.json --answers samples\test_checkbox_groups_answers_invalid.json --out samples\test_checkbox_groups_invalid_filled.pdf
+refused  'Check Box1+Check Box2+Check Box3'       answer(s) ['French'] match no option ['English', 'Hausa', 'Yoruba']
+filled   'Check Box4+Check Box5+Check Box6'       Lab test
+refused  'Check Box99'                            answer 'maybe' is not yes/no for a checkbox
+refused  'Text1'                                  a list of values is only accepted for independent checkboxes
+1 filled, 3 refused, 0 skipped. Saved samples\test_checkbox_groups_invalid_filled.pdf
+Refused (invalid values, nothing written):
+  'Check Box1+Check Box2+Check Box3': answer(s) ['French'] match no option ['English', 'Hausa', 'Yoruba']
+  'Check Box99': answer 'maybe' is not yes/no for a checkbox
+  'Text1': a list of values is only accepted for independent checkboxes
+Filled fields marked needs_review (check these on the PDF): 1
+  'Check Box4+Check Box5+Check Box6' ('Services needed'): Lab test
+Verified on the written file: 1/1 ok
+
+> .venv\Scripts\python.exe layout.py samples\test_fillable.pdf --ocr-json samples\test_fillable_words.json --fields samples\test_fillable_fields.json --boxes samples\test_fillable_boxes.png
+pdf_kind=fillable method=acroform+layoutlm pages: p1=fillable/pdf_text
+p1 SECTION 'CLINIC REGISTRATION' [layoutlm_header]
+p1 SECTION 'Personal details' [layoutlm_header]
+p1 SECTION 'Contact information' [layoutlm_header]
+p1 SECTION 'Other information' [layoutlm_header]
+p1 date_of_visit                'Date of visit'                               date     acroform/layoutlm_left
+p1 number_of_children           'Number of children'                          number   acroform/layoutlm_left
+p1 email_address                'Email address'                               email    acroform/layoutlm_left
+p1 home_address                 'Home address'                                text     acroform/layoutlm_above
+p1 marital_status               'Marital status'                              choice   acroform/layoutlm_left
+p1 age                          'Age'                                         number   acroform/layoutlm_left
+p1 preferred_contact            'Preferred contact'                           choice   acroform/layoutlm_left
+p1 mobile_phone                 'Mobile phone'                                phone    acroform/layoutlm_left
+p1 next_of_kin                  'Next of kin'                                 text     acroform/layoutlm_left
+9 fields, 4 sections. Saved samples\test_fillable_fields.json and samples\test_fillable_boxes.png (red = label, blue = answer area, green = section).
+
+> .venv\Scripts\python.exe fill_form.py samples\test_fillable.pdf --form samples\test_fillable_fields.json --answers samples\test_fillable_answers.json --report samples\test_fillable_fill_report.json
+filled   'f1_fld47'                               14/03/2026
+filled   'f2_q22'                                 3
+filled   'f3_txt52'                               ada.obi@example.com
+filled   'f4_q64'                                 12 Marina Road, Lagos
+filled   'f5_txt48'                               /opt1
+filled   'f6_fld85'                               3
+filled   'f7_fld63'                               /SMS
+filled   'f8_q57'                                 08031234567
+filled   'f9_txt30'                               12 Marina Road, Lagos
+9 filled, 0 refused, 0 skipped. Saved samples\test_fillable_filled.pdf
+Verified on the written file: 9/9 ok
+
+> .venv\Scripts\python.exe fill_form.py samples\test_fillable.pdf --form samples\test_fillable_fields.json --answers samples\test_fillable_answers_by_key.json --out samples\test_fillable_by_key_filled.pdf
+filled   'f1_fld47'                               14/03/2026
+filled   'f2_q22'                                 3
+refused  'f3_txt52'                               'ada.obi at example' is not an email address (email field)
+filled   'f4_q64'                                 12 Marina Road, Lagos
+filled   'f5_txt48'                               /opt1
+filled   'f6_fld85'                               3
+filled   'f7_fld63'                               /SMS
+filled   'f8_q57'                                 08031234567
+filled   'f9_txt30'                               12 Marina Road, Lagos
+8 filled, 1 refused, 0 skipped. Saved samples\test_fillable_by_key_filled.pdf
+Refused (invalid values, nothing written):
+  'f3_txt52': 'ada.obi at example' is not an email address (email field)
+Verified on the written file: 8/8 ok
+
+> .venv\Scripts\python.exe layout.py samples\test_flat.pdf --ocr-json samples\test_flat_words.json --fields samples\test_flat_fields.json --boxes samples\test_flat_boxes.png
+pdf_kind=flat_text method=layoutlm pages: p1=flat_text/pdf_text
+p1 SECTION 'CLINIC REGISTRATION' [layoutlm_header]
+p1 SECTION 'Personal details' [layoutlm_header]
+p1 SECTION 'Contact information' [layoutlm_header]
+p1 SECTION 'Other information' [layoutlm_header]
+p1 date_of_visit                'Date of visit'                               date     layoutlm/box
+p1 number_of_children           'Number of children'                          number   layoutlm/box
+p1 email_address                'Email address'                               email    layoutlm/underline
+p1 home_address                 'Home address'                                text     layoutlm/underline_below
+p1 marital_status               'Marital status'                              choice   layoutlm/checkboxes
+p1 age                          'Age'                                         number   layoutlm/box
+p1 preferred_contact            'Preferred contact'                           choice   layoutlm/checkboxes
+p1 mobile_phone                 'Mobile phone'                                phone    layoutlm/underline
+p1 next_of_kin                  'Next of kin'                                 unknown  layoutlm/underline
+9 fields, 4 sections. Saved samples\test_flat_fields.json and samples\test_flat_boxes.png (red = label, blue = answer area, green = section).
+
+> .venv\Scripts\python.exe fill_form.py samples\test_flat.pdf --form samples\test_flat_fields.json --answers samples\test_flat_answers.json --report samples\test_flat_fill_report.json
+filled   'date_of_visit'                          14/03/2026
+filled   'number_of_children'                     3
+filled   'email_address'                          ada.obi@example.com
+filled   'home_address'                           12 Marina Road, Lagos
+filled   'marital_status'                         X in 'Married'
+filled   'age'                                    3
+filled   'preferred_contact'                      X in 'SMS'
+filled   'mobile_phone'                           08031234567
+filled   'next_of_kin'                            Example answer
+9 filled, 0 refused, 0 skipped. Saved samples\test_flat_filled.pdf
+Verified on the written file: 9/9 ok
+
+> .venv\Scripts\python.exe layout.py samples\test_image.pdf --ocr-json samples\test_image_words.json --fields samples\test_image_fields.json --boxes samples\test_image_boxes.png
+pdf_kind=flat_scanned method=layoutlm pages: p1=flat_scanned/ocr
+p1 SECTION 'CLINIC REGISTRATION' [layoutlm_header]
+p1 SECTION 'Personal details' [layoutlm_header]
+p1 SECTION 'Contact information' [layoutlm_header]
+p1 SECTION 'Other information' [layoutlm_header]
+p1 date_of_visit                'Date of visit'                               date     layoutlm/box
+p1 number_of_children           'Number of children'                          number   layoutlm/box
+p1 email_address                'Email address'                               email    layoutlm/underline
+p1 home_address                 'Home address'                                text     layoutlm/underline_below
+p1 marital_status               'Marital status'                              choice   layoutlm/checkboxes
+p1 age                          'Age'                                         number   layoutlm/box
+p1 preferred_contact            'Preferred contact'                           choice   layoutlm/checkboxes
+p1 mobile_phone                 'Mobile phone'                                phone    layoutlm/underline
+p1 next_of_kin                  'Next of kin'                                 unknown  layoutlm/underline
+9 fields, 4 sections. Saved samples\test_image_fields.json and samples\test_image_boxes.png (red = label, blue = answer area, green = section).
+
+> .venv\Scripts\python.exe fill_form.py samples\test_image.pdf --form samples\test_image_fields.json --answers samples\test_image_answers.json --report samples\test_image_fill_report.json
+filled   'date_of_visit'                          14/03/2026
+filled   'number_of_children'                     3
+filled   'email_address'                          ada.obi@example.com
+filled   'home_address'                           12 Marina Road, Lagos
+filled   'marital_status'                         X in 'Married'
+filled   'age'                                    3
+filled   'preferred_contact'                      X in 'SMS'
+filled   'mobile_phone'                           08031234567
+filled   'next_of_kin'                            Example answer
+9 filled, 0 refused, 0 skipped. Saved samples\test_image_filled.pdf
+Verified on the written file: 9/9 ok
+
+> .venv\Scripts\python.exe layout.py Business-Name-Form.pdf --ocr-json samples\pdf_words.json --fields samples\pdf_fields.json --boxes samples\pdf_boxes.png
+pdf_kind=flat_text method=layoutlm pages: p1=flat_text/pdf_text+ocr_images, p2=flat_text/pdf_text+ocr_images
+p1 SECTION 'APPLICATION TO REGISTER BUSINESS NAME' [layoutlm_header]
+p1 SECTION 'Proposed Business Name' [no_answer_area] (review)
+p1 SECTION 'General Nature of business' [alone_in_full_width_row] (review)
+p1 SECTION 'Address of Principal Place of Business' [alone_in_full_width_row] (review)
+p1 SECTION 'Address of Branch (if any)' [alone_in_full_width_row] (review)
+p1 SECTION "Proprietor's details" [alone_in_full_width_row] (review)
+p2 SECTION "Proprietor's Address" [alone_in_full_width_row] (review)
+p1 option_1                     'Option 1'                                    unknown  layoutlm/table_cell
+p1 option_2                     'Option 2'                                    unknown  layoutlm/table_cell
+p1 option_3                     'Option 3'                                    unknown  layoutlm/table_cell
+p1 date_of_commencement_of_business 'Date of commencement of business'            date     layoutlm/table_cell
+p1 general_nature_of_business_2 'General Nature of Business'                  text     layoutlm/box
+p1 address                      'Address'                                     text     layoutlm/table_cell
+p1 city_town_village            'City/Town/Village'                           text     layoutlm/table_cell
+p1 local_government             'Local Government'                            unknown  layoutlm/table_cell
+p1 state                        'State'                                       text     layoutlm/table_cell
+p1 address_2                    'Address'                                     text     layoutlm/table_cell
+p1 city_town_village_2          'City/Town/Village'                           text     layoutlm/table_cell
+p1 local_government_2           'Local Government'                            unknown  layoutlm/table_cell
+p1 state_2                      'State'                                       text     layoutlm/table_cell
+p2 surname                      'Surname'                                     text     layoutlm/table_cell
+p2 first_name                   'First name'                                  text     layoutlm/table_cell
+p2 other_name_s                 'Other name(s)'                               text     layoutlm/table_cell
+p2 former_name_s                'Former name(s)'                              text     layoutlm/table_cell
+p2 nationality                  'Nationality'                                 text     layoutlm/table_cell
+p2 former_nationality           'Former nationality'                          text     layoutlm/table_cell
+p2 gender                       'Gender'                                      unknown  layoutlm/table_cell
+p2 date_of_birth                'Date of birth'                               date     layoutlm/table_cell
+p2 phone_number                 'Phone number'                                phone    layoutlm/table_cell
+p2 email                        'Email'                                       email    layoutlm/table_cell
+p2 identity_number              'Identity Number'                             number   layoutlm/table_cell
+p2 nin                          'NIN'                                         unknown  layoutlm/table_cell
+p2 identity_type                'Identity Type'                               unknown  layoutlm/table_cell
+p2 occupation                   'Occupation'                                  text     layoutlm/table_cell
+p2 address_3                    'Address'                                     text     layoutlm/table_cell
+p2 city_town_village_3          'City/Town/Village'                           text     layoutlm/table_cell
+p2 local_government_3           'Local Government'                            unknown  layoutlm/table_cell
+p2 state_3                      'State'                                       text     layoutlm/table_cell
+p2 attestation                  'Attestation'                                 unknown  layoutlm/empty_right (review)
+p2 signature                    'Signature'                                   unknown  layoutlm/own_cell (review)
+p2 date                         'Date'                                        date     layoutlm/table_cell
+34 fields, 7 sections. Saved samples\pdf_fields.json and samples\pdf_boxes.png (red = label, blue = answer area, green = section).
+
+> .venv\Scripts\python.exe fill_form.py Business-Name-Form.pdf --form samples\pdf_fields.json --answers samples\pdf_answers.json --out samples\pdf_filled.pdf --report samples\pdf_fill_report.json
+filled   'option_1'                               Example answer
+filled   'option_2'                               Example answer
+filled   'option_3'                               Example answer
+filled   'date_of_commencement_of_business'       14/03/2026
+filled   'general_nature_of_business_2'           12 Marina Road, Lagos
+filled   'address'                                12 Marina Road, Lagos
+filled   'city_town_village'                      12 Marina Road, Lagos
+filled   'local_government'                       Example answer
+filled   'state'                                  12 Marina Road, Lagos
+filled   'address_2'                              12 Marina Road, Lagos
+filled   'city_town_village_2'                    12 Marina Road, Lagos
+filled   'local_government_2'                     Example answer
+filled   'state_2'                                12 Marina Road, Lagos
+filled   'surname'                                12 Marina Road, Lagos
+filled   'first_name'                             12 Marina Road, Lagos
+filled   'other_name_s'                           12 Marina Road, Lagos
+filled   'former_name_s'                          12 Marina Road, Lagos
+filled   'nationality'                            12 Marina Road, Lagos
+filled   'former_nationality'                     12 Marina Road, Lagos
+filled   'gender'                                 Example answer
+filled   'date_of_birth'                          14/03/2026
+filled   'phone_number'                           08031234567
+filled   'email'                                  ada.obi@example.com
+filled   'identity_number'                        3
+filled   'nin'                                    Example answer
+filled   'identity_type'                          Example answer
+filled   'occupation'                             12 Marina Road, Lagos
+filled   'address_3'                              12 Marina Road, Lagos
+filled   'city_town_village_3'                    12 Marina Road, Lagos
+filled   'local_government_3'                     Example answer
+filled   'state_3'                                12 Marina Road, Lagos
+filled   'attestation'                            Example answer  [text may not fit the answer box]
+filled   'signature'                              Example answer
+filled   'date'                                   14/03/2026
+34 filled, 0 refused, 0 skipped. Saved samples\pdf_filled.pdf
+Filled fields marked needs_review (check these on the PDF): 2
+  'attestation' ('Attestation'): Example answer
+  'signature' ('Signature'): Example answer
+Verified on the written file: 34/34 ok

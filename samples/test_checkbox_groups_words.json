@@ -1,0 +1,322 @@
+[
+  {
+    "text": "Languages spoken:",
+    "box": [
+      156,
+      222,
+      398,
+      250
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Languages",
+        "box": [
+          156,
+          222,
+          293,
+          250
+        ]
+      },
+      {
+        "text": "spoken:",
+        "box": [
+          301,
+          222,
+          398,
+          250
+        ]
+      }
+    ]
+  },
+  {
+    "text": "English",
+    "box": [
+      547,
+      222,
+      638,
+      250
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "English",
+        "box": [
+          547,
+          222,
+          638,
+          250
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Hausa",
+    "box": [
+      779,
+      222,
+      859,
+      250
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Hausa",
+        "box": [
+          779,
+          222,
+          859,
+          250
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Yoruba",
+    "box": [
+      982,
+      222,
+      1072,
+      250
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Yoruba",
+        "box": [
+          982,
+          222,
+          1072,
+          250
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Services needed",
+    "box": [
+      156,
+      334,
+      363,
+      361
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Services",
+        "box": [
+          156,
+          334,
+          262,
+          361
+        ]
+      },
+      {
+        "text": "needed",
+        "box": [
+          270,
+          334,
+          363,
+          361
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Vaccination",
+    "box": [
+      242,
+      395,
+      385,
+      422
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Vaccination",
+        "box": [
+          242,
+          395,
+          385,
+          422
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Check-up",
+    "box": [
+      242,
+      456,
+      361,
+      484
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Check-up",
+        "box": [
+          242,
+          456,
+          361,
+          484
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Lab test",
+    "box": [
+      242,
+      517,
+      341,
+      545
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Lab",
+        "box": [
+          242,
+          517,
+          288,
+          545
+        ]
+      },
+      {
+        "text": "test",
+        "box": [
+          296,
+          517,
+          341,
+          545
+        ]
+      }
+    ]
+  },
+  {
+    "text": "I agree to the terms of service",
+    "box": [
+      203,
+      656,
+      570,
+      684
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "I",
+        "box": [
+          203,
+          656,
+          211,
+          684
+        ]
+      },
+      {
+        "text": "agree",
+        "box": [
+          218,
+          656,
+          289,
+          684
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          297,
+          656,
+          320,
+          684
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          328,
+          656,
+          367,
+          684
+        ]
+      },
+      {
+        "text": "terms",
+        "box": [
+          374,
+          656,
+          444,
+          684
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          451,
+          656,
+          475,
+          684
+        ]
+      },
+      {
+        "text": "service",
+        "box": [
+          482,
+          656,
+          570,
+          684
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Full name:",
+    "box": [
+      156,
+      789,
+      285,
+      817
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Full",
+        "box": [
+          156,
+          789,
+          200,
+          817
+        ]
+      },
+      {
+        "text": "name:",
+        "box": [
+          208,
+          789,
+          285,
+          817
+        ]
+      }
+    ]
+  }
+]

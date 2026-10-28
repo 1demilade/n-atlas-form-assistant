@@ -1,0 +1,1419 @@
+[
+  {
+    "text": "CLINIC REGISTRATION",
+    "box": [
+      156,
+      181,
+      663,
+      227
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "CLINIC",
+        "box": [
+          156,
+          181,
+          307,
+          227
+        ]
+      },
+      {
+        "text": "REGISTRATION",
+        "box": [
+          319,
+          181,
+          663,
+          227
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Personal details",
+    "box": [
+      156,
+      284,
+      417,
+      321
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Personal",
+        "box": [
+          156,
+          284,
+          301,
+          321
+        ]
+      },
+      {
+        "text": "details",
+        "box": [
+          311,
+          284,
+          417,
+          321
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Date of visit",
+    "box": [
+      156,
+      385,
+      316,
+      416
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Date",
+        "box": [
+          156,
+          385,
+          221,
+          416
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          230,
+          385,
+          255,
+          416
+        ]
+      },
+      {
+        "text": "visit",
+        "box": [
+          264,
+          385,
+          316,
+          416
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Number of children:",
+    "box": [
+      156,
+      481,
+      423,
+      511
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Number",
+        "box": [
+          156,
+          481,
+          265,
+          511
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          274,
+          481,
+          299,
+          511
+        ]
+      },
+      {
+        "text": "children:",
+        "box": [
+          308,
+          481,
+          423,
+          511
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Email address:",
+    "box": [
+      156,
+      577,
+      359,
+      607
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Email",
+        "box": [
+          156,
+          577,
+          233,
+          607
+        ]
+      },
+      {
+        "text": "address:",
+        "box": [
+          241,
+          577,
+          359,
+          607
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Contact information",
+    "box": [
+      156,
+      668,
+      474,
+      704
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Contact",
+        "box": [
+          156,
+          668,
+          283,
+          704
+        ]
+      },
+      {
+        "text": "information",
+        "box": [
+          293,
+          668,
+          474,
+          704
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Home address",
+    "box": [
+      156,
+      768,
+      355,
+      799
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Home",
+        "box": [
+          156,
+          768,
+          238,
+          799
+        ]
+      },
+      {
+        "text": "address",
+        "box": [
+          246,
+          768,
+          355,
+          799
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Marital status:",
+    "box": [
+      156,
+      941,
+      347,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Marital",
+        "box": [
+          156,
+          941,
+          248,
+          971
+        ]
+      },
+      {
+        "text": "status:",
+        "box": [
+          257,
+          941,
+          347,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Single",
+    "box": [
+      468,
+      941,
+      553,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Single",
+        "box": [
+          468,
+          941,
+          553,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Married",
+    "box": [
+      667,
+      941,
+      771,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Married",
+        "box": [
+          667,
+          941,
+          771,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Other",
+    "box": [
+      882,
+      941,
+      959,
+      971
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Other",
+        "box": [
+          882,
+          941,
+          959,
+          971
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Age",
+    "box": [
+      156,
+      1037,
+      211,
+      1067
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Age",
+        "box": [
+          156,
+          1037,
+          211,
+          1067
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Other information",
+    "box": [
+      156,
+      1128,
+      440,
+      1164
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Other",
+        "box": [
+          156,
+          1128,
+          248,
+          1164
+        ]
+      },
+      {
+        "text": "information",
+        "box": [
+          258,
+          1128,
+          440,
+          1164
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Preferred contact:",
+    "box": [
+      156,
+      1228,
+      399,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Preferred",
+        "box": [
+          156,
+          1228,
+          284,
+          1259
+        ]
+      },
+      {
+        "text": "contact:",
+        "box": [
+          292,
+          1228,
+          399,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Email",
+    "box": [
+      516,
+      1228,
+      592,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Email",
+        "box": [
+          516,
+          1228,
+          592,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "SMS",
+    "box": [
+      699,
+      1228,
+      765,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "SMS",
+        "box": [
+          699,
+          1228,
+          765,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Call",
+    "box": [
+      851,
+      1228,
+      903,
+      1259
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Call",
+        "box": [
+          851,
+          1228,
+          903,
+          1259
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Mobile phone:",
+    "box": [
+      156,
+      1324,
+      348,
+      1355
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Mobile",
+        "box": [
+          156,
+          1324,
+          246,
+          1355
+        ]
+      },
+      {
+        "text": "phone:",
+        "box": [
+          255,
+          1324,
+          348,
+          1355
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Next of kin:",
+    "box": [
+      156,
+      1420,
+      309,
+      1450
+    ],
+    "score": 1.0,
+    "page": 1,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Next",
+        "box": [
+          156,
+          1420,
+          219,
+          1450
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          228,
+          1420,
+          253,
+          1450
+        ]
+      },
+      {
+        "text": "kin:",
+        "box": [
+          262,
+          1420,
+          309,
+          1450
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Notes for applicants",
+    "box": [
+      156,
+      178,
+      401,
+      206
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Notes",
+        "box": [
+          156,
+          178,
+          228,
+          206
+        ]
+      },
+      {
+        "text": "for",
+        "box": [
+          236,
+          178,
+          268,
+          206
+        ]
+      },
+      {
+        "text": "applicants",
+        "box": [
+          276,
+          178,
+          401,
+          206
+        ]
+      }
+    ]
+  },
+  {
+    "text": "1. Read every question carefully before you start writing on this form.",
+    "box": [
+      156,
+      239,
+      1002,
+      267
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "1.",
+        "box": [
+          156,
+          239,
+          179,
+          267
+        ]
+      },
+      {
+        "text": "Read",
+        "box": [
+          186,
+          239,
+          253,
+          267
+        ]
+      },
+      {
+        "text": "every",
+        "box": [
+          261,
+          239,
+          329,
+          267
+        ]
+      },
+      {
+        "text": "question",
+        "box": [
+          336,
+          239,
+          441,
+          267
+        ]
+      },
+      {
+        "text": "carefully",
+        "box": [
+          449,
+          239,
+          552,
+          267
+        ]
+      },
+      {
+        "text": "before",
+        "box": [
+          560,
+          239,
+          639,
+          267
+        ]
+      },
+      {
+        "text": "you",
+        "box": [
+          647,
+          239,
+          691,
+          267
+        ]
+      },
+      {
+        "text": "start",
+        "box": [
+          699,
+          239,
+          753,
+          267
+        ]
+      },
+      {
+        "text": "writing",
+        "box": [
+          761,
+          239,
+          841,
+          267
+        ]
+      },
+      {
+        "text": "on",
+        "box": [
+          849,
+          239,
+          880,
+          267
+        ]
+      },
+      {
+        "text": "this",
+        "box": [
+          888,
+          239,
+          931,
+          267
+        ]
+      },
+      {
+        "text": "form.",
+        "box": [
+          939,
+          239,
+          1002,
+          267
+        ]
+      }
+    ]
+  },
+  {
+    "text": "2. Write clearly in capital letters and use black or blue ink only.",
+    "box": [
+      156,
+      300,
+      922,
+      328
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "2.",
+        "box": [
+          156,
+          300,
+          179,
+          328
+        ]
+      },
+      {
+        "text": "Write",
+        "box": [
+          186,
+          300,
+          251,
+          328
+        ]
+      },
+      {
+        "text": "clearly",
+        "box": [
+          259,
+          300,
+          339,
+          328
+        ]
+      },
+      {
+        "text": "in",
+        "box": [
+          347,
+          300,
+          369,
+          328
+        ]
+      },
+      {
+        "text": "capital",
+        "box": [
+          376,
+          300,
+          457,
+          328
+        ]
+      },
+      {
+        "text": "letters",
+        "box": [
+          464,
+          300,
+          540,
+          328
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          548,
+          300,
+          594,
+          328
+        ]
+      },
+      {
+        "text": "use",
+        "box": [
+          602,
+          300,
+          647,
+          328
+        ]
+      },
+      {
+        "text": "black",
+        "box": [
+          654,
+          300,
+          719,
+          328
+        ]
+      },
+      {
+        "text": "or",
+        "box": [
+          727,
+          300,
+          752,
+          328
+        ]
+      },
+      {
+        "text": "blue",
+        "box": [
+          759,
+          300,
+          812,
+          328
+        ]
+      },
+      {
+        "text": "ink",
+        "box": [
+          820,
+          300,
+          855,
+          328
+        ]
+      },
+      {
+        "text": "only.",
+        "box": [
+          863,
+          300,
+          922,
+          328
+        ]
+      }
+    ]
+  },
+  {
+    "text": "3. Attach a copy of a valid means of identification to the completed form.",
+    "box": [
+      156,
+      361,
+      1042,
+      389
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "3.",
+        "box": [
+          156,
+          361,
+          179,
+          389
+        ]
+      },
+      {
+        "text": "Attach",
+        "box": [
+          186,
+          361,
+          265,
+          389
+        ]
+      },
+      {
+        "text": "a",
+        "box": [
+          273,
+          361,
+          288,
+          389
+        ]
+      },
+      {
+        "text": "copy",
+        "box": [
+          296,
+          361,
+          355,
+          389
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          363,
+          361,
+          386,
+          389
+        ]
+      },
+      {
+        "text": "a",
+        "box": [
+          393,
+          361,
+          409,
+          389
+        ]
+      },
+      {
+        "text": "valid",
+        "box": [
+          417,
+          361,
+          474,
+          389
+        ]
+      },
+      {
+        "text": "means",
+        "box": [
+          481,
+          361,
+          565,
+          389
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          573,
+          361,
+          596,
+          389
+        ]
+      },
+      {
+        "text": "identification",
+        "box": [
+          603,
+          361,
+          758,
+          389
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          766,
+          361,
+          789,
+          389
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          797,
+          361,
+          835,
+          389
+        ]
+      },
+      {
+        "text": "completed",
+        "box": [
+          843,
+          361,
+          971,
+          389
+        ]
+      },
+      {
+        "text": "form.",
+        "box": [
+          979,
+          361,
+          1042,
+          389
+        ]
+      }
+    ]
+  },
+  {
+    "text": "4. Incomplete forms will be returned to the applicant without processing.",
+    "box": [
+      156,
+      422,
+      1037,
+      450
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "4.",
+        "box": [
+          156,
+          422,
+          179,
+          450
+        ]
+      },
+      {
+        "text": "Incomplete",
+        "box": [
+          186,
+          422,
+          322,
+          450
+        ]
+      },
+      {
+        "text": "forms",
+        "box": [
+          330,
+          422,
+          400,
+          450
+        ]
+      },
+      {
+        "text": "will",
+        "box": [
+          407,
+          422,
+          446,
+          450
+        ]
+      },
+      {
+        "text": "be",
+        "box": [
+          454,
+          422,
+          484,
+          450
+        ]
+      },
+      {
+        "text": "returned",
+        "box": [
+          492,
+          422,
+          596,
+          450
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          603,
+          422,
+          627,
+          450
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          634,
+          422,
+          673,
+          450
+        ]
+      },
+      {
+        "text": "applicant",
+        "box": [
+          681,
+          422,
+          792,
+          450
+        ]
+      },
+      {
+        "text": "without",
+        "box": [
+          800,
+          422,
+          888,
+          450
+        ]
+      },
+      {
+        "text": "processing.",
+        "box": [
+          895,
+          422,
+          1037,
+          450
+        ]
+      }
+    ]
+  },
+  {
+    "text": "5. Keep a copy of the completed form and the receipt for your own records.",
+    "box": [
+      156,
+      484,
+      1078,
+      511
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "5.",
+        "box": [
+          156,
+          484,
+          179,
+          511
+        ]
+      },
+      {
+        "text": "Keep",
+        "box": [
+          186,
+          484,
+          251,
+          511
+        ]
+      },
+      {
+        "text": "a",
+        "box": [
+          259,
+          484,
+          275,
+          511
+        ]
+      },
+      {
+        "text": "copy",
+        "box": [
+          282,
+          484,
+          341,
+          511
+        ]
+      },
+      {
+        "text": "of",
+        "box": [
+          349,
+          484,
+          372,
+          511
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          380,
+          484,
+          418,
+          511
+        ]
+      },
+      {
+        "text": "completed",
+        "box": [
+          426,
+          484,
+          554,
+          511
+        ]
+      },
+      {
+        "text": "form",
+        "box": [
+          562,
+          484,
+          617,
+          511
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          625,
+          484,
+          671,
+          511
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          679,
+          484,
+          718,
+          511
+        ]
+      },
+      {
+        "text": "receipt",
+        "box": [
+          726,
+          484,
+          809,
+          511
+        ]
+      },
+      {
+        "text": "for",
+        "box": [
+          817,
+          484,
+          849,
+          511
+        ]
+      },
+      {
+        "text": "your",
+        "box": [
+          857,
+          484,
+          911,
+          511
+        ]
+      },
+      {
+        "text": "own",
+        "box": [
+          919,
+          484,
+          970,
+          511
+        ]
+      },
+      {
+        "text": "records.",
+        "box": [
+          977,
+          484,
+          1078,
+          511
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Note: the office is open from Monday to Friday between 8 am and 4 pm.",
+    "box": [
+      156,
+      545,
+      1039,
+      573
+    ],
+    "score": 1.0,
+    "page": 2,
+    "source": "pdf_text",
+    "words": [
+      {
+        "text": "Note:",
+        "box": [
+          156,
+          545,
+          222,
+          573
+        ]
+      },
+      {
+        "text": "the",
+        "box": [
+          230,
+          545,
+          268,
+          573
+        ]
+      },
+      {
+        "text": "office",
+        "box": [
+          276,
+          545,
+          342,
+          573
+        ]
+      },
+      {
+        "text": "is",
+        "box": [
+          350,
+          545,
+          370,
+          573
+        ]
+      },
+      {
+        "text": "open",
+        "box": [
+          378,
+          545,
+          440,
+          573
+        ]
+      },
+      {
+        "text": "from",
+        "box": [
+          448,
+          545,
+          503,
+          573
+        ]
+      },
+      {
+        "text": "Monday",
+        "box": [
+          511,
+          545,
+          610,
+          573
+        ]
+      },
+      {
+        "text": "to",
+        "box": [
+          617,
+          545,
+          641,
+          573
+        ]
+      },
+      {
+        "text": "Friday",
+        "box": [
+          648,
+          545,
+          725,
+          573
+        ]
+      },
+      {
+        "text": "between",
+        "box": [
+          733,
+          545,
+          838,
+          573
+        ]
+      },
+      {
+        "text": "8",
+        "box": [
+          846,
+          545,
+          861,
+          573
+        ]
+      },
+      {
+        "text": "am",
+        "box": [
+          869,
+          545,
+          908,
+          573
+        ]
+      },
+      {
+        "text": "and",
+        "box": [
+          915,
+          545,
+          962,
+          573
+        ]
+      },
+      {
+        "text": "4",
+        "box": [
+          969,
+          545,
+          985,
+          573
+        ]
+      },
+      {
+        "text": "pm.",
+        "box": [
+          993,
+          545,
+          1039,
+          573
+        ]
+      }
+    ]
+  }
+]

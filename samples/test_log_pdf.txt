@@ -9,20 +9,22 @@ fill_form(pdf_path, fields, ...) takes the bare fields list too (page sizes from
 test_fillable_round_trip (test_pdf.FillTests.test_fillable_round_trip) ... ok
 test_fillable_skips_with_reasons (test_pdf.FillTests.test_fillable_skips_with_reasons) ... ok
 test_filled_flagged_fields_are_listed (test_pdf.FillTests.test_filled_flagged_fields_are_listed) ... ok
+test_flat_invalid_values_are_refused (test_pdf.FillTests.test_flat_invalid_values_are_refused) ... ok
 test_flat_text_and_crosses_land_in_place (test_pdf.FillTests.test_flat_text_and_crosses_land_in_place) ... ok
 test_invalid_values_are_refused (test_pdf.FillTests.test_invalid_values_are_refused) ... ok
 test_never_overwrites_the_original (test_pdf.FillTests.test_never_overwrites_the_original) ... ok
 test_on_states_come_from_the_pdf (test_pdf.FillTests.test_on_states_come_from_the_pdf) ... ok
 test_verification_catches_missing_ink (test_pdf.FillTests.test_verification_catches_missing_ink) ... ok
-test_generated_pdfs (test_pdf.FullPipelineOnPdfs.test_generated_pdfs) ... Loading weights:   0%|          | 0/205 [00:00<?, ?it/s]Loading weights: 100%|██████████| 205/205 [00:00<00:00, 11048.56it/s]
+test_checkbox_groups_with_layoutlm (test_pdf.FullPipelineOnPdfs.test_checkbox_groups_with_layoutlm) ... Loading weights:   0%|          | 0/205 [00:00<?, ?it/s]Loading weights: 100%|██████████| 205/205 [00:00<00:00, 14134.54it/s]
 ok
+test_generated_pdfs (test_pdf.FullPipelineOnPdfs.test_generated_pdfs) ... ok
 test_image_only_pdf (test_pdf.FullPipelineOnPdfs.test_image_only_pdf) ... INFO: Could not find files for the given pattern(s).
 C:\Users\LC\Documents\ncair internship\data_science_advanced\n-atlas-form-assistant\.venv\Lib\site-packages\paddle\utils\cpp_extension\extension_utils.py:718: UserWarning: No ccache found. Please be aware that recompiling all source files may be required. You can download and install ccache from: https://github.com/ccache/ccache/blob/master/doc/INSTALL.md
   warnings.warn(warning_message)
 Creating model: ('PP-OCRv6_medium_det', None, None)
 Model files already exist. Using cached files. To redownload, please delete the directory manually: `C:\Users\LC\.paddlex\official_models\PP-OCRv6_medium_det`.
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1028 02:08:42.303901 25764 onednn_context.cc:81] oneDNN v3.6.2
+I1028 02:57:51.184046 25464 onednn_context.cc:81] oneDNN v3.6.2
 Creating model: ('PP-OCRv6_medium_rec', None, None)
 Model files already exist. Using cached files. To redownload, please delete the directory manually: `C:\Users\LC\.paddlex\official_models\PP-OCRv6_medium_rec`.
 ReduceMeanCheckIfOneDNNSupport
@@ -37,7 +39,13 @@ ReduceMeanCheckIfOneDNNSupport
 ReduceMeanCheckIfOneDNNSupport
 ReduceMeanCheckIfOneDNNSupport
 ok
+test_instructions_page_with_layoutlm (test_pdf.FullPipelineOnPdfs.test_instructions_page_with_layoutlm) ... LayoutLM failed (RuntimeError('LayoutLM found no question/label text.')); using rule-based fallback.
+ok
 test_answers_by_key_or_id (test_pdf.OutputFormatTests.test_answers_by_key_or_id) ... ok
+test_independent_checkbox_groups (test_pdf.OutputFormatTests.test_independent_checkbox_groups)
+Separate checkbox fields side by side or stacked are one 'choice' field (flagged) that ... ok
+test_instructions_page_is_not_mixed (test_pdf.OutputFormatTests.test_instructions_page_is_not_mixed)
+Fillable page + instructions-only page: still 'fillable', no fields on the instructions. ... ok
 test_keys_from_labels (test_pdf.OutputFormatTests.test_keys_from_labels) ... ok
 test_mixed_pdf_uses_both_paths (test_pdf.OutputFormatTests.test_mixed_pdf_uses_both_paths)
 Page 1 has widgets, page 2 is flat: each page goes through its own path and fills. ... No fields to update on this page
@@ -56,6 +64,6 @@ test_words_get_own_boxes_inside_line (test_pipeline.LayoutLMInputTests.test_word
 test_generated_forms (test_pipeline.RulesOnSyntheticForms.test_generated_forms) ... ok
 
 ----------------------------------------------------------------------
-Ran 30 tests in 184.084s
+Ran 35 tests in 205.637s
 
 OK

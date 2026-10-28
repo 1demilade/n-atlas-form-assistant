@@ -1,0 +1,73 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 5 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 595.28 841.89 ]
+/Parent 2 0 R
+/Contents 6 0 R
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+endobj
+6 0 obj
+<<
+/Length 706
+>>
+stream
+BT /F1 10.0 Tf 56 769.89 Td (Notes for applicants) Tj ET
+BT /F1 10.0 Tf 56 747.89 Td (1. Read every question carefully before you start writing on this form.) Tj ET
+BT /F1 10.0 Tf 56 725.89 Td (2. Write clearly in capital letters and use black or blue ink only.) Tj ET
+BT /F1 10.0 Tf 56 703.89 Td (3. Attach a copy of a valid means of identification to the completed form.) Tj ET
+BT /F1 10.0 Tf 56 681.89 Td (4. Incomplete forms will be returned to the applicant without processing.) Tj ET
+BT /F1 10.0 Tf 56 659.89 Td (5. Keep a copy of the completed form and the receipt for your own records.) Tj ET
+BT /F1 10.0 Tf 56 637.89 Td (Note: the office is open from Monday to Friday between 8 am and 4 pm.) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000113 00000 n 
+0000000162 00000 n 
+0000000300 00000 n 
+0000000397 00000 n 
+trailer
+<<
+/Size 7
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1154
+%%EOF
