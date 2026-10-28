@@ -651,6 +651,7 @@ class FlatLabelTests(Tmp):
                 self.assertNotIn('Other (Specify)', fields)
                 field = fields[question]
                 self.assertEqual(field['answer_method'], 'underline')
+                self.assertEqual(field['type'], 'text')  # 'Are you ...' but it asks to specify
                 scale = 200 / 72
                 self.assertAlmostEqual(field['answer_box'][3], (792 - 680) * scale, delta=6)
                 for label in ('Full name', 'Size of farm', 'State'):  # finished lines stay apart

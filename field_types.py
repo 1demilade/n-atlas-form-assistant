@@ -10,6 +10,8 @@ KEYWORD_RULES = [
     ('email', r'\be-?mail\b'),
     ('phone', r'\b(phone|telephone|tel|mobile|gsm|cell(phone)?|whatsapp)\b'),
     ('date', r'\b(date|dob|d\.o\.b|birthday|dd\s*/\s*mm|mm\s*/\s*dd|yyyy)\b'),
+    # 'Are you a ... (..., Other (Specify))', 'If yes, specify': the answer is text, not yes/no.
+    ('text', r'\bspecify\b'),
     ('yes_no', r'^\s*(are|is|do|does|did|have|has|was|were|will|can)\s+(you|the|your|this|there)\b'
                r'|\(?\byes\s*/\s*no\b\)?'),
     ('choice', r'\b(select|choose|tick|check one|circle|which of)\b'),
