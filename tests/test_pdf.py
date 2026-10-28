@@ -17,7 +17,8 @@ sys.path.insert(0, str(ROOT))
 
 from field_types import ALLOWED_TYPES  # noqa: E402
 from fill_form import fill_form  # noqa: E402
-from make_test_pdfs import make_fillable_pdf, make_flat_pdf, make_image_pdf  # noqa: E402
+from make_test_pdfs import (make_checkbox_group_pdf, make_fillable_pdf, make_flat_pdf,  # noqa: E402
+                            make_image_pdf, make_instructions_pdf)
 from ocr import prepare_pages  # noqa: E402
 from pdf_fields import link_fields, read_acroform  # noqa: E402
 from pdf_input import describe_pdf, has_real_text, read_pdf_words  # noqa: E402
@@ -450,6 +451,17 @@ class FillTests(Tmp):
                     self.assertEqual(' '.join(inside), answers[field['id']], field['label'])
 
 
+def _fillable_plus_instructions(tmp):
+    from pypdf import PdfReader, PdfWriter
+    a, b, out = tmp / 'a.pdf', tmp / 'notes.pdf', tmp / 'with_notes.pdf'
+    make_fillable_pdf(a, 1, 9)
+    make_instructions_pdf(b)
+    writer = PdfWriter(clone_from=PdfReader(str(a)))
+    writer.append(str(b))
+    writer.write(str(out))
+    return out
+
+
 class OutputFormatTests(Tmp):
     def test_pdf_kind(self):
         from layout import pdf_kind
@@ -461,6 +473,7 @@ class OutputFormatTests(Tmp):
         self.assertEqual(pdf_kind([scanned, dict(scanned, word_source='none')]), 'flat_scanned')
         self.assertEqual(pdf_kind([fillable, text]), 'mixed')
         self.assertEqual(pdf_kind([text, scanned]), 'mixed')
+        self.assertEqual(pdf_kind([fillable, dict(text, kind='instructions')]), 'fillable')
 
     def test_keys_from_labels(self):
         from layout import _add_keys
@@ -494,6 +507,15 @@ class OutputFormatTests(Tmp):
         values = PdfReader(str(out)).get_fields()
         self.assertEqual(str(values[by_key['pdf_field_name']]['/V']), 'Lagos')
         self.assertEqual(str(values[by_id['pdf_field_name']]['/V']), 'Abuja')
+
+    def test_instructions_page_is_not_mixed(self):
+        """Fillable page + instructions-only page: still 'fillable', no fields on the instructions."""
+        from layout import analyse_form
+        form = analyse_form(str(_fillable_plus_instructions(self.tmp)), method='rules')
+        self.assertEqual(form['form']['pdf_kind'], 'fillable', form['form']['notes'])
+        self.assertEqual([p['kind'] for p in form['form']['pages']], ['fillable', 'instructions'])
+        self.assertEqual([f for f in form['fields'] if f['page'] == 2], [])
+        self.assertEqual([s for s in form['sections'] if s['page'] == 2], [])
 
     def test_mixed_pdf_uses_both_paths(self):
         """Page 1 has widgets, page 2 is flat: each page goes through its own path and fills."""
@@ -568,6 +590,13 @@ class FullPipelineOnPdfs(Tmp):
                     self.assertEqual(form['form']['pdf_kind'], 'fillable' if kind == 'fillable' else 'flat_text')
                     self.assertEqual(form['form']['pages'][0]['word_source'], 'pdf_text')
                     self.check(form, truth, kind == 'fillable')
+
+    def test_instructions_page_with_layoutlm(self):
+        from layout import analyse_form
+        form = analyse_form(str(_fillable_plus_instructions(self.tmp)))
+        self.assertEqual(form['form']['pdf_kind'], 'fillable', form['form']['notes'])
+        self.assertEqual(form['form']['pages'][1]['kind'], 'instructions')
+        self.assertEqual([f['label'] for f in form['fields'] if f['page'] == 2], [])
 
     def test_image_only_pdf(self):
         from layout import analyse_form

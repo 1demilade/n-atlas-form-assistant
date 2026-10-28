@@ -350,8 +350,9 @@ def page_kind(page):
 
 
 def pdf_kind(pages):
-    """The pages' common kind, or 'mixed' when pages differ."""
-    kinds = {page_kind(page) for page in pages}
+    """The pages' common kind, or 'mixed' when pages differ. 'instructions' pages (no widgets and
+    no real fields, in a PDF that has widgets) do not count."""
+    kinds = {page.get('kind') or page_kind(page) for page in pages} - {'instructions'}
     return kinds.pop() if len(kinds) == 1 else 'mixed'
 
 
@@ -383,8 +384,9 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
     """Whole pipeline for one form -> one JSON-ready object:
     {'form': {source_file, pdf_kind, pages: [{page, width_px, height_px, dpi, ...}], method, notes},
      'sections': [...], 'fields': [...]}.
-    Pages with widgets use the AcroForm fields; other pages use the flat path (a 'mixed' PDF uses
-    both). All boxes are pixels of the page images from ocr.prepare_pages (PDFs: the dpi render)."""
+    Pages with widgets use the AcroForm fields; other pages use the flat path. In a PDF with
+    widgets, flagged flat fields are dropped, and a page left with no fields is 'instructions';
+    'mixed' means a page without widgets still holds real fields. All boxes are pixels of the page images from ocr.prepare_pages (PDFs: the dpi render)."""
     from pathlib import Path
 
     from ocr import PDF_SUFFIXES, prepare_pages, read_form
@@ -426,6 +428,16 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
             e for e in entities if e['page'] not in widget_pages]
         flat, flat_sections = find_fields_and_sections(
             flat_items, path, 'rules' if entities is None else method, clean, flat_entities)
+        if widget_pages:
+            # A fillable PDF: pages without widgets are usually instructions. Only confident flat
+            # fields count as real ones there; flagged ones (low confidence, guessed answer area,
+            # heading-like) are dropped.
+            dropped = [f for f in flat if f['needs_review']]
+            if dropped:
+                notes.append(f'{len(dropped)} low-confidence field(s) dropped on pages without widgets: '
+                             + ', '.join(f"p{f['page']} {f['label']!r}" for f in dropped))
+            flat = [f for f in flat if not f['needs_review']]
+            flat_sections = [s for s in flat_sections if s['page'] in {f['page'] for f in flat}]
         taken = {f['id'] for f in fields}
         for field in flat:
             if field['id'] in taken:  # mixed PDF: a flat id equal to an AcroForm name
@@ -438,6 +450,11 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
         sections += flat_sections
         fields += flat
         used.append('+'.join(sorted({f['source'] for f in flat})) or 'none')
+    if widget_pages:
+        field_pages = {f['page'] for f in fields}
+        for page in info['pages']:
+            if page['kind'] != 'fillable' and page['page'] not in field_pages:
+                page['kind'] = 'instructions'
     fields.sort(key=_anchor)
     sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))
     _assign_sections(fields, sections)

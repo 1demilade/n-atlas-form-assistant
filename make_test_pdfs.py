@@ -190,6 +190,138 @@ def make_flat_pdf(out_path, seed=1, count=8):
     return _build(out_path, seed, count, fillable=False)
 
 
+INSTRUCTION_LINES = [
+    'Notes for applicants',
+    '1. Read every question carefully before you start writing on this form.',
+    '2. Write clearly in capital letters and use black or blue ink only.',
+    '3. Attach a copy of a valid means of identification to the completed form.',
+    '4. Incomplete forms will be returned to the applicant without processing.',
+    '5. Keep a copy of the completed form and the receipt for your own records.',
+    'Note: the office is open from Monday to Friday between 8 am and 4 pm.',
+]
+
+
+def _text_page(writer, width, height, ops):
+    """A blank page with Helvetica as /F1 and the given content operators."""
+    from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
+    page = writer.add_blank_page(width=width, height=height)
+    helv = writer._add_object(DictionaryObject({
+        NameObject('/Type'): NameObject('/Font'), NameObject('/Subtype'): NameObject('/Type1'),
+        NameObject('/BaseFont'): NameObject('/Helvetica'), NameObject('/Encoding'): NameObject('/WinAnsiEncoding')}))
+    page[NameObject('/Resources')] = DictionaryObject({NameObject('/Font'): DictionaryObject({NameObject('/F1'): helv})})
+    content = DecodedStreamObject()
+    content.set_data('\n'.join(ops).encode('latin-1'))
+    page[NameObject('/Contents')] = writer._add_object(content)
+    return page, helv
+
+
+def make_instructions_pdf(out_path, page_size=(595.28, 841.89), size=10):
+    """One page of printed instructions only: no fields, no blanks, no boxes."""
+    from pypdf import PdfWriter
+    width, height = page_size
+    ops, y = [], height - 72
+    for line in INSTRUCTION_LINES:
+        ops.append(f'BT /F1 {size:.1f} Tf 56 {y:.2f} Td ({_escape(line)}) Tj ET')
+        y -= size * 2.2
+    writer = PdfWriter()
+    _text_page(writer, width, height, ops)
+    with open(out_path, 'wb') as file:
+        writer.write(file)
+    return {'page_size_pt': [width, height], 'lines': INSTRUCTION_LINES}
+
+
+def make_checkbox_group_pdf(out_path, size=10):
+    """Fillable page with independent checkboxes (one field each) in groups under a question,
+    a lone checkbox, and a text field. Returns the ground truth."""
+    from pypdf import PdfWriter
+    from pypdf.generic import (ArrayObject, BooleanObject, DecodedStreamObject, DictionaryObject,
+                               FloatObject, NameObject, NumberObject, TextStringObject)
+    width, height, box = 595.28, 841.89, size * 1.2
+    ops, layout = [], []
+    y = height - 90
+    # Group in one row: question on the left, options to the right.
+    ops.append(f'BT /F1 {size} Tf 56 {y + 2:.2f} Td (Languages spoken:) Tj ET')
+    x, row = 180, []
+    for option in ('English', 'Hausa', 'Yoruba'):
+        row.append((option, [x, y, x + box, y + box]))
+        ops.append(f'BT /F1 {size} Tf {x + box + 5:.2f} {y + 2:.2f} Td ({option}) Tj ET')
+        x += box + 5 + _text_width(option, size) + 30
+    layout.append(('Languages spoken', row))
+    # Group stacked under its question.
+    y -= size * 4
+    ops.append(f'BT /F1 {size} Tf 56 {y + 2:.2f} Td (Services needed) Tj ET')
+    column = []
+    for option in ('Vaccination', 'Check-up', 'Lab test'):
+        y -= size * 2.2
+        column.append((option, [70, y, 70 + box, y + box]))
+        ops.append(f'BT /F1 {size} Tf {70 + box + 5:.2f} {y + 2:.2f} Td ({option}) Tj ET')
+    layout.append(('Services needed', column))
+    # Lone checkbox with its label on the right, far from the groups.
+    y -= size * 5
+    ops.append(f'BT /F1 {size} Tf {56 + box + 5:.2f} {y + 2:.2f} Td (I agree to the terms of service) Tj ET')
+    lone = [56, y, 56 + box, y + box]
+    y -= size * 5
+    ops.append(f'BT /F1 {size} Tf 56 {y + 4:.2f} Td (Full name:) Tj ET')
+    text_rect = [130, y, 400, y + size * 1.8]
+    ops.append(f'q 0.5 w {text_rect[0]} {text_rect[1]} {text_rect[2] - text_rect[0]} '
+               f'{text_rect[3] - text_rect[1]:.2f} re S Q')
+    for _, items in layout:
+        for _, r in items:
+            ops.append(f'q 0.8 w {r[0]:.2f} {r[1]:.2f} {box:.2f} {box:.2f} re S Q')
+    ops.append(f'q 0.8 w {lone[0]:.2f} {lone[1]:.2f} {box:.2f} {box:.2f} re S Q')
+
+    writer = PdfWriter()
+    page, helv = _text_page(writer, width, height, ops)
+
+    def appearance(mark):
+        stream = DecodedStreamObject()
+        stream.set_data((f'q 1.2 w 2 2 m {box - 2:.2f} {box - 2:.2f} l S 2 {box - 2:.2f} m '
+                         f'{box - 2:.2f} 2 l S Q' if mark else '').encode('latin-1'))
+        stream.update({NameObject('/Type'): NameObject('/XObject'), NameObject('/Subtype'): NameObject('/Form'),
+                       NameObject('/BBox'): ArrayObject([FloatObject(v) for v in (0, 0, box, box)])})
+        return writer._add_object(stream)
+
+    def checkbox(field_name, rect, on_state):
+        ap = DictionaryObject({NameObject('/N'): DictionaryObject({
+            NameObject('/' + on_state): appearance(True), NameObject('/Off'): appearance(False)})})
+        return writer._add_object(DictionaryObject({
+            NameObject('/Type'): NameObject('/Annot'), NameObject('/Subtype'): NameObject('/Widget'),
+            NameObject('/FT'): NameObject('/Btn'), NameObject('/T'): TextStringObject(field_name),
+            NameObject('/Rect'): ArrayObject([FloatObject(v) for v in rect]), NameObject('/F'): NumberObject(4),
+            NameObject('/AS'): NameObject('/Off'), NameObject('/V'): NameObject('/Off'),
+            NameObject('/AP'): ap, NameObject('/P'): page.indirect_reference}))
+
+    annots, truth = ArrayObject(), {'page_size_pt': [width, height], 'groups': [], 'lone': None, 'text': None}
+    number = 0
+    for question, items in layout:
+        group = {'label': question, 'names': [], 'options': [], 'rects': []}
+        for option, rect in items:
+            number += 1
+            field_name = f'Check Box{number}'  # names like Acrobat's defaults: not labels
+            annots.append(checkbox(field_name, rect, 'Yes' if number % 2 else 'On'))
+            group['names'].append(field_name)
+            group['options'].append(option)
+            group['rects'].append(rect)
+        truth['groups'].append(group)
+    annots.append(checkbox('Check Box99', lone, 'Yes'))
+    truth['lone'] = {'name': 'Check Box99', 'label': 'I agree to the terms of service', 'rect': lone}
+    text = writer._add_object(DictionaryObject({
+        NameObject('/Type'): NameObject('/Annot'), NameObject('/Subtype'): NameObject('/Widget'),
+        NameObject('/FT'): NameObject('/Tx'), NameObject('/T'): TextStringObject('Text1'),
+        NameObject('/DA'): TextStringObject('/Helv 0 Tf 0 g'), NameObject('/F'): NumberObject(4),
+        NameObject('/Rect'): ArrayObject([FloatObject(v) for v in text_rect]), NameObject('/P'): page.indirect_reference}))
+    annots.append(text)
+    truth['text'] = {'name': 'Text1', 'label': 'Full name', 'rect': text_rect}
+    page[NameObject('/Annots')] = annots
+    writer._root_object[NameObject('/AcroForm')] = DictionaryObject({
+        NameObject('/Fields'): ArrayObject(list(annots)), NameObject('/NeedAppearances'): BooleanObject(True),
+        NameObject('/DA'): TextStringObject('/Helv 0 Tf 0 g'),
+        NameObject('/DR'): DictionaryObject({NameObject('/Font'): DictionaryObject({NameObject('/Helv'): helv})})})
+    with open(out_path, 'wb') as file:
+        writer.write(file)
+    return truth
+
+
 def make_image_pdf(src_path, out_path, dpi=200):
     """Image-only copy of a PDF: every page rendered and saved as a picture (no text layer)."""
     import cv2
