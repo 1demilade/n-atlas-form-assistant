@@ -39,8 +39,13 @@
   "fields": [
     {
       "id": "Name",
-      "label": null,
-      "label_box": null,
+      "label": "Please enter your name",
+      "label_box": [
+        201,
+        462,
+        554,
+        498
+      ],
       "answer_box": [
         562,
         506,
@@ -49,14 +54,19 @@
       ],
       "type": "text",
       "source": "acroform",
-      "confidence": 0.0,
+      "confidence": 0.4,
       "needs_review": true,
+      "editable": false,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
       "page": 1,
       "pdf_field_name": "Name",
       "required": false,
       "answer_method": "acroform_widget",
       "options": [],
-      "label_source": "none",
+      "label_source": "nearby_text_above_left",
+      "label_alternatives": [],
       "type_source": "pdf_field",
       "pdf": {
         "name": "Name",
@@ -64,6 +74,7 @@
         "flags": {},
         "required": false,
         "read_only": false,
+        "calculated": false,
         "tooltip": null,
         "max_length": null,
         "default_value": null,
@@ -91,16 +102,16 @@
         ]
       },
       "section": "section_sample_fillable_pdf",
-      "key": "field"
+      "key": "please_enter_your_name"
     },
     {
       "id": "Dropdown2",
-      "label": "First Choice",
+      "label": "Please select an item from the combo/dropdown list",
       "label_box": [
         201,
-        652,
-        359,
-        686
+        602,
+        972,
+        638
       ],
       "answer_box": [
         199,
@@ -110,8 +121,12 @@
       ],
       "type": "choice",
       "source": "acroform",
-      "confidence": 0.998,
-      "needs_review": false,
+      "confidence": 0.4,
+      "needs_review": true,
+      "editable": true,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
       "page": 1,
       "pdf_field_name": "Dropdown2",
       "required": false,
@@ -122,7 +137,10 @@
         "Choice 3",
         "Choice 4"
       ],
-      "label_source": "layoutlm_above",
+      "label_source": "nearby_text_above",
+      "label_alternatives": [
+        "First Choice"
+      ],
       "type_source": "pdf_field",
       "pdf": {
         "name": "Dropdown2",
@@ -133,6 +151,7 @@
         },
         "required": false,
         "read_only": false,
+        "calculated": false,
         "tooltip": null,
         "max_length": null,
         "default_value": "Choice 1",
@@ -165,7 +184,7 @@
         ]
       },
       "section": "section_sample_fillable_pdf",
-      "key": "first_choice"
+      "key": "please_select_an_item_from_the_combo_dro"
     },
     {
       "id": "Option 1+Option 2+Option 3",
@@ -186,6 +205,10 @@
       "source": "acroform",
       "confidence": 0.995,
       "needs_review": true,
+      "editable": false,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
       "page": 1,
       "pdf_field_name": [
         "Option 1",
@@ -201,6 +224,7 @@
       ],
       "multiple": true,
       "label_source": "layoutlm_above",
+      "label_alternatives": [],
       "type_source": "independent_checkboxes",
       "pdf": {
         "name": null,
@@ -335,12 +359,17 @@
       "source": "acroform",
       "confidence": 0.997,
       "needs_review": false,
+      "editable": false,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
       "page": 1,
       "pdf_field_name": "Name of Dependent",
       "required": false,
       "answer_method": "acroform_widget",
       "options": [],
       "label_source": "layoutlm_left",
+      "label_alternatives": [],
       "type_source": "pdf_field",
       "pdf": {
         "name": "Name of Dependent",
@@ -348,6 +377,7 @@
         "flags": {},
         "required": false,
         "read_only": false,
+        "calculated": false,
         "tooltip": "Name of Dependent",
         "max_length": null,
         "default_value": null,
@@ -396,12 +426,17 @@
       "source": "acroform",
       "confidence": 0.998,
       "needs_review": false,
+      "editable": false,
+      "ask_user": true,
+      "skip_reason": null,
+      "hidden": false,
       "page": 1,
       "pdf_field_name": "Age\t of Dependent",
       "required": false,
       "answer_method": "acroform_widget",
       "options": [],
       "label_source": "layoutlm_left",
+      "label_alternatives": [],
       "type_source": "label_words",
       "pdf": {
         "name": "Age\t of Dependent",
@@ -409,6 +444,7 @@
         "flags": {},
         "required": false,
         "read_only": false,
+        "calculated": false,
         "tooltip": "Age\t of Dependent",
         "max_length": null,
         "default_value": null,

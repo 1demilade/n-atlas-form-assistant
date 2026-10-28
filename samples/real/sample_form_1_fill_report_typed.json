@@ -1,0 +1,38 @@
+[
+  {
+    "id": "Name",
+    "status": "skipped",
+    "reason": "no answer",
+    "key": "please_enter_your_name"
+  },
+  {
+    "id": "Dropdown2",
+    "status": "filled",
+    "value": "My own choice",
+    "key": "please_select_an_item_from_the_combo_dro",
+    "needs_review": true,
+    "label": "Please select an item from the combo/dropdown list",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "Option 1+Option 2+Option 3",
+    "status": "skipped",
+    "reason": "no answer",
+    "key": "check_all_that_apply"
+  },
+  {
+    "id": "Name of Dependent",
+    "status": "skipped",
+    "reason": "no answer",
+    "key": "name_of_dependent"
+  },
+  {
+    "id": "Age\t of Dependent",
+    "status": "skipped",
+    "reason": "no answer",
+    "key": "age_of_dependent"
+  }
+]

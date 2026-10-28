@@ -1,0 +1,58 @@
+[
+  {
+    "id": "Name",
+    "status": "filled",
+    "value": "Chiamaka Okafor",
+    "key": "please_enter_your_name",
+    "needs_review": true,
+    "label": "Please enter your name",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "Dropdown2",
+    "status": "filled",
+    "value": "Choice 3",
+    "key": "please_select_an_item_from_the_combo_dro",
+    "needs_review": true,
+    "label": "Please select an item from the combo/dropdown list",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "Option 1+Option 2+Option 3",
+    "status": "filled",
+    "value": "Option 1, Option 3",
+    "key": "check_all_that_apply",
+    "needs_review": true,
+    "label": "Check all that apply",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "Name of Dependent",
+    "status": "filled",
+    "value": "Emeka Okafor",
+    "key": "name_of_dependent",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "Age\t of Dependent",
+    "status": "filled",
+    "value": "7",
+    "key": "age_of_dependent",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  }
+]

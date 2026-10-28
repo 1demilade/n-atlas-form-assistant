@@ -1,0 +1,120 @@
+[
+  {
+    "id": "required",
+    "status": "filled",
+    "value": "Tunde Bakare",
+    "key": "text_field_required",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "email",
+    "status": "filled",
+    "value": "tunde.bakare@example.com",
+    "key": "email_format_validation",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "radio",
+    "status": "filled",
+    "value": "/Maybe",
+    "key": "radio_buttons",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "checkbox1+checkbox2+checkbox3",
+    "status": "filled",
+    "value": "Red, Blue",
+    "key": "checkboxes",
+    "needs_review": true,
+    "label": "Checkboxes",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "calc1",
+    "status": "filled",
+    "value": "12.50",
+    "key": "auto_calculation",
+    "needs_review": true,
+    "label": "Auto-calculation",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "calc2",
+    "status": "filled",
+    "value": "7.25",
+    "key": "auto_calculation_2",
+    "needs_review": true,
+    "label": "Auto-calculation",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "hidden",
+    "status": "skipped",
+    "reason": "not asked: hidden in the PDF",
+    "key": "hidden_field"
+  },
+  {
+    "id": "calcsum",
+    "status": "skipped",
+    "reason": "not asked: read-only in the PDF; calculated by the PDF from other fields",
+    "key": "field"
+  },
+  {
+    "id": "listbox",
+    "status": "filled",
+    "value": "March",
+    "key": "list_box",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "field-specific",
+    "status": "filled",
+    "value": "Changed by the fill test",
+    "key": "field_specific_buttons",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "dropdown",
+    "status": "filled",
+    "value": "Bus",
+    "key": "dropdown",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  },
+  {
+    "id": "multiline",
+    "status": "filled",
+    "value": "This is a longer fictional answer written by the fill test. It should wrap over several lines inside the multiline box.",
+    "key": "multiline_text_field",
+    "verified": {
+      "value_read_back": true,
+      "ink_in_box": true
+    }
+  }
+]

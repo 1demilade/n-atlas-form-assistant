@@ -3,6 +3,49 @@
 Date: 2026-10-27, updated 2026-10-28 with the missing part of the brief (section 0) and your answers to my questions (section 00). Python 3.11.9 in `.venv`, CPU only.
 Scope (supervisor, 27 Oct 2026): input is a **digital PDF**, either (A) fillable (AcroForm fields) or (B) flat, with a text layer or image-only (scanned). Voice and N-ATLaS are later stages. Photos are no longer a main input; the photo path (OpenCV cleaning, perspective, deskew) is kept as a working fallback and its tests still pass. Answers come from `answers.json` (field id **or key** → English text).
 
+## 000. Update 2026-10-28 (third round): two real fillable PDFs, and the fixes they led to
+
+Full details, per field: `docs/real_form_test.md`. The real PDFs are in `samples/real/` but not in git (`.gitignore`; `samples/real/README.md` says what they are).
+
+**First test (read-only):**
+- All 17 fields were found, all answer boxes are right, and `pdf_kind` and sections are right.
+- 3 labels were wrong or missing; one of them was wrong with confidence 0.998 and not flagged.
+- A hidden field and a read-only calculated field were listed as normal fields.
+
+**Fixes** (generic only; one commit each, each with a test on a generated PDF that reproduces the problem):
+
+| | Commit | Change |
+|---|---|---|
+| a | `7537677` | Fillable labels: other lines above the input about as close as the chosen label are rivals. A line ending with `:`/`?` beats one that doesn't. Rivals → `needs_review`, listed in `label_alternatives`. |
+| b | `9aede38` | A prompt above-left of the input (it ends before the input starts) is the label when nothing is on the left or above. Flagged. |
+| c | `28590ee` | `ask_user`, `skip_reason`, `hidden` on every field. Read-only, calculated (`/AA /C`, `/CO`) and hidden fields are kept with `ask_user: false` (hidden: also `needs_review`). `fill_form` skips every `ask_user: false` field. |
+| d | `ae3e24f` | Fields that share a label are all flagged (any path, including flat). |
+| e | `258ac60` | Editable combo boxes: `editable: true`; `fill_form` writes a typed value that is not in the list. |
+| — | `0c67462` | `scripts/list_widgets.py` (pypdf-only widget list, usage in its docstring); `samples/real/*.pdf` ignored. |
+
+**Tests:** 41 (35 old + 6 new), all OK with `RUN_SLOW=1`; photo-path tests unchanged and passing.
+
+**After the fixes, on the two real forms:**
+- **Form 1:** 5/5 labels right (was 3/5); no null labels.
+- **Form 2:** unchanged labels. The shared "Auto-calculation" pair and the hidden field are now flagged; the hidden field and the sum have `ask_user: false`.
+- **Both forms:** no wrong label left unflagged, except form 2's "Field-specific buttons", which is the only text printed near that box.
+- **Fill by key:** 5/5 and 10/10 filled and verified (values read back, ink in box), plus a typed value in the editable dropdown. Both not-asked fields were skipped, and the originals are unchanged (sha256).
+
+**Smaller items, noted and not fixed** (you asked me to skip them):
+- A read-only calculated field is typed `text` (its calculate script is not used as a type hint).
+- The PDF's email validation script (`/AA /V`) is not read; the type comes from the label.
+- Pages whose only widgets are buttons are still `kind: 'fillable'`.
+- The "Field-specific buttons" label (specific to that form).
+- `calcsum`'s label is still "=" (the field is no longer asked).
+
+**Found during the fill test, not fixed:**
+- the calculated sum stays "0", because no PDF JavaScript runs;
+- the list box keeps its old scroll position, so the chosen "March" is out of view;
+- a long typed value is cut off on screen in a narrow combo box (the value in the file is complete);
+- `fill_form` crashes on an `answers.json` with a UTF-8 BOM.
+
+**Not re-run:** `Business-Name-Form.pdf` (rule d may flag more of its fields).
+
 ## 00. Update 2026-10-28 (second round): your answers to my questions
 
 | # | Your answer | What I changed | Commit |
@@ -255,7 +298,7 @@ Nothing crashes. These are wrong results:
 - **Type validation on fillable and flat PDFs** (your answer 2). Flat types are guesses from label words, so a wrongly typed flat field (e.g. a "Number" label that takes letters) will refuse a correct answer; the reason says which type was assumed. Date validation accepts both day-first and month-first, plus ISO and written months; it does not check against the field's own AFDate format string.
 - **`pdf_kind` of a photo** (fallback path): `flat_scanned`, since a photo is a scanned flat page.
 - **"Real text" rule** (your "my call"): a page uses its text layer if it has at least 3 real words and at most 20% garbage (`(cid:NN)`, U+FFFD). On those pages, embedded images are OCR'd too and their text is added with `source: 'ocr'`. This goes against my own plan ("no mixing within a page"), because on your real form 4 labels exist only as images. The page records `word_source: 'pdf_text+ocr_images'`.
-- **No real fillable PDF was tested.** All fillable results come from PDFs I generated, which you agreed to. Real forms made in Acrobat, Word or LibreOffice use features my generator doesn't (calculated fields, hierarchical names, XFA, appearance streams without `/NeedAppearances`).
+- **Only two real fillable PDFs tested** (third round, section 000): two small demo forms from Word. Real forms made in Acrobat, Word or LibreOffice use features my generator doesn't (calculated fields, hierarchical names, XFA, appearance streams without `/NeedAppearances`).
 
 ## 6. Information I need from you
 
@@ -389,7 +432,7 @@ Observed limits:
 
 ## 13. Remaining risks
 
-1. **No real fillable PDF tested — the main untested risk.** `samples/real/` does not exist (checked 2026-10-28), and the only real PDF in the project (`Business-Name-Form.pdf`) is flat. Every fillable and mixed result comes from PDFs I generated. Real forms from Acrobat, Word or LibreOffice use features my generator doesn't: calculated fields, hierarchical names, XFA, kids with their own appearance states, `/D`-only states. Please put some real fillable PDFs in `samples/real/`.
+1. **Few real fillable PDFs tested — still the main risk.** Two real demo forms (Word-made, section 000 and `docs/real_form_test.md`) now pass after the third-round fixes; they include a calculated field, a hidden field, an editable combo and push buttons. They do not include hierarchical names, XFA, `/D`-only states or long multi-page government forms. More real forms in `samples/real/` would help.
 2. **Still my own rules** (section 6): the geometry that decides which independent checkboxes form a group; `mixed` for flat PDFs with text and scanned pages; a list as `pdf_field_name` for groups.
 3. **Scanned PDFs** inherit OCR mistakes (missed options, headings tagged as questions). These are flagged, not fixed. New consequence: a missed option can stop a checkbox group from being seen as a group, so it is typed from its label words instead of `choice` (seen on the generated scanned page; section 00).
 4. **Dropping flagged fields on pages without widgets** could also drop a real but uncertain field there (e.g. a blank whose answer area had to be guessed). Each dropped field is listed in `form.notes`.

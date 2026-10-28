@@ -1,0 +1,52 @@
+﻿====================================================================================================
+samples\real\sample_form_1.pdf
+encrypted: False | pages: 1
+  page 1: mediabox [0.0, 0.0, 612.0, 792.0] cropbox [0.0, 0.0, 612.0, 792.0] rotate 0
+AcroForm: True
+  XFA: False | NeedAppearances: None | top-level /Fields: 7 | calculation order: []
+Producer: Acrobat PDFMaker 15 for Word | Creator: Word
+total widgets: 7 | distinct field names: 7 | hierarchical names: [] | names with >1 widget: {}
+  1 p1 'Name'                           text       Ff=0       F=4   rect=[202.5, 587.9, 412.3, 609.9] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V=None
+  2 p1 'Dropdown2'                      combo      Ff=393216  F=4   rect=[71.7, 524.8, 143.7, 544.8] TU=None flags=['Edit'] maxlen=None opts=['Choice 1', 'Choice 2', 'Choice 3', 'Choice 4'] on=None fmt=None calc=False V='Choice 1'
+  3 p1 'Option 1'                       checkbox   Ff=0       F=4   rect=[73.2, 479.3, 86.2, 492.2] TU='Option 1' flags=[] maxlen=None opts=None on=['/On'] fmt=None calc=False V=None
+  4 p1 'Option 2'                       checkbox   Ff=0       F=4   rect=[73.2, 464.6, 86.2, 477.6] TU='Option 2' flags=[] maxlen=None opts=None on=['/On'] fmt=None calc=False V=None
+  5 p1 'Option 3'                       checkbox   Ff=0       F=4   rect=[73.2, 450.0, 86.2, 463.0] TU='Option 3' flags=[] maxlen=None opts=None on=['/On'] fmt=None calc=False V=None
+  6 p1 'Name of Dependent'              text       Ff=0       F=4   rect=[183.6, 401.3, 416.0, 415.3] TU='Name of Dependent' flags=[] maxlen=None opts=None on=None fmt=None calc=False V=None
+  7 p1 'Age\t of Dependent'             text       Ff=0       F=4   rect=[183.6, 386.2, 416.0, 400.2] TU='Age\t of Dependent' flags=[] maxlen=None opts=None on=None fmt=None calc=False V=None
+read-only: 0 | hidden widgets (annotation flag Hidden/NoView): 0 | push-button widgets: 0
+====================================================================================================
+samples\real\sample_form_2.pdf
+encrypted: False | pages: 3
+  page 1: mediabox [0.0, 0.0, 612.0, 792.0] cropbox [0.0, 0.0, 612.0, 792.0] rotate 0
+  page 2: mediabox [0.0, 0.0, 612.0, 792.0] cropbox [0.0, 0.0, 612.0, 792.0] rotate 0
+  page 3: mediabox [0.0, 0.0, 612.0, 792.0] cropbox [0.0, 0.0, 612.0, 792.0] rotate 0
+AcroForm: True
+  XFA: False | NeedAppearances: None | top-level /Fields: 22 | calculation order: ['calcsum']
+Producer: Microsoft® Word 2013 | Creator: Microsoft® Word 2013
+total widgets: 25 | distinct field names: 22 | hierarchical names: [] | names with >1 widget: {'radio': 3, 'reset': 2}
+  1 p1 'required'                       text       Ff=2       F=4   rect=[89.5, 634.8, 292.6, 656.8] TU=None flags=['Req'] maxlen=None opts=None on=None fmt=None calc=False V=None
+  2 p1 'email'                          text       Ff=0       F=4   rect=[318.3, 634.8, 521.3, 656.8] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V=None
+  3 p1 'radio'                          radio      Ff=49152   F=4   rect=[90.7, 568.7, 108.7, 586.7] TU=None flags=[] maxlen=None opts=None on=['/Yes'] fmt=None calc=False V='/Off'
+  3 p1 'radio'                          radio      Ff=49152   F=4   rect=[90.7, 548.1, 108.7, 566.1] TU=None flags=[] maxlen=None opts=None on=['/No'] fmt=None calc=False V='/Off'
+  3 p1 'radio'                          radio      Ff=49152   F=4   rect=[90.7, 527.6, 108.7, 545.6] TU=None flags=[] maxlen=None opts=None on=['/Maybe'] fmt=None calc=False V='/Off'
+  4 p1 'checkbox1'                      checkbox   Ff=0       F=4   rect=[318.3, 568.1, 336.3, 586.1] TU=None flags=[] maxlen=None opts=None on=['/Red'] fmt=None calc=False V='/Off'
+  5 p1 'checkbox2'                      checkbox   Ff=0       F=4   rect=[318.3, 547.6, 336.3, 565.6] TU=None flags=[] maxlen=None opts=None on=['/Yellow'] fmt=None calc=False V='/Off'
+  6 p1 'checkbox3'                      checkbox   Ff=0       F=4   rect=[318.3, 527.0, 336.3, 545.0] TU=None flags=[] maxlen=None opts=None on=['/Blue'] fmt=None calc=False V='/Off'
+  7 p1 'calc1'                          text       Ff=0       F=4   rect=[89.5, 456.9, 137.5, 478.9] TU=None flags=[] maxlen=None opts=None on=None fmt='AFNumber_Format(2, 0, 0, 0, "", true);' calc=False V=None
+  8 p1 'calc2'                          text       Ff=0       F=4   rect=[153.4, 456.9, 207.0, 478.9] TU=None flags=[] maxlen=None opts=None on=None fmt='AFNumber_Format(2, 0, 0, 0, "", true);' calc=False V=None
+  9 p1 'calcsum'                        text       Ff=1       F=4   rect=[224.2, 456.9, 289.7, 478.9] TU=None flags=['RO'] maxlen=None opts=None on=None fmt=None calc=True V='0'
+ 10 p1 'hidden'                         text       Ff=0       F=6   rect=[318.8, 457.4, 468.8, 479.4] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='This is the hidden field'
+ 11 p1 'listbox'                        list       Ff=0       F=4   rect=[91.3, 340.1, 292.2, 407.0] TU=None flags=[] maxlen=None opts=['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] on=None fmt=None calc=False V='December'
+ 12 p1 'field-specific'                 text       Ff=0       F=4   rect=[318.8, 383.9, 520.2, 405.9] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Change this text'
+ 13 p1 'hide'                           pushbutton Ff=65536   F=4   rect=[319.4, 351.6, 384.6, 371.6] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 14 p1 'show'                           pushbutton Ff=65536   F=4   rect=[392.4, 351.6, 457.6, 371.6] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 15 p1 'reset'                          pushbutton Ff=65536   F=4   rect=[464.3, 351.6, 520.3, 371.6] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 15 p1 'reset'                          pushbutton Ff=65536   F=4   rect=[230.4, 86.4, 302.4, 106.4] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 16 p1 'dropdown'                       combo      Ff=131072  F=4   rect=[90.1, 270.6, 289.9, 290.6] TU=None flags=[] maxlen=None opts=['Airplane', 'Bicycle', 'Boat', 'Bus', 'Car', 'Truck', 'Motorcycle'] on=None fmt=None calc=False V='Airplane'
+ 17 p1 'multiline'                      text       Ff=4096    F=4   rect=[90.7, 149.4, 520.2, 217.6] TU=None flags=['Multiline'] maxlen=None opts=None on=None fmt=None calc=False V=None
+ 18 p1 'submit'                         pushbutton Ff=65536   F=4   rect=[314.8, 87.0, 386.8, 107.0] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 19 p2 'prevpage2'                      pushbutton Ff=65536   F=4   rect=[72.4, 628.3, 173.7, 648.3] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 20 p2 'nextpage2'                      pushbutton Ff=65536   F=4   rect=[450.1, 628.5, 539.9, 648.5] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 21 p2 'google'                         pushbutton Ff=65536   F=4   rect=[237.1, 629.0, 374.6, 649.0] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+ 22 p3 'firstpage'                      pushbutton Ff=65536   F=4   rect=[240.0, 625.0, 390.1, 645.0] TU=None flags=[] maxlen=None opts=None on=None fmt=None calc=False V='Off'
+read-only: 1 | hidden widgets (annotation flag Hidden/NoView): 1 | push-button widgets: 9

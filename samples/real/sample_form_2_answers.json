@@ -1,0 +1,12 @@
+{
+  "text_field_required": "Tunde Bakare",
+  "email_format_validation": "tunde.bakare@example.com",
+  "radio_buttons": "Maybe",
+  "checkboxes": ["Red", "Blue"],
+  "auto_calculation": "12.50",
+  "auto_calculation_2": "7.25",
+  "list_box": "March",
+  "field_specific_buttons": "Changed by the fill test",
+  "dropdown": "Bus",
+  "multiline_text_field": "This is a longer fictional answer written by the fill test. It should wrap over several lines inside the multiline box."
+}

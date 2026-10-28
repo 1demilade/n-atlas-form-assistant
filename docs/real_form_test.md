@@ -1,11 +1,142 @@
-# Real fillable PDFs: read-only accuracy test
+# Real fillable PDFs: accuracy test
 
-Date: 2026-10-28. Code at commit `ceec012`, not changed. Nothing was filled and `answers.json` was not used.
-Python: `.venv\Scripts\python.exe`, CPU only.
+Python: `.venv\Scripts\python.exe`, CPU only. The two source PDFs are not in git (`samples/real/README.md` says what they are).
 
-**Short answer:** on these two real forms the pipeline found every fillable widget and put every answer box on the right widget (17/17). The kind (`fillable`) and all section headings are right. Labels are the weak point: **13 of 17 are right, 1 is only partly useful, 3 are wrong or missing**. Two of the bad labels are flagged; one wrong label is not flagged (confidence 0.998). Two more problems are not label problems: a hidden field and a read-only calculated field are reported as normal fields to answer.
+- **Round 2** (below): after the five generic fixes you asked for, re-read both forms and filled them.
+- **Round 1** (sections 1–8): the first read-only test, kept as the record.
 
 ---
+
+## Round 2 (2026-10-28, after the fixes)
+
+### R2.1 What changed in the code
+
+Each fix is a separate commit with its own test on a generated PDF (`make_test_pdfs.make_widget_pdf`), never on these forms. Each test was first run against the code before the fix, to confirm it reproduces the problem.
+
+| Fix | Commit | Rule now | Before the fix, on the test PDF |
+|---|---|---|---|
+| a. Short line above the input taken as the label | `7537677` | Other lines above the input within 2 text heights of the chosen label's distance are **rivals**. A rival ending with `:` or `?` wins over a label that doesn't. Any field with rivals gets `needs_review: true` and lists them in `label_alternatives`. | "First option" and "Example: Lagos" chosen, `needs_review: false` |
+| b. Prompt above-left of the input | `9aede38` | New side `above_left`, tried only after left and above: the prompt sits within 2.5 text heights above the input and ends at most 3 text heights left of where the input starts. Always `needs_review`. | `label: null` |
+| c. Read-only / calculated / hidden | `28590ee` | Every field has `ask_user`, `skip_reason`, `hidden`. Read-only, calculated (`/AA /C` or in `/CO`) or all-widgets-hidden → `ask_user: false` + reason; hidden also `needs_review: true`. `fill_form` skips every `ask_user: false` field, even with an answer. | calculated and hidden fields were overwritten |
+| d. Same label on several fields | `ae3e24f` | `analyse_form` flags every field whose label (normalised) appears more than once, on any path. | both "Phone number" fields unflagged |
+| e. Editable combo boxes | `258ac60` | `editable: true` (type stays `choice`). `fill_form` writes a matching option's export value, otherwise the typed text. Non-editable choices still refuse. | typed value refused |
+| — | `0c67462` | `scripts/list_widgets.py` (the pypdf ground-truth script) and `samples/real/*.pdf` in `.gitignore`. | — |
+
+**Tests:** 41 tests (35 old + 6 new), all OK with `RUN_SLOW=1` (161 s); without it, `Ran 41 ... OK (skipped=5)`. The photo-path tests are unchanged and pass.
+
+**New keys** (extra, not in your spec):
+- on every field: `ask_user`, `skip_reason`, `hidden`, `editable`;
+- on fillable fields only: `label_alternatives`;
+- inside the `pdf` block: `calculated`.
+
+### R2.2 Re-read: same command as round 1
+
+- **Command:** the same `layout.py` command as round 1, on both forms. Both exited 0, and stderr is only the weight-loading bar.
+- **Time:** 25.3 s and 22.8 s (12.2 s and 10.7 s in round 1). The fixes only add geometry checks over a few dozen words, so I suspect other load on the machine, but **I did not measure what caused it**.
+- **Unchanged:** the word files are byte-identical, every `answer_box` is unchanged, and the field count (5 and 12), `pdf_kind` (`fillable`) and sections are the same.
+
+**Form 1, before → after**
+
+| Field | Label before (source) | Flagged before | Label after (source) | Flagged after | Correct now? |
+|---|---|---|---|---|---|
+| `Name` | `null` (none) | yes | "Please enter your name" (`nearby_text_above_left`) | yes | **yes** (was missing) |
+| `Dropdown2` | "First Choice" (`layoutlm_above`, 0.998) | **no** | "Please select an item from the combo/dropdown list" (`nearby_text_above`, 0.4), `label_alternatives: ['First Choice']`, `editable: true` | yes | **yes** (was wrong, unflagged) |
+| `Option 1+2+3` | "Check all that apply" (`layoutlm_above`) | yes | same | yes | yes |
+| `Name of Dependent` | "Name of Dependent" (`layoutlm_left`) | no | same | no | yes |
+| `Age\t of Dependent` | "Age of Dependent" (`layoutlm_left`) | no | same | no | yes |
+
+Both prompts start with "Please", so the LayoutLM-label code treats them as instructions (`layout._is_instruction`), not label candidates. They were found as plain text, which is why the source is `nearby_text_*` with confidence 0.4. On the new boxes image I checked that the red boxes now sit on both prompts, there is no box on "First Choice", and the blue boxes are where they were.
+
+**Form 2, before → after** (only rows that changed; the other 7 are identical, all correct and unflagged)
+
+| Field | Label (source), same before and after | Flagged before → after | New markers | Why |
+|---|---|---|---|---|
+| `calc1` | "Auto-calculation" (`layoutlm_above`) | no → **yes** | — | shares its label with `calc2` (d) |
+| `calc2` | "Auto-calculation" (`layoutlm_above`) | no → **yes** | — | same (d) |
+| `hidden` | "Hidden field" (`layoutlm_above`) | no → **yes** | `hidden: true`, `ask_user: false`, `skip_reason: 'hidden in the PDF'` | (c) |
+| `calcsum` | "=" (`nearby_text_left`) | yes → yes | `ask_user: false`, `skip_reason: 'read-only in the PDF; calculated by the PDF from other fields'` | (c); the label is still "=" |
+
+**Totals after the fixes**
+
+| | Form 1 | Form 2 |
+|---|---|---|
+| Fields found / expected | 5 / 5 | 12 / 12 |
+| Labels correct | **5** (was 3) | 10 + 1 partly (`field-specific`) + 1 wrong (`calcsum` "=", now not asked) |
+| Types correct | 5 | 11 (`calcsum` `text`, not asked) |
+| Answer boxes correct | 5 | 12 |
+| Flagged | 3 (`Name`, `Dropdown2`, checkbox group) | 5 (checkbox group, `calc1`, `calc2`, `hidden`, `calcsum`) |
+| `ask_user: false` | 0 | 2 (`hidden`, `calcsum`) |
+| Null labels | **0** (was 1) | 0 |
+| Wrong label and **not** flagged | **0** (was 1) | 0 (`field-specific` "Field-specific buttons" is the only printed text; still unflagged, specific to this form, not changed) |
+
+### R2.3 Fill test
+
+**Answers.** Fictional, by **key**, in `samples/real/sample_form_N_answers.json`:
+- the read-only/calculated `calcsum` and the hidden field were left out (neither form has a signature field);
+- the checkbox groups get lists.
+
+**Commands:**
+```
+.venv\Scripts\python.exe fill_form.py samples\real\sample_form_1.pdf --form samples\real\sample_form_1_fields.json --answers samples\real\sample_form_1_answers.json --report samples\real\sample_form_1_fill_report.json
+5 filled, 0 refused, 0 skipped. Saved samples\real\sample_form_1_filled.pdf
+Filled fields marked needs_review (check these on the PDF): 3   ('Name', 'Dropdown2', the checkbox group)
+Verified on the written file: 5/5 ok
+
+.venv\Scripts\python.exe fill_form.py samples\real\sample_form_2.pdf --form samples\real\sample_form_2_fields.json --answers samples\real\sample_form_2_answers.json --report samples\real\sample_form_2_fill_report.json
+skipped  'hidden'    not asked: hidden in the PDF
+skipped  'calcsum'   not asked: read-only in the PDF; calculated by the PDF from other fields
+10 filled, 0 refused, 2 skipped. Saved samples\real\sample_form_2_filled.pdf
+Filled fields marked needs_review (check these on the PDF): 3   (the checkbox group, calc1, calc2)
+Verified on the written file: 10/10 ok
+```
+Extra run on form 1, the editable dropdown with a typed value `"My own choice"`: filled, verified 1/1.
+
+**My own checks** (separate from `fill_form`'s verification):
+- **Originals untouched:** sha256 of both source PDFs is identical before and after.
+- **Values read back with pypdf:**
+  - Form 1: `Name='Chiamaka Okafor'`, `Dropdown2='Choice 3'`, `Option 1='/On'`, `Option 2='/Off'`, `Option 3='/On'`, `Name of Dependent='Emeka Okafor'`, `Age\t of Dependent='7'`.
+  - Form 1 typed run: `Dropdown2='My own choice'`.
+  - Form 2: every value as written: `radio='/Maybe'`; `checkbox1='/Red'`, `checkbox2='/Off'`, `checkbox3='/Blue'`; `listbox='March'`; `dropdown='Bus'`; the multiline text in full.
+  - Form 2 untouched fields: `hidden` still `'This is the hidden field'`, `calcsum` still `'0'`.
+- **Appearance states (`/AS`):** only the chosen radio kid (`/Maybe`) and the chosen checkboxes (`/Red`, `/Blue`, form 1 `/On` ×2) are on; all others are `/Off`.
+- **Renders:** pypdfium2 with its own form renderer, 200 DPI, saved as `samples/real/sample_form_N_filled*_page1.png`. What I see:
+  - **Form 1:** "Chiamaka Okafor" in the name box; "Choice 3" in the dropdown; Option 1 and Option 3 ticked, Option 2 empty; "Emeka Okafor" and "7" in the right table cells.
+  - **Form 2:**
+    - "Tunde Bakare", the email address, 12.50 and 7.25, "Changed by the fill test" and "Bus" each in their own box;
+    - the multiline text wraps over 2 lines inside its box;
+    - "Maybe" is selected, and "Red" and "Blue" are ticked;
+    - the hidden field is still invisible.
+
+**What a user would see go wrong after filling:**
+1. **The sum shows "0", not 19.75.** `calcsum` is calculated by the PDF's JavaScript, and nothing in our pipeline runs it. A viewer that recalculates (e.g. Acrobat, when a field changes) may fix it; **I did not test any viewer**.
+2. **The list box doesn't show the choice.** "March" is selected (read back), but the box still shows September–December, so the selection is scrolled out of view. Only the value was set, not the list's scroll position (`/TI`).
+3. **The typed dropdown value is cut off on screen:** "My own ch". The box is 72 pt wide, and the PDF's auto-size font (`/DA ... 0 Tf`) was not shrunk by this renderer. The full value is in the file.
+4. **`answers.json` saved with a UTF-8 BOM crashes `fill_form`** (`JSONDecodeError: Unexpected UTF-8 BOM`). I hit this by writing a file with PowerShell 5.1; Notepad can also save files with a BOM. Not fixed.
+
+### R2.4 Verdict after the fixes
+
+- **Reading:** both forms are read correctly enough for a demo:
+  - every field is found and on its widget, and every label on form 1 is right;
+  - no wrong label is left unflagged, except form 2's "Field-specific buttons", the only text printed near that box;
+  - the hidden field and the calculated sum are kept but not asked.
+- **Filling:** every answer is written and verified. The visible flaws are the four items in R2.3, all display or calculation side effects, not wrong values.
+- **Still two demo forms only.** The above-left and rival rules are tested on generated layouts and these 2 forms; a long government form may hit cases they don't cover.
+
+### R2.5 Open questions
+
+1. Pages whose only widgets are buttons (form 2 pages 2–3) are still `kind: 'fillable'` (round 1, question 4, not answered yet).
+2. Should `fill_form` also set the list box scroll position (`/TI`), recalculate simple sums (`AFSimple_Calculate`), or shrink text in narrow boxes? I would rather not run PDF JavaScript; a SUM/PRODUCT-only evaluator is possible but limited.
+3. Should `fill_form` accept a UTF-8 BOM in `answers.json` (a one-line change: read it as `utf-8-sig`)?
+4. Hidden fields: I made `fill_form` skip **every** `ask_user: false` field, hidden ones included, even when `answers.json` has a value. Your answer said this only for read-only/calculated fields. Tell me if hidden fields with an answer should be filled.
+5. The shared-label rule (d) applies to flat PDFs too, so flagged counts on `Business-Name-Form.pdf` may change. I did not re-run that form.
+
+---
+
+# Round 1 (first test, before the fixes)
+
+Code at commit `ceec012`, not changed. Nothing was filled and `answers.json` was not used. The round-1 output files are in commit `0438cf2`; the files now in `samples/real/` are from round 2.
+
+**Short answer (round 1):** on these two real forms the pipeline found every fillable widget and put every answer box on the right widget (17/17). The kind (`fillable`) and all section headings are right. Labels are the weak point: **13 of 17 are right, 1 is only partly useful, 3 are wrong or missing**. Two of the bad labels are flagged; one wrong label is not flagged (confidence 0.998). Two more problems are not label problems: a hidden field and a read-only calculated field are reported as normal fields to answer.
 
 ## 1. The PDFs (step 1)
 
