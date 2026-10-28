@@ -322,6 +322,60 @@ def make_checkbox_group_pdf(out_path, size=10):
     return truth
 
 
+def make_widget_pdf(out_path, texts, widgets, page_size=(612, 792), size=10):
+    """One fillable page from an explicit layout (for label-linking cases a test spells out).
+    texts: [(x, y, text)] printed in Helvetica at `size` (PDF points, baseline y).
+    widgets: [{'name', 'kind': 'text'|'combo', 'rect', optional 'options', 'flags' (/Ff bits),
+              'hidden', 'calculate' (JavaScript of a calculate action), 'value'}]."""
+    from pypdf import PdfWriter
+    from pypdf.generic import (ArrayObject, BooleanObject, DictionaryObject, FloatObject, NameObject,
+                               NumberObject, TextStringObject)
+    width, height = page_size
+    ops = [f'BT /F1 {size} Tf {x:.2f} {y:.2f} Td ({_escape(text)}) Tj ET' for x, y, text in texts]
+    for spec in widgets:
+        r = spec['rect']
+        ops.append(f'q 0.5 w {r[0]:.2f} {r[1]:.2f} {r[2] - r[0]:.2f} {r[3] - r[1]:.2f} re S Q')
+    writer = PdfWriter()
+    page, helv = _text_page(writer, width, height, ops)
+    annots, calculated = ArrayObject(), ArrayObject()
+    for spec in widgets:
+        d = DictionaryObject({
+            NameObject('/Type'): NameObject('/Annot'), NameObject('/Subtype'): NameObject('/Widget'),
+            NameObject('/T'): TextStringObject(spec['name']),
+            NameObject('/Rect'): ArrayObject([FloatObject(v) for v in spec['rect']]),
+            NameObject('/F'): NumberObject(6 if spec.get('hidden') else 4),  # 2 = Hidden, 4 = Print
+            NameObject('/DA'): TextStringObject('/Helv 0 Tf 0 g'), NameObject('/P'): page.indirect_reference})
+        flags = spec.get('flags', 0)
+        if spec['kind'] == 'combo':
+            d[NameObject('/FT')] = NameObject('/Ch')
+            flags |= COMBO
+            d[NameObject('/Opt')] = ArrayObject([TextStringObject(o) for o in spec['options']])
+        else:
+            d[NameObject('/FT')] = NameObject('/Tx')
+        if flags:
+            d[NameObject('/Ff')] = NumberObject(flags)
+        if spec.get('value') is not None:
+            d[NameObject('/V')] = TextStringObject(spec['value'])
+        ref = writer._add_object(d)
+        if spec.get('calculate'):
+            js = DictionaryObject({NameObject('/S'): NameObject('/JavaScript'),
+                                   NameObject('/JS'): TextStringObject(spec['calculate'])})
+            d[NameObject('/AA')] = DictionaryObject({NameObject('/C'): js})
+            calculated.append(ref)
+        annots.append(ref)
+    page[NameObject('/Annots')] = annots
+    acroform = DictionaryObject({
+        NameObject('/Fields'): ArrayObject(list(annots)), NameObject('/NeedAppearances'): BooleanObject(True),
+        NameObject('/DA'): TextStringObject('/Helv 0 Tf 0 g'),
+        NameObject('/DR'): DictionaryObject({NameObject('/Font'): DictionaryObject({NameObject('/Helv'): helv})})})
+    if calculated:
+        acroform[NameObject('/CO')] = calculated
+    writer._root_object[NameObject('/AcroForm')] = acroform
+    with open(out_path, 'wb') as file:
+        writer.write(file)
+    return {'page_size_pt': [width, height], 'texts': texts, 'widgets': widgets}
+
+
 def make_image_pdf(src_path, out_path, dpi=200):
     """Image-only copy of a PDF: every page rendered and saved as a picture (no text layer)."""
     import cv2

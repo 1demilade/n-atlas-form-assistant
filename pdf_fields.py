@@ -19,6 +19,8 @@ REVIEW_BELOW_CONFIDENCE = 0.6
 GROUP_ROW_GAP = 12      # lone checkboxes in one row this close (text heights) form one group
 GROUP_COLUMN_GAP = 1.5  # ...or stacked, left edges aligned, at most this far apart
 FALLBACK_CONFIDENCE = {'tooltip': 0.5, 'nearby_text': 0.4, 'none': 0.0}
+COMPETE_GAP = 2      # another line above, this many text heights nearer or farther, competes for the label
+PROMPT_END = re.compile(r'[:?]\s*$')  # a prompt ends with ':' or '?'; a hint or example usually not
 
 # Field flags (PDF 32000-1, tables 221, 226, 228, 230); bit n -> 1 << (n - 1).
 FLAG_BITS = {
@@ -224,7 +226,13 @@ def _nearest(target, candidates, text_height, sides, exclude=()):
     """Closest candidate (dict with 'box') on the allowed sides of target, or (None, None).
     Sides are tried in the given order: a label on an earlier side beats a closer one on a
     later side (a label on the same row beats a heading just above the input)."""
-    best, best_rank, best_side = None, None, None
+    ranked = _ranked(target, candidates, text_height, sides, exclude)
+    return (ranked[0][0], ranked[0][1]) if ranked else (None, None)
+
+
+def _ranked(target, candidates, text_height, sides, exclude=()):
+    """Every candidate on the allowed sides of target, best first: [(candidate, side, distance)]."""
+    found = []
     for candidate in candidates:
         box = candidate['box']
         if any(box == other for other in exclude):
@@ -246,10 +254,27 @@ def _nearest(target, candidates, text_height, sides, exclude=()):
                 distance, side = max(0, gap), 'right'
         if distance is None:
             continue
-        rank = (sides.index(side), distance)
-        if best_rank is None or rank < best_rank:
-            best, best_rank, best_side = candidate, rank, side
-    return best, best_side
+        found.append(((sides.index(side), distance), candidate, side))
+    found.sort(key=lambda entry: entry[0])
+    return [(candidate, side, rank[1]) for rank, candidate, side in found]
+
+
+def _line_text(box, page_items):
+    """The printed text under a label box, punctuation kept (LayoutLM labels are cleaned)."""
+    inside = sorted((i for i in page_items if _covered(i['box'], box) > INSIDE_SHARE),
+                    key=lambda i: (i['box'][1], i['box'][0]))
+    return ' '.join(i['text'] for i in inside)
+
+
+def _rival_lines(target, chosen_box, page_items, text_height, sides, exclude=()):
+    """Other text lines above the input about as close as the chosen label (within
+    COMPETE_GAP text heights of its distance): [(item, side, distance)], nearest first."""
+    ranked = _ranked(target, page_items, text_height, sides, exclude)
+    chosen = next((d for c, _, d in ranked if _covered(c['box'], chosen_box) > INSIDE_SHARE), None)
+    if chosen is None:
+        return []
+    return [(c, s, d) for c, s, d in ranked
+            if _covered(c['box'], chosen_box) <= INSIDE_SHARE and abs(d - chosen) <= COMPETE_GAP * text_height]
 
 
 def _field_type(raw, label, options):
@@ -345,10 +370,12 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             layoutlm_error = repr(error)
 
     def find_label(box, page, page_items, text_height, sides, option_boxes, tooltip):
-        """(label, label_box, label_source, confidence): LayoutLM question, then tooltip, then
-        the nearest text (a LayoutLM header first). The field name (e.g. 'Text1') is never a
-        label: with none of these, label is None."""
-        label, label_box, label_source, confidence = None, None, 'none', None
+        """(label, label_box, label_source, confidence, alternatives): LayoutLM question, then
+        tooltip, then the nearest text (a LayoutLM header first). The field name (e.g. 'Text1') is
+        never a label: with none of these, label is None. alternatives: other lines above the
+        input about as close as the label; when there are any, the field is reviewed."""
+        from layout_rules import clean_label
+        label, label_box, label_source, confidence, side = None, None, 'none', None, None
         hit, side = _nearest(box, free(questions, page), text_height, sides, option_boxes)
         if hit:
             label, label_box, confidence = hit['text'], hit['box'], hit['confidence']
@@ -356,25 +383,41 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
         elif tooltip and tooltip.strip():
             label, label_source = tooltip.strip(), 'tooltip'
         else:
-            header_hit, header_side = _nearest(box, free(headers, page), text_height, sides,
-                                               option_boxes)
+            header_hit, side = _nearest(box, free(headers, page), text_height, sides, option_boxes)
             if header_hit:
                 label, label_box = header_hit['text'], header_hit['box']
                 # Tagged as a heading, so less sure: always reviewed (see needs_review below).
                 confidence = min(header_hit['confidence'], REVIEW_BELOW_CONFIDENCE - 0.01)
-                label_source = f'layoutlm_header_{header_side}'
+                label_source = f'layoutlm_header_{side}'
             else:
                 hit, side = _nearest(box, page_items, text_height, sides, option_boxes)
                 if hit:
                     label, label_box, label_source = hit['text'], hit['box'], f'nearby_text_{side}'
+        alternatives = []
+        if label_box is not None and side == 'above':
+            # A short line right above the input (a hint, an example, a printed default) can
+            # sit between the input and its real prompt: prefer the line that ends like a prompt.
+            rivals = _rival_lines(box, label_box, page_items, text_height, ('above',), option_boxes)
+            if rivals:
+                prompts = [r for r in rivals if PROMPT_END.search(r[0]['text'])]
+                if not PROMPT_END.search(_line_text(label_box, page_items)) and prompts:
+                    old_label = label
+                    rival = prompts[0][0]
+                    tagged = next((q for q in free(questions, page)
+                                   if _covered(rival['box'], q['box']) > INSIDE_SHARE), None)
+                    label, label_box = (tagged or rival)['text'], (tagged or rival)['box']
+                    label_source = 'layoutlm_above' if tagged else 'nearby_text_above'
+                    confidence = tagged['confidence'] if tagged else None
+                    rivals = [r for r in rivals if r[0] is not rival]
+                    alternatives.append(clean_label(old_label))
+                alternatives += [clean_label(r[0]['text']) for r in rivals]
         if confidence is None:
             confidence = FALLBACK_CONFIDENCE[label_source.rsplit('_', 1)[0]
                                              if label_source.startswith('nearby_text') else label_source]
-        from layout_rules import clean_label
         label = clean_label(label) if label else None
         if not label:
-            return None, None, 'none', FALLBACK_CONFIDENCE['none']
-        return label, label_box, label_source, confidence
+            return None, None, 'none', FALLBACK_CONFIDENCE['none'], []
+        return label, label_box, label_source, confidence, [a for a in alternatives if a and a != label]
 
     def shown_widgets(raw):
         """The visible widgets on the field's first page (all widgets if none is visible)."""
@@ -416,7 +459,7 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
                     option_boxes.append(text['box'])
 
         sides = ('left', 'right', 'above') if is_box and len(on_page) == 1 else ('left', 'above')
-        label, label_box, label_source, confidence = find_label(
+        label, label_box, label_source, confidence, alternatives = find_label(
             group_box, page, page_items, text_height, sides, option_boxes, raw['tooltip'])
         field_type, type_source = _field_type(raw, label, option_texts)
         flags = raw['flags']
@@ -429,13 +472,14 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             'source': 'acroform',
             'confidence': round(float(confidence), 3),
             'needs_review': (confidence < REVIEW_BELOW_CONFIDENCE
-                             or not label_source.startswith('layoutlm')),
+                             or not label_source.startswith('layoutlm') or bool(alternatives)),
             'page': page,
             'pdf_field_name': raw['name'],
             'required': flags['required'],  # the PDF's own Required flag, never guessed
             'answer_method': 'acroform_widget',
             'options': option_texts,
             'label_source': label_source,
+            'label_alternatives': alternatives,
             'type_source': type_source,
             'pdf': {
                 'name': raw['name'],
@@ -470,7 +514,7 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
                             'box': widget['box'], 'read_only': raw['flags']['read_only'],
                             'required': raw['flags']['required']})
         box = _union([w['box'] for w in widgets])
-        label, label_box, label_source, confidence = find_label(
+        label, label_box, label_source, confidence, alternatives = find_label(
             box, page, page_items, text_height, ('left', 'above'), option_boxes, None)
         names = [m['name'] for m in members]
         fields.append({
@@ -489,6 +533,7 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             'options': [m['option'] for m in members],
             'multiple': True,
             'label_source': label_source,
+            'label_alternatives': alternatives,
             'type_source': 'independent_checkboxes',
             'pdf': {
                 'name': None,

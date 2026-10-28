@@ -487,6 +487,59 @@ class FillTests(Tmp):
                     self.assertEqual(' '.join(inside), answers[field['id']], field['label'])
 
 
+def _link(path, tag_all_as_questions=False):
+    """Fields of a generated fillable PDF. tag_all_as_questions: stand-in for LayoutLM that tags
+    every printed line as a question (as the model did on real forms), so the question tier of
+    the label linking is tested without loading the model."""
+    items = read_pdf_words(path, ocr_images=False)
+    entities = None
+    if tag_all_as_questions:
+        entities = [{'kind': 'question', 'text': i['text'], 'box': i['box'], 'page': i['page'],
+                     'confidence': 0.99} for i in items]
+    fields, _ = link_fields(read_acroform(path), items, prepare_pages(path),
+                            use_layoutlm=tag_all_as_questions, entities=entities)
+    return {f['id']: f for f in fields}
+
+
+class LabelLinkingTests(Tmp):
+    def test_prompt_beats_a_short_line_above_the_input(self):
+        """A hint/example line between a prompt and its input is not the label. The line ending
+        with ':' or '?' wins, and a field with two lines about as close is reviewed."""
+        from make_test_pdfs import make_widget_pdf
+        path = self.tmp / 'rivals.pdf'
+        make_widget_pdf(path, [
+            (56, 700, 'Please choose your state of origin:'), (56, 684, 'First option'),
+            (56, 600, 'Which state are you from?'), (56, 584, 'Example: Lagos'),
+            (56, 500, 'Home town'), (56, 484, 'Write in full'),
+            (56, 400, 'Surname:'),
+        ], [
+            {'name': 'Dropdown1', 'kind': 'combo', 'rect': [56, 662, 200, 678], 'options': ['A', 'B']},
+            {'name': 'Text1', 'kind': 'text', 'rect': [56, 562, 300, 578]},
+            {'name': 'Text2', 'kind': 'text', 'rect': [56, 462, 300, 478]},
+            {'name': 'Text3', 'kind': 'text', 'rect': [56, 378, 300, 394]},
+        ])
+        for tagged in (True, False):
+            with self.subTest(layoutlm_questions=tagged):
+                fields = _link(path, tagged)
+                drop, state, town, surname = (fields[n] for n in ('Dropdown1', 'Text1', 'Text2', 'Text3'))
+                self.assertEqual(drop['label'], 'Please choose your state of origin')
+                self.assertEqual(drop['label_alternatives'], ['First option'])
+                self.assertTrue(drop['needs_review'])
+                self.assertEqual(state['label'], 'Which state are you from?')
+                self.assertEqual(state['label_alternatives'], ['Example: Lagos'])
+                self.assertTrue(state['needs_review'])
+                # Neither line ends like a prompt: the nearest stays, but the choice is not clear.
+                self.assertEqual(town['label'], 'Write in full')
+                self.assertEqual(town['label_alternatives'], ['Home town'])
+                self.assertTrue(town['needs_review'])
+                self.assertEqual(surname['label'], 'Surname')
+                self.assertEqual(surname['label_alternatives'], [])
+                if tagged:  # a lone LayoutLM question with no rival is not flagged
+                    self.assertEqual(state['label_source'], 'layoutlm_above')
+                    self.assertEqual(surname['label_source'], 'layoutlm_above')
+                    self.assertFalse(surname['needs_review'])
+
+
 def check_groups(test, form, truth):
     """Fields of make_checkbox_group_pdf: one flagged 'choice' per group, a 'yes_no' lone box."""
     by_name = {tuple(f['pdf_field_name']) if isinstance(f['pdf_field_name'], list)
