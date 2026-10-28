@@ -630,6 +630,33 @@ class FlatLabelTests(Tmp):
                 self.assertTrue(insurance['id'].startswith('have_you_ever_taken'), insurance['id'])
 
 
+    def test_wrapped_question_with_a_capital_second_line(self):
+        """A question whose first line stops mid-sentence continues on the next line even when
+        that line starts with a capital; it is one field, answered on the line after its end.
+        Rows are spaced exactly like the wrapped lines, so only the unfinished text tells."""
+        from make_test_pdfs import make_widget_pdf, _text_width
+        path = self.tmp / 'wrapped.pdf'
+        texts, lines = _underlined([('11. Full name:', 718), ('Other (Specify):', 682),
+                                    ('13. Size of farm:', 664), ('14. State:', 646)])
+        texts[1] = (68, 682, 'Other (Specify):')  # indented under the text, not the number
+        lines[1] = (68 + _text_width('Other (Specify):', 10) + 6, 680, 540)
+        texts.append((56, 700, '12. Are you a service provider (Agric input, Dealer, Processor,'))
+        texts.append((56, 750, 'Registration form for the members of our farmers club'))
+        make_widget_pdf(path, texts, [], lines=lines)
+        question = 'Are you a service provider (Agric input, Dealer, Processor, Other (Specify)'
+        for tagged in (True, False):
+            with self.subTest(layoutlm_questions=tagged):
+                fields = {f['label']: f for f in _flat_form(path, tagged)[0]}
+                self.assertIn(question, fields, list(fields))
+                self.assertNotIn('Other (Specify)', fields)
+                field = fields[question]
+                self.assertEqual(field['answer_method'], 'underline')
+                scale = 200 / 72
+                self.assertAlmostEqual(field['answer_box'][3], (792 - 680) * scale, delta=6)
+                for label in ('Full name', 'Size of farm', 'State'):  # finished lines stay apart
+                    self.assertIn(label, fields)
+
+
 class SharedLabelTests(Tmp):
     def test_fields_with_the_same_label_are_reviewed(self):
         """Two boxes after one printed label get the same label: each is flagged."""

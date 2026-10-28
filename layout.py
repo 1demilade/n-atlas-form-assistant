@@ -92,7 +92,9 @@ def _layoutlm_candidates(items, pages, entities=None):
     kept = []
     for candidate in candidates:
         # Check the whole OCR line too: the model may split 'Please' off its sentence.
-        if _is_instruction(candidate['label']) or any(
+        # A long question wrapped over lines that ends in ':' or '?' asks for an answer.
+        long_but_prompt = candidate.get('ends_like_prompt') and not INSTRUCTION_START.match(candidate['label'])
+        if (_is_instruction(candidate['label']) and not long_but_prompt) or any(
                 INSTRUCTION_START.match(item['text']) for item in candidate['label_items']):
             others.append({'kind': 'other', 'text': candidate['label'],
                            'box': candidate['label_box'], 'page': candidate['page']})
@@ -135,23 +137,25 @@ def _finish(candidates, items, pages, entities=(), checkbox_rule=False):
         image = pages[page - 1]
         text_height = heights[page]
         box = candidate['label_box']
+        # A question wrapped over lines: its answer sits next to its last line.
+        anchor = candidate.get('anchor_box') or box
 
         # Do not let an answer area run into the next label on the same row.
         next_labels = [c['label_box'][0] for c in candidates
                        if c is not candidate and c['page'] == page
-                       and _same_row(box, c['label_box']) and c['label_box'][0] > box[2]]
+                       and _same_row(anchor, c['label_box']) and c['label_box'][0] > anchor[2]]
         right_limit = min(next_labels) - text_height * 0.3 if next_labels else None
 
         page_answers = [a for a in answers if a['page'] == page]
         blocking = page_items + [b for b in blockers if b['page'] == page]
         answer_box, method = find_answer_box(
-            box, blocking, regions[page], (image.shape[1], image.shape[0]), text_height,
+            anchor, blocking, regions[page], (image.shape[1], image.shape[0]), text_height,
             page_answers, candidate['label_items'], right_limit)
 
         limit = right_limit if right_limit is not None else image.shape[1]
-        checkboxes = nearby_checkboxes(box, regions[page], page_items, text_height, limit)
+        checkboxes = nearby_checkboxes(anchor, regions[page], page_items, text_height, limit)
         option_items = [item for item in page_items
-                        if _same_row(box, item['box'], 0.3) and box[2] < item['box'][0] < limit
+                        if _same_row(anchor, item['box'], 0.3) and anchor[2] < item['box'][0] < limit
                         and (is_option_word(item['text'])
                              or next_to_checkbox(item['box'], checkboxes, text_height))]
         options = [item['text'] for item in option_items]

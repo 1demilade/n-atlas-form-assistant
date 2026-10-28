@@ -148,25 +148,74 @@ def is_option_word(text):
     return _words(text) in OPTION_WORDS
 
 
+WRAP_GAP = 1.0        # an unfinished line continues on the next line at most this far below (text heights)
+WRAP_MAX_WORDS = 8    # ...and the continuation line has at most this many words
+
+
+def _unfinished(text):
+    """True if a line of text stops mid-sentence: it ends with ',', '(' or a joining word, or
+    leaves a bracket open. Such a line continues on the next line (whatever its first letter)."""
+    text = text.rstrip()
+    return (text.endswith((',', '(', '/', '-')) or text.count('(') > text.count(')')
+            or bool(re.search(r'\b(and|or|of|the|for|to|in|by|with|a|an)$', text, re.IGNORECASE)))
+
+
+def _text_left(item):
+    """Left edge of a line's text, after an item number ('12. Are...' -> where 'Are' starts):
+    a wrapped line is indented to the text, not to the number."""
+    words = item.get('words') or []
+    if len(words) >= 2 and ENUMERATOR.match(words[0]['text'] + ' '):
+        return words[1]['box'][0]
+    return item['box'][0]
+
+
 def _merge_wrapped_labels(labels, items):
-    """Join a label with a short continuation line directly below it that starts lowercase
-    (e.g. a label wrapped over two lines). Works on any form; no wording is assumed."""
+    """Join a label with its continuation line (a label wrapped over two lines). Works on any
+    form; no wording is assumed. Continuations are
+    - a short line directly below that starts lowercase;
+    - after an unfinished label line (see _unfinished), the next line, whatever its first letter;
+    - before a label: an unfinished line directly above it that is not a label itself.
+    For the last two the answer is searched next to the last line ('anchor_box')."""
     used = set()
+    label_item_ids = {id(i) for label in labels for i in label.get('label_items', [])}
     for label in labels:
         height = label['label_box'][3] - label['label_box'][1]
-        left = min([label['label_box'][0]] + [i['box'][0] for i in label.get('label_items', [])])
+        own = label.get('label_items', [])
+        left = min([label['label_box'][0]] + [i['box'][0] for i in own])
+        lefts = [left] + [_text_left(i) for i in own]
+        raw = ' '.join(i['text'] for i in sorted(own, key=lambda i: (i['box'][1], i['box'][0])))
+        unfinished = _unfinished(raw or label['label'])
         for index, item in enumerate(items):
-            if index in used or item.get('page', 1) != label['page']:
+            if index in used or item.get('page', 1) != label['page'] or any(item is i for i in own):
                 continue
             box = item['box']
             words = item['text'].split()
-            if (0 <= box[1] - label['label_box'][3] <= 0.6 * height
-                    and abs(box[0] - left) <= height
-                    and 1 <= len(words) <= 3 and item['text'][:1].islower()
-                    and not item['text'].rstrip().endswith('.')):
+            aligned = any(abs(box[0] - x) <= height for x in lefts)
+            lowercase = (0 <= box[1] - label['label_box'][3] <= 0.6 * height
+                         and abs(box[0] - left) <= height
+                         and 1 <= len(words) <= 3 and item['text'][:1].islower()
+                         and not item['text'].rstrip().endswith('.'))
+            after_unfinished = (unfinished and aligned and 1 <= len(words) <= WRAP_MAX_WORDS
+                                and 0 <= box[1] - label['label_box'][3] <= WRAP_GAP * height)
+            before = (id(item) not in label_item_ids and _unfinished(item['text'])
+                      and (abs(_text_left(item) - left) <= height or abs(box[0] - left) <= height)
+                      and 0 <= label['label_box'][1] - box[3] <= WRAP_GAP * height
+                      and not item['text'].rstrip().endswith('.'))
+            if lowercase or after_unfinished:
+                if after_unfinished and not lowercase:
+                    label['anchor_box'] = list(box)
+                    label['ends_like_prompt'] = item['text'].rstrip().endswith((':', '?'))
                 label['label'] = clean_label(f"{label['label']} {item['text']}")
                 label['label_box'] = union_box([label['label_box'], box])
                 label.setdefault('label_items', []).append(item)
+                used.add(index)
+                break
+            if before:
+                label['anchor_box'] = list(label['label_box'])
+                label['ends_like_prompt'] = raw.rstrip().endswith((':', '?'))
+                label['label'] = clean_label(f"{item['text']} {label['label']}")
+                label['label_box'] = union_box([label['label_box'], box])
+                label.setdefault('label_items', []).insert(0, item)
                 used.add(index)
                 break
     # A label made only of lines that were merged into another label is dropped.
