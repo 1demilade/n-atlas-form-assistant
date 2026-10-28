@@ -479,6 +479,7 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
         field.setdefault('ask_user', True)
         field.setdefault('skip_reason', None)
         field.setdefault('hidden', False)
+        field.setdefault('editable', False)
     _flag_shared_labels(fields)
     fields.sort(key=_anchor)
     sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))

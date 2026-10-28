@@ -179,11 +179,15 @@ def _fill_acroform(reader, fields, answers):
                 values[name] = NameObject('/' + real_states[0] if truth else '/Off')
         elif kind == 'Ch':
             index = _match_option(answer, field.get('options', []), pdf.get('option_values') or [])
-            if index is None:
+            editable = field.get('editable', pdf.get('flags', {}).get('edit', False))
+            if index is not None:
+                values[name] = pdf['option_values'][index]
+            elif editable and answer:  # an editable combo box also takes typed text
+                values[name] = answer
+            else:
                 report.append({'id': fid, 'status': 'refused',
                                'reason': f'answer {answer!r} matches no option {field.get("options")}'})
                 continue
-            values[name] = pdf['option_values'][index]
         else:
             report.append({'id': fid, 'status': 'skipped', 'reason': f'{kind or "unknown"} field cannot be filled with text'})
             continue

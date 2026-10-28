@@ -594,6 +594,36 @@ class SharedLabelTests(Tmp):
                          [True, True, False])
 
 
+class EditableComboTests(Tmp):
+    def test_editable_combo_takes_typed_text(self):
+        from pypdf import PdfReader
+        from make_test_pdfs import make_widget_pdf
+        path, out = self.tmp / 'combo.pdf', self.tmp / 'combo_out.pdf'
+        # (a title too: a page needs 3+ words to use its text layer instead of OCR)
+        make_widget_pdf(path, [(56, 750, 'Order form'), (56, 700, 'Colour:'), (56, 660, 'Size:')], [
+            {'name': 'colour', 'kind': 'combo', 'rect': [140, 696, 300, 712], 'options': ['Red', 'Blue'],
+             'flags': 1 << 18},  # Edit: the user may type a value that is not in the list
+            {'name': 'size', 'kind': 'combo', 'rect': [140, 656, 300, 672], 'options': ['Small', 'Large']},
+        ])
+        fields = _link(path)
+        self.assertEqual((fields['colour']['type'], fields['colour']['editable']), ('choice', True))
+        self.assertEqual((fields['size']['type'], fields['size']['editable']), ('choice', False))
+        form = {'form': {'pages': describe_pdf(path)['pages']}, 'fields': list(fields.values()), 'sections': []}
+        for answers, expected in (({'colour': 'Green', 'size': 'Medium'}, ('Green', None)),
+                                  ({'colour': 'blue', 'size': 'large'}, ('Blue', 'Large'))):
+            with self.subTest(answers=answers):
+                report = {r['id']: r for r in fill_form(path, form, answers, out)}
+                self.assertEqual(report['colour']['status'], 'filled', report['colour'])
+                self.assertEqual(report['colour']['verified'], {'value_read_back': True, 'ink_in_box': True})
+                values = {k: v.get('/V') for k, v in PdfReader(str(out)).get_fields().items()}
+                self.assertEqual(str(values['colour']), expected[0])
+                if expected[1] is None:  # not editable: a value outside the list is still refused
+                    self.assertEqual(report['size']['status'], 'refused')
+                    self.assertIn('matches no option', report['size']['reason'])
+                else:
+                    self.assertEqual(str(values['size']), expected[1])
+
+
 class NotAskedFieldTests(Tmp):
     def test_read_only_calculated_and_hidden_fields(self):
         """Kept in fields, marked ask_user: false with a reason; hidden ones also flagged;

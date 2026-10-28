@@ -504,6 +504,7 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             'needs_review': (confidence < REVIEW_BELOW_CONFIDENCE
                              or not label_source.startswith('layoutlm') or bool(alternatives)
                              or label_source.endswith('above_left') or hidden),
+            'editable': raw['pdf_type'] == 'Ch' and flags['edit'],  # a combo box that takes typed text
             'ask_user': not skip,  # False: keep the field, but do not ask for it or fill it
             'skip_reason': '; '.join(skip) or None,
             'hidden': hidden,
@@ -564,6 +565,7 @@ def link_fields(raw_fields, items, pages, use_layoutlm=True, entities=None):
             'source': 'acroform',
             'confidence': round(float(confidence), 3),
             'needs_review': True,
+            'editable': False,
             'ask_user': not skip,
             'skip_reason': '; '.join(skip) or None,
             'hidden': hidden,
