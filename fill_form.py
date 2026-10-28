@@ -1,4 +1,4 @@
-"""Fill a PDF form from answers.json (field id -> English text) and the form JSON from layout.py.
+"""Fill a PDF form from answers.json (field id or key -> English text) and the form JSON from layout.py.
 
 Fillable PDFs: values are written into the AcroForm fields with pypdf.
 Flat PDFs: answers are drawn as text (Helvetica) inside each field's answer_box; checkbox
@@ -40,6 +40,22 @@ def _match_option(answer, texts, values):
             if option is not None and _norm(option) == wanted:
                 return index
     return None
+
+
+def _resolve(fields, answers):
+    """answers.json may name a field by its id or its readable key.
+    Returns ({id: answer}, {id: report update for id/key conflicts}, names matching no field)."""
+    by_id, conflicts, known = {}, {}, set()
+    for field in fields:
+        names = [field['id']] + ([field['key']] if field.get('key') not in (None, field['id']) else [])
+        known.update(names)
+        given = [name for name in names if name in answers]
+        if len(given) == 2 and str(answers[given[0]]).strip() != str(answers[given[1]]).strip():
+            conflicts[field['id']] = {'status': 'skipped',
+                                      'reason': f"different answers for id and key {field['key']!r}"}
+        elif given:
+            by_id[field['id']] = answers[given[0]]
+    return by_id, conflicts, sorted(set(answers) - known)
 
 
 def _truth(answer):
@@ -266,7 +282,7 @@ def fill_form(pdf_path, form, answers, out_path):
     from pypdf import PdfReader
     form, answers = _load(form), _load(answers)
     reader = PdfReader(str(pdf_path))
-    unknown = sorted(set(answers) - {f['id'] for f in form['fields']})
+    answers, conflicts, unknown = _resolve(form['fields'], answers)
     # Each field is filled the way it was found: AcroForm widget, or drawn on the page.
     fillable = [f for f in form['fields'] if f.get('pdf_field_name')]
     flat = [f for f in form['fields'] if not f.get('pdf_field_name')]
@@ -280,6 +296,11 @@ def fill_form(pdf_path, form, answers, out_path):
         writer = PdfWriter(clone_from=reader)
     order = {f['id']: n for n, f in enumerate(form['fields'])}
     report.sort(key=lambda entry: order[entry['id']])
+    keys = {f['id']: f.get('key') for f in form['fields']}
+    for entry in report:
+        entry.update(conflicts.get(entry['id'], {}))
+        if keys.get(entry['id']):
+            entry['key'] = keys[entry['id']]
     report.extend({'id': fid, 'status': 'skipped', 'reason': 'no field with this id'} for fid in unknown)
     with open(out_path, 'wb') as file:
         writer.write(file)

@@ -315,6 +315,39 @@ class OutputFormatTests(Tmp):
         self.assertEqual(pdf_kind([fillable, text]), 'mixed')
         self.assertEqual(pdf_kind([text, scanned]), 'mixed')
 
+    def test_keys_from_labels(self):
+        from layout import _add_keys
+        fields = [{'id': 'Text1', 'pdf_field_name': 'Text1', 'label': 'Full name'},
+                  {'id': 'Text2', 'pdf_field_name': 'Text2', 'label': 'Full name'},
+                  {'id': 'surname', 'pdf_field_name': 'surname', 'label': 'Surname'},
+                  {'id': 'full_name', 'pdf_field_name': None, 'label': 'Full name'},
+                  {'id': 'Text3', 'pdf_field_name': 'Text3', 'label': None}]
+        _add_keys(fields)
+        self.assertEqual([f['key'] for f in fields],
+                         ['full_name_2', 'full_name_3', 'surname', 'full_name', 'field'])
+
+    def test_answers_by_key_or_id(self):
+        from pypdf import PdfReader
+        from layout import _add_keys
+        path, out = self.tmp / 'f.pdf', self.tmp / 'o.pdf'
+        truth = make_fillable_pdf(path, 3, 10)  # seed with at least 3 plain text fields
+        form = _fillable_form(path)
+        _add_keys(form['fields'])
+        texts = [f for f in form['fields'] if f['pdf']['field_type'] == 'Tx' and f['type'] == 'text']
+        by_key, by_id, both = texts[0], texts[1], texts[2]
+        self.assertNotEqual(by_key['key'], by_key['id'])
+        report = {r['id']: r for r in fill_form(path, form, {
+            by_key['key']: 'Lagos', by_id['id']: 'Abuja',
+            both['id']: 'Kano', both['key']: 'Ibadan'}, out)}
+        self.assertEqual(report[by_key['id']]['status'], 'filled')
+        self.assertEqual(report[by_key['id']]['key'], by_key['key'])
+        self.assertEqual(report[by_id['id']]['status'], 'filled')
+        self.assertIn('different answers for id and key', report[both['id']]['reason'])
+        self.assertEqual(len(report), len(truth['fields']))
+        values = PdfReader(str(out)).get_fields()
+        self.assertEqual(str(values[by_key['pdf_field_name']]['/V']), 'Lagos')
+        self.assertEqual(str(values[by_id['pdf_field_name']]['/V']), 'Abuja')
+
     def test_mixed_pdf_uses_both_paths(self):
         """Page 1 has widgets, page 2 is flat: each page goes through its own path and fills."""
         from pypdf import PdfReader, PdfWriter

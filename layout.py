@@ -441,6 +441,7 @@ def analyse_form(path, ocr_items=None, method='auto', clean=True):
     fields.sort(key=_anchor)
     sections.sort(key=lambda s: (s['page'], s['box'][1], s['box'][0]))
     _assign_sections(fields, sections)
+    _add_keys(fields)
     form = {'source_file': info['file'], 'pdf_kind': pdf_kind(info['pages']),
             'pages': info['pages'], 'method': ', '.join(used) or 'none', 'notes': notes}
     return {'form': form, 'sections': sections, 'fields': fields}
@@ -489,7 +490,7 @@ def main():
     for field in fields:
         flag = ' (review)' if field['needs_review'] else ''
         how = field.get('label_source') or field['answer_method']
-        print(f"p{field['page']} {field['label']!r:45} {field['type']:8} "
+        print(f"p{field['page']} {field['key']:28} {field['label']!r:45} {field['type']:8} "
               f"{field['source']}/{how}{flag}")
     print(f'{len(fields)} fields, {len(sections)} sections. Saved {args.fields} and {args.boxes} '
           '(red = label, blue = answer area, green = section).')
