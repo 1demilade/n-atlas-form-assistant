@@ -11,6 +11,8 @@ import io
 import json
 import re
 
+from field_types import check_value
+
 # ---- Config ----
 MAX_FONT_PT = 11       # largest font used for flat-PDF answers
 MIN_FONT_PT = 6        # smallest; text that still does not fit is reported as 'overflow'
@@ -91,8 +93,12 @@ def _fill_acroform(reader, fields, answers):
             report.append({'id': fid, 'status': 'skipped', 'reason': 'read-only field'})
             continue
         if kind == 'Tx':
+            problem = check_value(field['type'], answer)
+            if problem:
+                report.append({'id': fid, 'status': 'refused', 'reason': f"{problem} ({field['type']} field)"})
+                continue
             if pdf.get('max_length') and len(answer) > pdf['max_length']:
-                report.append({'id': fid, 'status': 'skipped',
+                report.append({'id': fid, 'status': 'refused',
                                'reason': f"answer longer than max_length {pdf['max_length']}"})
                 continue
             values[name] = answer
@@ -105,7 +111,7 @@ def _fill_acroform(reader, fields, answers):
             if len(exports) >= 2:  # radio group or same-name checkboxes: pick one option
                 index = _match_option(answer, field.get('options', []), exports)
                 if index is None:
-                    report.append({'id': fid, 'status': 'skipped',
+                    report.append({'id': fid, 'status': 'refused',
                                    'reason': f'answer {answer!r} matches no option {field.get("options")}'})
                     continue
                 if exports[index] not in real_states:
@@ -121,14 +127,14 @@ def _fill_acroform(reader, fields, answers):
                     continue
                 truth = _truth(answer)
                 if truth is None:
-                    report.append({'id': fid, 'status': 'skipped',
+                    report.append({'id': fid, 'status': 'refused',
                                    'reason': f'answer {answer!r} is not yes/no for a checkbox'})
                     continue
                 values[name] = NameObject('/' + real_states[0] if truth else '/Off')
         elif kind == 'Ch':
             index = _match_option(answer, field.get('options', []), pdf.get('option_values') or [])
             if index is None:
-                report.append({'id': fid, 'status': 'skipped',
+                report.append({'id': fid, 'status': 'refused',
                                'reason': f'answer {answer!r} matches no option {field.get("options")}'})
                 continue
             values[name] = pdf['option_values'][index]
@@ -337,7 +343,13 @@ def main():
         warning = f"  [{entry['warning']}]" if entry.get('warning') else ''
         print(f"{entry['status']:8} {entry['id']!r:40} {detail}{warning}")
     filled = sum(1 for e in report if e['status'] == 'filled')
-    print(f'{filled} filled, {len(report) - filled} skipped. Saved {args.out}')
+    refused = [e for e in report if e['status'] == 'refused']
+    print(f'{filled} filled, {len(refused)} refused, {len(report) - filled - len(refused)} skipped. '
+          f'Saved {args.out}')
+    if refused:
+        print('Refused (invalid values, nothing written):')
+        for entry in refused:
+            print(f"  {entry['id']!r}: {entry['reason']}")
     if args.report:
         with open(args.report, 'w', encoding='utf-8') as file:
             json.dump(report, file, indent=2, ensure_ascii=False)

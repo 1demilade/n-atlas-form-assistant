@@ -245,7 +245,7 @@ class FillTests(Tmp):
         path, out = self.tmp / 'f.pdf', self.tmp / 'o.pdf'
         truth = make_fillable_pdf(path, 3, 10)
         form = _fillable_form(path)
-        text = next(f for f in form['fields'] if f['pdf']['field_type'] == 'Tx')
+        text = next(f for f in form['fields'] if f['pdf']['field_type'] == 'Tx' and f['type'] == 'text')
         text['pdf']['max_length'] = 2
         choice = next(f for f in form['fields'] if f['options'])
         report = {r['id']: r for r in fill_form(path, form, {
@@ -254,6 +254,41 @@ class FillTests(Tmp):
         self.assertIn('matches no option', report[choice['id']]['reason'])
         self.assertEqual(report['no_such_field']['reason'], 'no field with this id')
         self.assertEqual(len(truth['fields']) + 1, len(report))
+
+    def test_check_value(self):
+        from field_types import check_value
+        for kind, good, bad in [('number', ['42', '-3.5', '1,200', '15%'], ['forty', '12a', '']),
+                                ('date', ['01/02/2026', '2026-02-01', '1 February 2026', 'Feb 1, 2026'],
+                                 ['31/31/2026', 'tomorrow', '2026']),
+                                ('email', ['a.b@example.com'], ['a.b@', 'ab.com', 'a b@x.com']),
+                                ('phone', ['08030000000', '+234 803 000 0000', '(01) 234-5678'],
+                                 ['123', 'call me', '+234 803 000 0000 0000 00'])]:
+            for value in good:
+                self.assertIsNone(check_value(kind, value), (kind, value))
+            for value in bad:
+                self.assertIsNotNone(check_value(kind, value), (kind, value))
+        self.assertIsNone(check_value('text', 'anything'))
+        self.assertIsNone(check_value('unknown', ''))
+
+    def test_invalid_values_are_refused(self):
+        from pypdf import PdfReader
+        found = 0
+        for seed, count in SEEDS:
+            path, out = self.tmp / f'f{seed}.pdf', self.tmp / f'o{seed}.pdf'
+            make_fillable_pdf(path, seed, count)
+            form = _fillable_form(path)
+            typed = [f for f in form['fields'] if f['pdf']['field_type'] == 'Tx'
+                     and f['type'] in ('number', 'date', 'email', 'phone')]
+            if not typed:
+                continue
+            found += len(typed)
+            report = {r['id']: r for r in fill_form(path, form, {f['id']: 'not valid' for f in typed}, out)}
+            values = PdfReader(str(out)).get_fields()
+            for field in typed:
+                self.assertEqual(report[field['id']]['status'], 'refused', report[field['id']])
+                self.assertIn(field['type'], report[field['id']]['reason'])
+                self.assertNotEqual(str(values[field['pdf_field_name']].get('/V')), 'not valid')
+        self.assertGreater(found, 0, 'no typed text field in the generated forms')
 
     def test_on_states_come_from_the_pdf(self):
         from pypdf import PdfReader, PdfWriter
